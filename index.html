@@ -502,17 +502,15 @@
             pointer-events: none;
         }
 
-        /* Hide placeholder & text hints when drawing */
-        body.draw-mode .card-text:empty::before {
+        /* Hide placeholders in draw mode or if the card already has a drawing */
+        body.draw-mode .card-text:empty::before,
+        .card-text.has-drawing:empty:not(:focus)::before {
             display: none;
         }
 
-        body.draw-mode .card-text {
-            visibility: hidden;
-        }
-
+        /* Subtle fading for labels when drawing */
         body.draw-mode .card-flip-hint {
-            display: none;
+            opacity: 0.3;
         }
 
         body.draw-mode .card-face-label {
@@ -547,13 +545,13 @@
             inset: 0;
             border-radius: 20px;
             z-index: 10;
-            display: none;
+            pointer-events: none;
             cursor: crosshair;
             touch-action: none;
         }
 
         .canvas-layer.active {
-            display: block;
+            pointer-events: auto;
         }
 
         .draw-toolbar {
@@ -640,6 +638,70 @@
             flex-shrink: 0;
         }
 
+        /* ── Scratchpad ── */
+        .scratchpad-container {
+            display: none;
+            flex-direction: column;
+            width: 320px;
+            height: 360px;
+            background: rgba(18, 18, 26, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            position: relative;
+            flex-shrink: 0;
+            backdrop-filter: blur(12px);
+            margin-left: 20px;
+        }
+
+        body.scratchpad-open .scratchpad-container {
+            display: flex;
+            animation: fadeInRight 0.3s ease-out;
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .scratchpad-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .scratchpad-header span {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .scratchpad-body {
+            flex: 1;
+            position: relative;
+            border-radius: 0 0 20px 20px;
+            overflow: hidden;
+        }
+
+        .scratchpad-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            touch-action: none;
+            z-index: 10;
+        }
+
         /* ── Card Grid / Sidebar ── */
         .card-grid-section {
             padding: 0 28px 40px;
@@ -686,6 +748,17 @@
             box-shadow: 0 0 20px var(--accent-glow);
         }
 
+        .grid-card-drawing-preview {
+            width: 100%;
+            height: auto;
+            max-height: 50px;
+            object-fit: contain;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            pointer-events: none;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
         .grid-card .gc-front {
             font-size: 13px;
             font-weight: 600;
@@ -695,6 +768,7 @@
             text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 2;
+            line-clamp: 2;
             -webkit-box-orient: vertical;
         }
 
@@ -1438,13 +1512,21 @@
             .card-stage {
                 padding: 16px 8px 28px;
                 min-height: 340px;
+                flex-wrap: wrap;
+                gap: 16px;
             }
 
             .card-container {
                 width: 100%;
                 max-width: calc(100vw - 100px);
                 height: 320px;
-                margin: 0 12px;
+                margin: 0;
+            }
+
+            .scratchpad-container {
+                margin-left: 0;
+                width: 100%;
+                max-width: calc(100vw - 100px);
             }
 
             .card-text {
@@ -1807,6 +1889,7 @@
             </button>
             <button class="btn" id="btn-shuffle">🔀 Shuffle</button>
             <button class="btn" id="btn-draw-toggle">🖊️ Draw</button>
+            <button class="btn" id="btn-scratchpad-toggle">📝 Scratchpad</button>
             <button class="btn" id="btn-clear-canvas" style="display:none">🗑️ Clear Drawing</button>
             <div class="spacer"></div>
             <span class="card-counter" id="card-counter">0 / 0</span>
@@ -1848,6 +1931,19 @@
             </div>
 
             <button class="card-nav-btn" id="btn-next">›</button>
+
+            <!-- Scratchpad -->
+            <div class="scratchpad-container" id="scratchpad-container">
+                <div class="scratchpad-header">
+                    <span>📝 Scratchpad</span>
+                    <button class="btn btn-sm" id="btn-clear-scratchpad" style="background:transparent; border:1px solid rgba(255,255,255,0.2); padding:4px 8px; color:var(--text-secondary);">🗑️ Clear</button>
+                </div>
+                <!-- Mini drawing tools for the scratchpad -->
+                <div class="draw-toolbar active" id="draw-toolbar-scratchpad" style="position:static; transform:none; display:flex; padding:6px 12px; background:rgba(0,0,0,0.2); border-radius:0; border:none; border-bottom:1px solid var(--glass-border); flex-wrap:wrap; box-shadow:none;"></div>
+                <div class="scratchpad-body">
+                    <canvas class="scratchpad-canvas" id="canvas-scratchpad"></canvas>
+                </div>
+            </div>
         </div>
 
         <!-- Empty State -->
@@ -1921,6 +2017,7 @@
         let isSaving = false;
         let decks = [];
         let currentDeckId = null;
+        let scratchpadOpen = false;
 
         // ── DOM Refs ──
         const $ = id => document.getElementById(id);
@@ -1938,6 +2035,8 @@
         const canvasBack = $('canvas-back');
         const ctxFront = canvasFront.getContext('2d');
         const ctxBack = canvasBack.getContext('2d');
+        const canvasScratchpad = $('canvas-scratchpad');
+        const ctxScratchpad = canvasScratchpad.getContext('2d', { willReadFrequently: true });
 
         // ── Auth ──
         $('btn-login').addEventListener('click', async () => {
@@ -2260,6 +2359,7 @@
                         back: data.back || '',
                         drawFront: data.drawFront || '',
                         drawBack: data.drawBack || '',
+                        scratchpad: data.scratchpad || '',
                         order: data.order ?? 0
                     });
                 });
@@ -2290,6 +2390,7 @@
                             back: c.back || '',
                             drawFront: c.drawFront || '',
                             drawBack: c.drawBack || '',
+                            scratchpad: c.scratchpad || '',
                             order: i + j
                         });
                     });
@@ -2318,7 +2419,7 @@
         // ── Cards Logic ──
         function addCard() {
             const id = 'card_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-            cards.push({ id, front: '', back: '', drawFront: '', drawBack: '', order: cards.length });
+            cards.push({ id, front: '', back: '', drawFront: '', drawBack: '', scratchpad: '', order: cards.length });
             currentIndex = cards.length - 1;
             cardContainer.classList.remove('flipped');
             renderAll();
@@ -2461,6 +2562,9 @@
             backText.innerText = card.back || '';
             counterEl.textContent = `${currentIndex + 1} / ${cards.length}`;
 
+            frontText.classList.toggle('has-drawing', !!card.drawFront);
+            backText.classList.toggle('has-drawing', !!card.drawBack);
+
             $('btn-prev').disabled = currentIndex === 0;
             $('btn-next').disabled = currentIndex === cards.length - 1;
 
@@ -2469,6 +2573,7 @@
                 resizeCanvases();
                 loadDrawingToCanvas(ctxFront, canvasFront, card.drawFront);
                 loadDrawingToCanvas(ctxBack, canvasBack, card.drawBack);
+                loadDrawingToCanvas(ctxScratchpad, canvasScratchpad, card.scratchpad);
             });
         }
 
@@ -2477,10 +2582,18 @@
             cards.forEach((card, idx) => {
                 const el = document.createElement('div');
                 el.className = 'grid-card' + (idx === currentIndex ? ' active' : '');
+                
+                let frontDesc = escHtml(card.front);
+                let frontDrawingHtml = card.drawFront ? `<img src="${card.drawFront}" class="grid-card-drawing-preview" alt="Drawing" />` : '';
+                if (!frontDesc && !card.drawFront) frontDesc = '<em style="color:var(--text-muted)">Empty</em>';
+                
+                let backDesc = escHtml(card.back);
+                if (!backDesc && card.drawBack) backDesc = '<em style="color:var(--text-muted)">[Drawing]</em>';
+
                 el.innerHTML = `
           <span class="gc-num">#${idx + 1}</span>
-          <div class="gc-front">${escHtml(card.front) || '<em style="color:var(--text-muted)">Empty</em>'}</div>
-          <div class="gc-back">${escHtml(card.back) || ''}</div>
+          <div class="gc-front">${frontDrawingHtml}${frontDesc}</div>
+          <div class="gc-back">${backDesc}</div>
           <button class="gc-delete" data-idx="${idx}" title="Delete card">✕</button>
         `;
                 el.addEventListener('click', (e) => {
@@ -2509,8 +2622,9 @@
 
         // ── Drawing ──
         function resizeCanvases() {
-            [canvasFront, canvasBack].forEach(c => {
+            [canvasFront, canvasBack, canvasScratchpad].forEach(c => {
                 const rect = c.parentElement.getBoundingClientRect();
+                if (rect.width === 0 || rect.height === 0) return;
                 if (c.width !== Math.floor(rect.width) || c.height !== Math.floor(rect.height)) {
                     // Save current content before resize
                     const tempData = c.toDataURL();
@@ -2545,9 +2659,27 @@
                     loadDrawingToCanvas(ctxBack, canvasBack, cards[currentIndex].drawBack);
                 }
             }
-            document.querySelectorAll('.draw-toolbar').forEach(t => t.classList.toggle('active', drawMode));
+            document.querySelectorAll('.draw-toolbar').forEach(t => t.classList.toggle('active', drawMode || scratchpadOpen));
 
             $('btn-draw-toggle').textContent = drawMode ? '✏️ Drawing ON' : '🖊️ Draw';
+        });
+
+        $('btn-scratchpad-toggle').addEventListener('click', () => {
+            scratchpadOpen = !scratchpadOpen;
+            document.body.classList.toggle('scratchpad-open', scratchpadOpen);
+            $('btn-scratchpad-toggle').classList.toggle('btn-active', scratchpadOpen);
+
+            if (scratchpadOpen) {
+                buildDrawToolbar('draw-toolbar-scratchpad');
+                // Need a tiny delay for layout to settle before measuring canvas rect
+                setTimeout(() => {
+                    resizeCanvases();
+                    if (cards.length) {
+                        loadDrawingToCanvas(ctxScratchpad, canvasScratchpad, cards[currentIndex].scratchpad);
+                    }
+                }, 50);
+            }
+            document.querySelectorAll('.draw-toolbar').forEach(t => t.classList.toggle('active', drawMode || scratchpadOpen));
         });
 
         const swatchColors = ['#000000', '#7c5cfc', '#38bdf8', '#22c55e', '#f59e0b', '#f43f5e', '#e879f9', '#ffffff'];
@@ -2622,9 +2754,10 @@
         }
 
         // Canvas drawing handlers
-        function setupCanvas(canvas, ctx) {
+        function setupCanvas(canvas, ctx, isScratchpad = false) {
             canvas.addEventListener('pointerdown', e => {
-                if (!drawMode) return;
+                if (!isScratchpad && !drawMode) return;
+                if (isScratchpad && !scratchpadOpen) return;
                 e.stopPropagation(); e.preventDefault();
                 canvas.setPointerCapture(e.pointerId);
                 isDrawing = true;
@@ -2659,7 +2792,9 @@
             });
 
             canvas.addEventListener('pointermove', e => {
-                if (!isDrawing || !drawMode) return;
+                if (!isDrawing) return;
+                if (!isScratchpad && !drawMode) return;
+                if (isScratchpad && !scratchpadOpen) return;
                 e.stopPropagation(); e.preventDefault();
                 const rect = canvas.getBoundingClientRect();
                 ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
@@ -2674,15 +2809,19 @@
                 ctx.globalCompositeOperation = 'source-over';
                 ctx.globalAlpha = 1;
                 saveDrawingData();
+                renderGrid();
                 debouncedSave();
             };
 
             canvas.addEventListener('pointerup', endDraw);
             canvas.addEventListener('pointercancel', endDraw);
-            canvas.addEventListener('click', e => { if (drawMode) { e.stopPropagation(); e.preventDefault(); } });
+            canvas.addEventListener('click', e => { 
+                if (drawMode || isScratchpad) { e.stopPropagation(); e.preventDefault(); } 
+            });
         }
         setupCanvas(canvasFront, ctxFront);
         setupCanvas(canvasBack, ctxBack);
+        setupCanvas(canvasScratchpad, ctxScratchpad, true);
 
         function isCanvasBlank(canvas) {
             const ctx = canvas.getContext('2d');
@@ -2698,6 +2837,10 @@
             const card = cards[currentIndex];
             card.drawFront = isCanvasBlank(canvasFront) ? '' : canvasFront.toDataURL('image/png');
             card.drawBack = isCanvasBlank(canvasBack) ? '' : canvasBack.toDataURL('image/png');
+            card.scratchpad = isCanvasBlank(canvasScratchpad) ? '' : canvasScratchpad.toDataURL('image/png');
+            
+            frontText.classList.toggle('has-drawing', !!card.drawFront);
+            backText.classList.toggle('has-drawing', !!card.drawBack);
         }
 
         function loadDrawingToCanvas(ctx, canvas, dataUrl) {
@@ -2716,12 +2859,23 @@
             if (isFlipped) {
                 ctxBack.clearRect(0, 0, canvasBack.width, canvasBack.height);
                 cards[currentIndex].drawBack = '';
+                backText.classList.remove('has-drawing');
             } else {
                 ctxFront.clearRect(0, 0, canvasFront.width, canvasFront.height);
                 cards[currentIndex].drawFront = '';
+                frontText.classList.remove('has-drawing');
             }
+            renderGrid();
             debouncedSave();
             showToast('Drawing cleared', 'info');
+        });
+
+        $('btn-clear-scratchpad').addEventListener('click', () => {
+            if (cards.length === 0) return;
+            ctxScratchpad.clearRect(0, 0, canvasScratchpad.width, canvasScratchpad.height);
+            cards[currentIndex].scratchpad = '';
+            debouncedSave();
+            showToast('Scratchpad cleared', 'info');
         });
 
         // ── Confirm Modal ──
@@ -2795,6 +2949,9 @@
                     resizeCanvases();
                     loadDrawingToCanvas(ctxFront, canvasFront, cards[currentIndex].drawFront);
                     loadDrawingToCanvas(ctxBack, canvasBack, cards[currentIndex].drawBack);
+                    if (scratchpadOpen) {
+                        loadDrawingToCanvas(ctxScratchpad, canvasScratchpad, cards[currentIndex].scratchpad);
+                    }
                 }
             }, 150);
         });
