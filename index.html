@@ -1572,9 +1572,18 @@
 
             .card-container {
                 width: 100%;
-                max-width: calc(100vw - 100px);
+                max-width: calc(100vw - 32px);
                 height: 320px;
                 margin: 0;
+            }
+
+            /* Hide side nav arrows, use mobile controls instead */
+            .card-nav-btn {
+                display: none;
+            }
+
+            .mobile-controls {
+                display: flex;
             }
 
             .scratchpad-container {
@@ -1606,11 +1615,6 @@
                 font-size: 12px;
             }
 
-            .card-nav-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
-            }
 
             .deck-bar {
                 padding: 8px 16px;
@@ -1684,15 +1688,10 @@
 
             .card-container {
                 height: 260px;
-                margin: 0 6px;
-                max-width: calc(100vw - 60px);
+                margin: 0;
+                max-width: calc(100vw - 24px);
             }
 
-            .card-nav-btn {
-                width: 34px;
-                height: 34px;
-                font-size: 16px;
-            }
 
             .card-face-label {
                 padding: 10px 14px 0;
@@ -1981,6 +1980,9 @@
                         <div class="draw-toolbar" id="draw-toolbar-back"></div>
                         <div class="flip-zone" id="flip-back"></div>
                     </div>
+                </div>
+            </div>
+
             <button class="card-nav-btn" id="btn-next">›</button>
 
             <!-- Mobile Controls -->
@@ -2709,6 +2711,10 @@
 
             canvasFront.classList.toggle('active', drawMode);
             canvasBack.classList.toggle('active', drawMode);
+
+            // Disable text editing while drawing
+            frontText.contentEditable = drawMode ? 'false' : 'true';
+            backText.contentEditable = drawMode ? 'false' : 'true';
 
             // Hide flip zones when drawing
             document.querySelectorAll('.flip-zone').forEach(z => z.style.display = drawMode ? 'none' : '');
