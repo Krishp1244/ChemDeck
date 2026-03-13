@@ -413,7 +413,8 @@
 
         /* ── Mobile Controls ── */
         .mobile-controls {
-            display: none; /* hidden on desktop */
+            display: none;
+            /* hidden on desktop */
             width: 100%;
             max-width: 400px;
             margin: 16px auto 0;
@@ -455,7 +456,8 @@
         }
 
         .mobile-btn.flip-btn {
-            flex: 1; /* Make the flip button wider */
+            flex: 1;
+            /* Make the flip button wider */
             background: rgba(124, 92, 252, 0.1);
             border-color: rgba(124, 92, 252, 0.4);
             color: var(--text-primary);
@@ -610,18 +612,21 @@
 
         .draw-toolbar {
             position: absolute;
-            bottom: 12px;
+            bottom: 8px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 20;
             display: none;
-            background: rgba(10, 10, 15, 0.9);
+            background: rgba(10, 10, 15, 0.92);
             backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            padding: 8px 12px;
-            gap: 6px;
+            border-radius: 12px;
+            padding: 5px 8px;
+            gap: 4px;
             align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: calc(100% - 16px);
         }
 
         .draw-toolbar.active {
@@ -629,8 +634,8 @@
         }
 
         .color-swatch {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             border: 2px solid transparent;
             cursor: pointer;
@@ -647,15 +652,15 @@
         .eraser-btn {
             display: flex;
             align-items: center;
-            gap: 4px;
-            padding: 4px 10px;
-            border-radius: 8px;
+            gap: 3px;
+            padding: 3px 7px;
+            border-radius: 6px;
             border: 2px solid transparent;
             background: rgba(255, 255, 255, 0.08);
             color: var(--text-secondary);
             cursor: pointer;
             transition: var(--transition);
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             font-family: inherit;
             flex-shrink: 0;
@@ -674,21 +679,21 @@
         }
 
         .eraser-btn svg {
-            width: 14px;
-            height: 14px;
+            width: 12px;
+            height: 12px;
             fill: currentColor;
         }
 
         .draw-size {
-            width: 56px;
+            width: 44px;
             accent-color: var(--accent);
         }
 
         .draw-toolbar .sep {
             width: 1px;
-            height: 20px;
+            height: 16px;
             background: var(--glass-border);
-            margin: 0 4px;
+            margin: 0 2px;
             flex-shrink: 0;
         }
 
@@ -696,15 +701,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.12);
             background: rgba(255, 255, 255, 0.06);
             color: var(--text-secondary);
             cursor: pointer;
             transition: var(--transition);
-            font-size: 14px;
+            font-size: 12px;
             flex-shrink: 0;
             padding: 0;
             font-family: inherit;
@@ -742,8 +747,15 @@
         }
 
         @keyframes fadeInRight {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .scratchpad-header {
@@ -2024,10 +2036,14 @@
             <div class="scratchpad-container" id="scratchpad-container">
                 <div class="scratchpad-header">
                     <span>📝 Scratchpad</span>
-                    <button class="btn btn-sm" id="btn-clear-scratchpad" style="background:transparent; border:1px solid rgba(255,255,255,0.2); padding:4px 8px; color:var(--text-secondary);">🗑️ Clear</button>
+                    <button class="btn btn-sm" id="btn-clear-scratchpad"
+                        style="background:transparent; border:1px solid rgba(255,255,255,0.2); padding:4px 8px; color:var(--text-secondary);">🗑️
+                        Clear</button>
                 </div>
                 <!-- Mini drawing tools for the scratchpad -->
-                <div class="draw-toolbar active" id="draw-toolbar-scratchpad" style="position:static; transform:none; display:flex; padding:6px 12px; background:rgba(0,0,0,0.2); border-radius:0; border:none; border-bottom:1px solid var(--glass-border); flex-wrap:wrap; box-shadow:none;"></div>
+                <div class="draw-toolbar active" id="draw-toolbar-scratchpad"
+                    style="position:static; transform:none; display:flex; padding:6px 12px; background:rgba(0,0,0,0.2); border-radius:0; border:none; border-bottom:1px solid var(--glass-border); flex-wrap:wrap; box-shadow:none;">
+                </div>
                 <div class="scratchpad-body">
                     <canvas class="scratchpad-canvas" id="canvas-scratchpad"></canvas>
                 </div>
@@ -2675,11 +2691,11 @@
             cards.forEach((card, idx) => {
                 const el = document.createElement('div');
                 el.className = 'grid-card' + (idx === currentIndex ? ' active' : '');
-                
+
                 let frontDesc = escHtml(card.front);
                 let frontDrawingHtml = card.drawFront ? `<img src="${card.drawFront}" class="grid-card-drawing-preview" alt="Drawing" />` : '';
                 if (!frontDesc && !card.drawFront) frontDesc = '<em style="color:var(--text-muted)">Empty</em>';
-                
+
                 let backDesc = escHtml(card.back);
                 if (!backDesc && card.drawBack) backDesc = '<em style="color:var(--text-muted)">[Drawing]</em>';
 
@@ -2996,7 +3012,7 @@
 
                 const baseSize = eraserMode ? drawSize * 3
                     : highlighterMode ? drawSize * 3
-                    : drawSize;
+                        : drawSize;
                 const pressureWidth = getPressureWidth(e, baseSize);
 
                 if (eraserMode) {
@@ -3038,7 +3054,7 @@
 
                     const baseSize = eraserMode ? drawSize * 3
                         : highlighterMode ? drawSize * 3
-                        : drawSize;
+                            : drawSize;
                     ctx.lineWidth = getPressureWidth(pe, baseSize);
 
                     if (lastPoint) {
@@ -3072,8 +3088,8 @@
 
             canvas.addEventListener('pointerup', endDraw);
             canvas.addEventListener('pointercancel', endDraw);
-            canvas.addEventListener('click', e => { 
-                if (drawMode || isScratchpad) { e.stopPropagation(); e.preventDefault(); } 
+            canvas.addEventListener('click', e => {
+                if (drawMode || isScratchpad) { e.stopPropagation(); e.preventDefault(); }
             });
         }
         setupCanvas(canvasFront, ctxFront);
@@ -3095,7 +3111,7 @@
             card.drawFront = isCanvasBlank(canvasFront) ? '' : canvasFront.toDataURL('image/png');
             card.drawBack = isCanvasBlank(canvasBack) ? '' : canvasBack.toDataURL('image/png');
             card.scratchpad = isCanvasBlank(canvasScratchpad) ? '' : canvasScratchpad.toDataURL('image/png');
-            
+
             frontText.classList.toggle('has-drawing', !!card.drawFront);
             backText.classList.toggle('has-drawing', !!card.drawBack);
         }
