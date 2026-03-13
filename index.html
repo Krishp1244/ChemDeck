@@ -411,6 +411,60 @@
             transform: none;
         }
 
+        /* ── Mobile Controls ── */
+        .mobile-controls {
+            display: none; /* hidden on desktop */
+            width: 100%;
+            max-width: 400px;
+            margin: 16px auto 0;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mobile-btn {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: var(--transition);
+        }
+
+        .mobile-btn:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .mobile-btn:active {
+            transform: translateY(0);
+        }
+
+        .mobile-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .mobile-btn.flip-btn {
+            flex: 1; /* Make the flip button wider */
+            background: rgba(124, 92, 252, 0.1);
+            border-color: rgba(124, 92, 252, 0.4);
+            color: var(--text-primary);
+        }
+
+        .mobile-btn.flip-btn:hover {
+            background: rgba(124, 92, 252, 0.2);
+        }
+
         /* ── Flashcard ── */
         .card-container {
             width: 580px;
@@ -1927,10 +1981,14 @@
                         <div class="draw-toolbar" id="draw-toolbar-back"></div>
                         <div class="flip-zone" id="flip-back"></div>
                     </div>
-                </div>
-            </div>
-
             <button class="card-nav-btn" id="btn-next">›</button>
+
+            <!-- Mobile Controls -->
+            <div class="mobile-controls">
+                <button class="mobile-btn" id="btn-mobile-prev">‹</button>
+                <button class="mobile-btn flip-btn" id="btn-mobile-flip">↺ Flip</button>
+                <button class="mobile-btn" id="btn-mobile-next">›</button>
+            </div>
 
             <!-- Scratchpad -->
             <div class="scratchpad-container" id="scratchpad-container">
@@ -2508,6 +2566,9 @@
         $('btn-shuffle').addEventListener('click', shuffleCards);
         $('btn-prev').addEventListener('click', prevCard);
         $('btn-next').addEventListener('click', nextCard);
+        $('btn-mobile-prev').addEventListener('click', prevCard);
+        $('btn-mobile-next').addEventListener('click', nextCard);
+        $('btn-mobile-flip').addEventListener('click', flipCard);
         $('flip-front').addEventListener('click', flipCard);
         $('flip-back').addEventListener('click', flipCard);
         frontText.addEventListener('input', saveCurrentCardText);
@@ -2567,6 +2628,8 @@
 
             $('btn-prev').disabled = currentIndex === 0;
             $('btn-next').disabled = currentIndex === cards.length - 1;
+            $('btn-mobile-prev').disabled = currentIndex === 0;
+            $('btn-mobile-next').disabled = currentIndex === cards.length - 1;
 
             // Restore drawings
             requestAnimationFrame(() => {
@@ -2753,61 +2816,109 @@
             });
         }
 
-        // Canvas drawing handlers
+        // Canvas drawing handlers — with Apple Pencil pressure sensitivity & smooth curves
+        let lastPoint = null;       // for quadratic curve smoothing
+        let penDetected = false;    // once we see a pen, ignore finger
+
+        function getPressureWidth(e, baseSize) {
+            // Apple Pencil (pointerType === 'pen') provides real pressure 0-1
+            // Fallback: mouse/touch get pressure 0.5 by default
+            if (e.pointerType === 'pen' && e.pressure > 0) {
+                return Math.max(0.5, baseSize * (0.3 + e.pressure * 1.4));
+            }
+            return baseSize;
+        }
+
         function setupCanvas(canvas, ctx, isScratchpad = false) {
+            // Prevent iOS scroll/zoom while drawing
+            canvas.style.touchAction = 'none';
+
             canvas.addEventListener('pointerdown', e => {
                 if (!isScratchpad && !drawMode) return;
                 if (isScratchpad && !scratchpadOpen) return;
+
+                // If we detect a pen (Apple Pencil), reject finger touches
+                if (e.pointerType === 'pen') penDetected = true;
+                if (penDetected && e.pointerType === 'touch') return;
+
                 e.stopPropagation(); e.preventDefault();
                 canvas.setPointerCapture(e.pointerId);
                 isDrawing = true;
                 const rect = canvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
+                lastPoint = { x, y };
 
-                ctx.beginPath();
-                ctx.moveTo(x, y);
+                const baseSize = eraserMode ? drawSize * 3
+                    : highlighterMode ? drawSize * 3
+                    : drawSize;
+                const pressureWidth = getPressureWidth(e, baseSize);
 
                 if (eraserMode) {
                     ctx.globalCompositeOperation = 'destination-out';
                     ctx.globalAlpha = 1;
-                    ctx.lineWidth = drawSize * 3;
                 } else if (highlighterMode) {
                     ctx.globalCompositeOperation = 'source-over';
                     ctx.globalAlpha = 0.3;
                     ctx.strokeStyle = drawColor;
-                    ctx.lineWidth = drawSize * 3;
                 } else {
                     ctx.globalCompositeOperation = 'source-over';
                     ctx.globalAlpha = 1;
                     ctx.strokeStyle = drawColor;
-                    ctx.lineWidth = drawSize;
                 }
+                ctx.lineWidth = pressureWidth;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
 
-                // Draw a dot for single clicks
-                ctx.lineTo(x + 0.1, y + 0.1);
-                ctx.stroke();
+                // Draw a dot for single taps
+                ctx.beginPath();
+                ctx.arc(x, y, pressureWidth / 2, 0, Math.PI * 2);
+                ctx.fill();
             });
 
             canvas.addEventListener('pointermove', e => {
                 if (!isDrawing) return;
                 if (!isScratchpad && !drawMode) return;
                 if (isScratchpad && !scratchpadOpen) return;
+                if (penDetected && e.pointerType === 'touch') return;
                 e.stopPropagation(); e.preventDefault();
+
+                // Use coalesced events for higher-fidelity Apple Pencil strokes
+                const events = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
                 const rect = canvas.getBoundingClientRect();
-                ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-                ctx.stroke();
+
+                for (const pe of events) {
+                    const x = pe.clientX - rect.left;
+                    const y = pe.clientY - rect.top;
+
+                    const baseSize = eraserMode ? drawSize * 3
+                        : highlighterMode ? drawSize * 3
+                        : drawSize;
+                    ctx.lineWidth = getPressureWidth(pe, baseSize);
+
+                    if (lastPoint) {
+                        // Smooth quadratic Bezier through midpoints
+                        const midX = (lastPoint.x + x) / 2;
+                        const midY = (lastPoint.y + y) / 2;
+                        ctx.beginPath();
+                        ctx.moveTo(lastPoint.x, lastPoint.y);
+                        ctx.quadraticCurveTo(lastPoint.x, lastPoint.y, midX, midY);
+                        ctx.stroke();
+                    }
+                    lastPoint = { x, y };
+                }
             });
 
             const endDraw = (e) => {
                 if (!isDrawing) return;
                 if (e) { e.stopPropagation(); e.preventDefault(); }
                 isDrawing = false;
-                ctx.closePath();
+                lastPoint = null;
                 ctx.globalCompositeOperation = 'source-over';
                 ctx.globalAlpha = 1;
+                // Reset pen detection after a short delay
+                // so the user can switch between pencil and touch
+                setTimeout(() => { if (!isDrawing) penDetected = false; }, 800);
                 saveDrawingData();
                 renderGrid();
                 debouncedSave();
