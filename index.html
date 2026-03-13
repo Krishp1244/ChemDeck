@@ -101,21 +101,10 @@
         }
 
         @keyframes orbFloat {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            33% {
-                transform: translate(40px, -30px) scale(1.05);
-            }
-
-            66% {
-                transform: translate(-20px, 40px) scale(0.95);
-            }
-
-            100% {
-                transform: translate(30px, 20px) scale(1.02);
-            }
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -30px) scale(1.05); }
+            66% { transform: translate(-20px, 40px) scale(0.95); }
+            100% { transform: translate(30px, 20px) scale(1.02); }
         }
 
         /* ── Login Screen ── */
@@ -149,10 +138,7 @@
             animation: fadeInUp 0.6s ease-out;
         }
 
-        .login-card .logo {
-            font-size: 42px;
-            margin-bottom: 8px;
-        }
+        .login-card .logo { font-size: 42px; margin-bottom: 8px; }
 
         .login-card h1 {
             font-size: 28px;
@@ -188,32 +174,13 @@
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-google:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-        }
-
-        .btn-google:active {
-            transform: translateY(0);
-        }
-
-        .btn-google svg {
-            width: 20px;
-            height: 20px;
-            flex-shrink: 0;
-        }
-
-        .btn-google:disabled {
-            opacity: 0.6;
-            cursor: wait;
-        }
+        .btn-google:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); }
+        .btn-google:active { transform: translateY(0); }
+        .btn-google svg { width: 20px; height: 20px; flex-shrink: 0; }
+        .btn-google:disabled { opacity: 0.6; cursor: wait; }
 
         /* ── App Shell ── */
-        #app {
-            display: none;
-            position: relative;
-            z-index: 1;
-        }
+        #app { display: none; position: relative; z-index: 1; }
 
         #app.visible {
             display: block;
@@ -221,15 +188,8 @@
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ── Header ── */
@@ -246,11 +206,7 @@
             z-index: 50;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .header-left { display: flex; align-items: center; gap: 10px; }
 
         .header-left .logo-text {
             font-size: 20px;
@@ -261,11 +217,7 @@
             background-clip: text;
         }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .header-right { display: flex; align-items: center; gap: 10px; }
 
         .user-avatar {
             width: 32px;
@@ -289,10 +241,10 @@
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
+            gap: 6px;
+            padding: 8px 14px;
             border-radius: var(--radius-sm);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             font-family: inherit;
             border: 1px solid var(--glass-border);
@@ -303,17 +255,11 @@
             backdrop-filter: blur(8px);
             white-space: nowrap;
             user-select: none;
+            flex-shrink: 0;
         }
 
-        .btn:hover {
-            background: var(--bg-card-hover);
-            border-color: rgba(255, 255, 255, 0.18);
-            transform: translateY(-1px);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
+        .btn:hover { background: var(--bg-card-hover); border-color: rgba(255, 255, 255, 0.18); transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
 
         .btn-accent {
             background: linear-gradient(135deg, var(--accent), #6941e0);
@@ -328,21 +274,10 @@
             background: linear-gradient(135deg, #8b6ffc, #7551f0);
         }
 
-        .btn-danger {
-            border-color: rgba(244, 63, 94, 0.3);
-            color: var(--danger);
-        }
+        .btn-danger { border-color: rgba(244, 63, 94, 0.3); color: var(--danger); }
+        .btn-danger:hover { background: rgba(244, 63, 94, 0.1); border-color: rgba(244, 63, 94, 0.4); }
 
-        .btn-danger:hover {
-            background: rgba(244, 63, 94, 0.1);
-            border-color: rgba(244, 63, 94, 0.4);
-        }
-
-        .btn-sm {
-            padding: 7px 14px;
-            font-size: 12px;
-            border-radius: var(--radius-xs);
-        }
+        .btn-sm { padding: 6px 12px; font-size: 11px; border-radius: var(--radius-xs); }
 
         .btn-active {
             border-color: var(--accent) !important;
@@ -350,27 +285,32 @@
             background: rgba(124, 92, 252, 0.15) !important;
         }
 
-        /* ── Toolbar ── */
+        /* ── Toolbar — FIX: wrap nicely, all buttons same row, scroll on overflow ── */
         .toolbar {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 14px 28px;
-            flex-wrap: wrap;
+            gap: 6px;
+            padding: 10px 16px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scrollbar-width: none;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
         }
 
-        .toolbar .spacer {
-            flex: 1;
-        }
+        .toolbar::-webkit-scrollbar { display: none; }
+
+        .toolbar .spacer { flex: 1; min-width: 8px; }
 
         .card-counter {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-secondary);
             font-weight: 500;
             background: var(--glass);
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 20px;
             border: 1px solid var(--glass-border);
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         /* ── Card Stage ── */
@@ -400,21 +340,12 @@
             backdrop-filter: blur(8px);
         }
 
-        .card-nav-btn:hover {
-            background: var(--bg-card-hover);
-            transform: scale(1.08);
-        }
-
-        .card-nav-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .card-nav-btn:hover { background: var(--bg-card-hover); transform: scale(1.08); }
+        .card-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
 
         /* ── Mobile Controls ── */
         .mobile-controls {
             display: none;
-            /* hidden on desktop */
             width: 100%;
             max-width: 400px;
             margin: 16px auto 0;
@@ -440,32 +371,18 @@
             transition: var(--transition);
         }
 
-        .mobile-btn:hover {
-            background: var(--bg-card-hover);
-            transform: translateY(-2px);
-        }
-
-        .mobile-btn:active {
-            transform: translateY(0);
-        }
-
-        .mobile-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .mobile-btn:hover { background: var(--bg-card-hover); transform: translateY(-2px); }
+        .mobile-btn:active { transform: translateY(0); }
+        .mobile-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
 
         .mobile-btn.flip-btn {
             flex: 1;
-            /* Make the flip button wider */
             background: rgba(124, 92, 252, 0.1);
             border-color: rgba(124, 92, 252, 0.4);
             color: var(--text-primary);
         }
 
-        .mobile-btn.flip-btn:hover {
-            background: rgba(124, 92, 252, 0.2);
-        }
+        .mobile-btn.flip-btn:hover { background: rgba(124, 92, 252, 0.2); }
 
         /* ── Flashcard ── */
         .card-container {
@@ -474,6 +391,10 @@
             height: 360px;
             margin: 0 20px;
             position: relative;
+            /* FIX: disable long-press text selection */
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
         }
 
         .card-inner {
@@ -484,9 +405,7 @@
             transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .card-container.flipped .card-inner {
-            transform: rotateY(180deg);
-        }
+        .card-container.flipped .card-inner { transform: rotateY(180deg); }
 
         .card-face {
             position: absolute;
@@ -502,9 +421,7 @@
             overflow: hidden;
         }
 
-        .card-face.back {
-            transform: rotateY(180deg);
-        }
+        .card-face.back { transform: rotateY(180deg); }
 
         .card-face-label {
             font-size: 10px;
@@ -517,6 +434,9 @@
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
+            /* FIX: no text selection on labels */
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .card-face-label .side-badge {
@@ -528,9 +448,7 @@
             letter-spacing: 1.5px;
         }
 
-        .card-face.back .card-face-label .side-badge {
-            background: var(--accent-2);
-        }
+        .card-face.back .card-face-label .side-badge { background: var(--accent-2); }
 
         .card-text {
             flex: 1;
@@ -549,6 +467,9 @@
             cursor: text;
             position: relative;
             z-index: 2;
+            /* Allow text selection only when contenteditable */
+            -webkit-user-select: text;
+            user-select: text;
         }
 
         .card-text:empty::before {
@@ -558,25 +479,13 @@
             pointer-events: none;
         }
 
-        /* Hide placeholders in draw mode or if the card already has a drawing */
         body.draw-mode .card-text:empty::before,
-        .card-text.has-drawing:empty:not(:focus)::before {
-            display: none;
-        }
+        .card-text.has-drawing:empty:not(:focus)::before { display: none; }
 
-        /* Subtle fading for labels when drawing */
-        body.draw-mode .card-flip-hint {
-            opacity: 0.3;
-        }
+        body.draw-mode .card-flip-hint { opacity: 0.3; }
+        body.draw-mode .card-face-label { opacity: 0.3; }
 
-        body.draw-mode .card-face-label {
-            opacity: 0.3;
-        }
-
-        .card-text:focus {
-            background: rgba(124, 92, 252, 0.04);
-            border-radius: 8px;
-        }
+        .card-text:focus { background: rgba(124, 92, 252, 0.04); border-radius: 8px; }
 
         .card-flip-hint {
             font-size: 10px;
@@ -585,7 +494,10 @@
             padding: 0 20px 10px;
             flex-shrink: 0;
             letter-spacing: 0.5px;
+            /* FIX: no selection */
+            -webkit-user-select: none;
             user-select: none;
+            pointer-events: none;
         }
 
         .flip-zone {
@@ -593,6 +505,10 @@
             inset: 0;
             z-index: 1;
             cursor: pointer;
+            /* FIX: prevent long-press callout */
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
         }
 
         /* ── Drawing Canvas ── */
@@ -604,38 +520,55 @@
             pointer-events: none;
             cursor: crosshair;
             touch-action: none;
+            /* FIX: overflow visible for zoom */
+            transform-origin: 0 0;
         }
 
-        .canvas-layer.active {
-            pointer-events: auto;
-        }
+        .canvas-layer.active { pointer-events: auto; }
 
+        /* ── Draw Toolbar — FIX: compact, draggable, small ── */
         .draw-toolbar {
             position: absolute;
-            bottom: 8px;
-            left: 50%;
-            transform: translateX(-50%);
             z-index: 20;
             display: none;
-            background: rgba(10, 10, 15, 0.92);
+            background: rgba(10, 10, 15, 0.95);
             backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             padding: 5px 8px;
             gap: 4px;
             align-items: center;
-            flex-wrap: wrap;
-            justify-content: center;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            scrollbar-width: none;
             max-width: calc(100% - 16px);
+            /* Start at top-right so it doesn't block the card center */
+            bottom: auto;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: grab;
+            /* Compact height */
+            min-height: 34px;
         }
 
-        .draw-toolbar.active {
-            display: flex;
+        .draw-toolbar::-webkit-scrollbar { display: none; }
+        .draw-toolbar.dragging { cursor: grabbing; }
+
+        .draw-toolbar.active { display: flex; }
+
+        .draw-toolbar .drag-handle {
+            font-size: 11px;
+            color: var(--text-muted);
+            cursor: grab;
+            padding: 0 4px 0 0;
+            flex-shrink: 0;
+            letter-spacing: 1px;
         }
 
         .color-swatch {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             border: 2px solid transparent;
             cursor: pointer;
@@ -643,17 +576,13 @@
             flex-shrink: 0;
         }
 
-        .color-swatch:hover,
-        .color-swatch.active {
-            border-color: #fff;
-            transform: scale(1.15);
-        }
+        .color-swatch:hover, .color-swatch.active { border-color: #fff; transform: scale(1.15); }
 
         .eraser-btn {
             display: flex;
             align-items: center;
             gap: 3px;
-            padding: 3px 7px;
+            padding: 3px 6px;
             border-radius: 6px;
             border: 2px solid transparent;
             background: rgba(255, 255, 255, 0.08);
@@ -667,63 +596,56 @@
             white-space: nowrap;
         }
 
-        .eraser-btn:hover {
-            background: rgba(255, 255, 255, 0.14);
-            color: var(--text-primary);
-        }
+        .eraser-btn:hover { background: rgba(255, 255, 255, 0.14); color: var(--text-primary); }
+        .eraser-btn.active { border-color: var(--danger); background: rgba(244, 63, 94, 0.15); color: #fff; }
+        .eraser-btn svg { width: 11px; height: 11px; fill: currentColor; }
 
-        .eraser-btn.active {
-            border-color: var(--danger);
-            background: rgba(244, 63, 94, 0.15);
-            color: #fff;
-        }
-
-        .eraser-btn svg {
-            width: 12px;
-            height: 12px;
-            fill: currentColor;
-        }
-
-        .draw-size {
-            width: 44px;
-            accent-color: var(--accent);
-        }
-
-        .draw-toolbar .sep {
-            width: 1px;
-            height: 16px;
-            background: var(--glass-border);
-            margin: 0 2px;
-            flex-shrink: 0;
-        }
+        .draw-size { width: 40px; accent-color: var(--accent); }
+        .draw-toolbar .sep { width: 1px; height: 14px; background: var(--glass-border); margin: 0 2px; flex-shrink: 0; }
 
         .undo-redo-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
+            width: 22px;
+            height: 22px;
+            border-radius: 5px;
             border: 1px solid rgba(255, 255, 255, 0.12);
             background: rgba(255, 255, 255, 0.06);
             color: var(--text-secondary);
             cursor: pointer;
             transition: var(--transition);
-            font-size: 12px;
+            font-size: 11px;
             flex-shrink: 0;
             padding: 0;
             font-family: inherit;
         }
 
-        .undo-redo-btn:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.14);
-            color: var(--text-primary);
+        .undo-redo-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.14); color: var(--text-primary); }
+        .undo-redo-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+        /* ── Highlighter button ── */
+        .highlighter-btn {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            padding: 3px 6px;
+            border-radius: 6px;
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 10px;
+            font-weight: 600;
+            font-family: inherit;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
-        .undo-redo-btn:disabled {
-            opacity: 0.25;
-            cursor: not-allowed;
-        }
+        .highlighter-btn:hover { background: rgba(255, 255, 255, 0.14); color: var(--text-primary); }
+        .highlighter-btn.active { border-color: var(--warning); background: rgba(245, 158, 11, 0.15); color: #fff; }
+        .highlighter-btn svg { width: 12px; height: 12px; fill: currentColor; }
 
         /* ── Scratchpad ── */
         .scratchpad-container {
@@ -747,15 +669,8 @@
         }
 
         @keyframes fadeInRight {
-            from {
-                opacity: 0;
-                transform: translateX(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .scratchpad-header {
@@ -796,10 +711,8 @@
             z-index: 10;
         }
 
-        /* ── Card Grid / Sidebar ── */
-        .card-grid-section {
-            padding: 0 28px 40px;
-        }
+        /* ── Card Grid ── */
+        .card-grid-section { padding: 0 28px 40px; }
 
         .section-header {
             font-size: 13px;
@@ -831,16 +744,8 @@
             justify-content: center;
         }
 
-        .grid-card:hover {
-            background: var(--bg-card-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
-        }
-
-        .grid-card.active {
-            border-color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
-        }
+        .grid-card:hover { background: var(--bg-card-hover); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3); }
+        .grid-card.active { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
 
         .grid-card-drawing-preview {
             width: 100%;
@@ -904,14 +809,8 @@
             opacity: 0;
         }
 
-        .grid-card:hover .gc-delete {
-            opacity: 1;
-        }
-
-        .grid-card .gc-delete:hover {
-            color: var(--danger);
-            background: rgba(244, 63, 94, 0.1);
-        }
+        .grid-card:hover .gc-delete { opacity: 1; }
+        .grid-card .gc-delete:hover { color: var(--danger); background: rgba(244, 63, 94, 0.1); }
 
         .grid-card.add-card {
             border-style: dashed;
@@ -924,15 +823,8 @@
             flex-direction: column;
         }
 
-        .grid-card.add-card:hover {
-            border-color: var(--accent);
-            color: var(--accent-light);
-        }
-
-        .grid-card.add-card .plus {
-            font-size: 28px;
-            line-height: 1;
-        }
+        .grid-card.add-card:hover { border-color: var(--accent); color: var(--accent-light); }
+        .grid-card.add-card .plus { font-size: 28px; line-height: 1; }
 
         /* ── Empty State ── */
         .empty-state {
@@ -945,25 +837,9 @@
             animation: fadeInUp 0.6s ease-out;
         }
 
-        .empty-state .icon {
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: 0.7;
-        }
-
-        .empty-state h2 {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .empty-state p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 24px;
-            max-width: 360px;
-            line-height: 1.5;
-        }
+        .empty-state .icon { font-size: 64px; margin-bottom: 16px; opacity: 0.7; }
+        .empty-state h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+        .empty-state p { color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; max-width: 360px; line-height: 1.5; }
 
         /* ── Confirm Modal ── */
         .modal-overlay {
@@ -989,34 +865,11 @@
             animation: fadeInUp 0.25s ease-out;
         }
 
-        .modal-box h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
+        .modal-box h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+        .modal-box p { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.5; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
 
-        .modal-box p {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
+        @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* ── Toast ── */
         .toast-container {
@@ -1045,63 +898,21 @@
             gap: 8px;
         }
 
-        .toast.success {
-            border-left: 3px solid var(--success);
-        }
-
-        .toast.error {
-            border-left: 3px solid var(--danger);
-        }
-
-        .toast.info {
-            border-left: 3px solid var(--accent-2);
-        }
+        .toast.success { border-left: 3px solid var(--success); }
+        .toast.error { border-left: 3px solid var(--danger); }
+        .toast.info { border-left: 3px solid var(--accent-2); }
 
         @keyframes toastIn {
-            from {
-                opacity: 0;
-                transform: translateX(40px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         /* ── Sync indicator ── */
-        .sync-indicator {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            color: var(--text-muted);
-        }
+        .sync-indicator { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+        .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
+        .sync-dot.syncing { background: var(--warning); animation: pulse 1s ease infinite; }
 
-        .sync-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--success);
-            flex-shrink: 0;
-        }
-
-        .sync-dot.syncing {
-            background: var(--warning);
-            animation: pulse 1s ease infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.4;
-            }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         /* ── Loading spinner ── */
         .spinner {
@@ -1114,11 +925,7 @@
             display: inline-block;
         }
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* ── Deck Bar ── */
         .deck-bar {
@@ -1132,9 +939,7 @@
             background: rgba(10, 10, 15, 0.5);
         }
 
-        .deck-bar::-webkit-scrollbar {
-            display: none;
-        }
+        .deck-bar::-webkit-scrollbar { display: none; }
 
         .deck-bar-label {
             font-size: 10px;
@@ -1165,29 +970,10 @@
             position: relative;
         }
 
-        .deck-chip:hover {
-            background: var(--bg-card-hover);
-            color: var(--text-primary);
-        }
-
-        .deck-chip.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #fff;
-            box-shadow: 0 0 12px var(--accent-glow);
-        }
-
-        .deck-chip .deck-count {
-            font-size: 10px;
-            opacity: 0.7;
-            font-weight: 400;
-        }
-
-        .deck-chip .deck-actions {
-            display: flex;
-            gap: 2px;
-            margin-left: 2px;
-        }
+        .deck-chip:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+        .deck-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 12px var(--accent-glow); }
+        .deck-chip .deck-count { font-size: 10px; opacity: 0.7; font-weight: 400; }
+        .deck-chip .deck-actions { display: flex; gap: 2px; margin-left: 2px; }
 
         .deck-chip .deck-action-btn {
             background: none;
@@ -1201,62 +987,11 @@
             font-family: inherit;
         }
 
-        .deck-chip:hover .deck-action-btn,
-        .deck-chip.active .deck-action-btn {
-            opacity: 0.6;
-        }
+        .deck-chip:hover .deck-action-btn, .deck-chip.active .deck-action-btn { opacity: 0.6; }
+        .deck-chip .deck-action-btn:hover { opacity: 1; }
 
-        .deck-chip .deck-action-btn:hover {
-            opacity: 1;
-        }
-
-        .deck-chip.add-deck {
-            border-style: dashed;
-            border-color: rgba(255, 255, 255, 0.15);
-            color: var(--text-muted);
-            gap: 4px;
-        }
-
-        .deck-chip.add-deck:hover {
-            border-color: var(--accent);
-            color: var(--accent-light);
-        }
-
-        /* ── Highlighter button ── */
-        .highlighter-btn {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 10px;
-            border-radius: 8px;
-            border: 2px solid transparent;
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 11px;
-            font-weight: 600;
-            font-family: inherit;
-            flex-shrink: 0;
-            white-space: nowrap;
-        }
-
-        .highlighter-btn:hover {
-            background: rgba(255, 255, 255, 0.14);
-            color: var(--text-primary);
-        }
-
-        .highlighter-btn.active {
-            border-color: var(--warning);
-            background: rgba(245, 158, 11, 0.15);
-            color: #fff;
-        }
-
-        .highlighter-btn svg {
-            width: 14px;
-            height: 14px;
-            fill: currentColor;
-        }
+        .deck-chip.add-deck { border-style: dashed; border-color: rgba(255, 255, 255, 0.15); color: var(--text-muted); gap: 4px; }
+        .deck-chip.add-deck:hover { border-color: var(--accent); color: var(--accent-light); }
 
         /* ── Deck Modal ── */
         .deck-modal-overlay {
@@ -1282,11 +1017,7 @@
             animation: fadeInUp 0.25s ease-out;
         }
 
-        .deck-modal h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
+        .deck-modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
 
         .deck-modal input {
             width: 100%;
@@ -1301,15 +1032,8 @@
             margin-bottom: 16px;
         }
 
-        .deck-modal input:focus {
-            border-color: var(--accent);
-        }
-
-        .deck-modal .modal-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
+        .deck-modal input:focus { border-color: var(--accent); }
+        .deck-modal .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
 
         /* ── Secret Love Page ── */
         .secret-chip {
@@ -1330,12 +1054,7 @@
             flex-shrink: 0;
         }
 
-        .secret-chip:hover {
-            background: rgba(255, 100, 150, 0.18);
-            border-color: rgba(255, 100, 150, 0.5);
-            color: #ffc0d6;
-            transform: scale(1.03);
-        }
+        .secret-chip:hover { background: rgba(255, 100, 150, 0.18); border-color: rgba(255, 100, 150, 0.5); color: #ffc0d6; transform: scale(1.03); }
 
         .secret-code-overlay {
             position: fixed;
@@ -1361,23 +1080,9 @@
             animation: fadeInUp 0.3s ease-out;
         }
 
-        .secret-code-box .lock-icon {
-            font-size: 40px;
-            margin-bottom: 12px;
-        }
-
-        .secret-code-box h3 {
-            font-size: 16px;
-            font-weight: 700;
-            color: #f9a8c9;
-            margin-bottom: 6px;
-        }
-
-        .secret-code-box p {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.4);
-            margin-bottom: 18px;
-        }
+        .secret-code-box .lock-icon { font-size: 40px; margin-bottom: 12px; }
+        .secret-code-box h3 { font-size: 16px; font-weight: 700; color: #f9a8c9; margin-bottom: 6px; }
+        .secret-code-box p { font-size: 12px; color: rgba(255, 255, 255, 0.4); margin-bottom: 18px; }
 
         .secret-code-box input {
             width: 100%;
@@ -1394,18 +1099,8 @@
             margin-bottom: 14px;
         }
 
-        .secret-code-box input:focus {
-            border-color: #f9a8c9;
-            box-shadow: 0 0 16px rgba(255, 100, 150, 0.2);
-        }
-
-        .secret-code-box .wrong-code {
-            color: #f43f5e;
-            font-size: 12px;
-            margin-top: -8px;
-            margin-bottom: 10px;
-            display: none;
-        }
+        .secret-code-box input:focus { border-color: #f9a8c9; box-shadow: 0 0 16px rgba(255, 100, 150, 0.2); }
+        .secret-code-box .wrong-code { color: #f43f5e; font-size: 12px; margin-top: -8px; margin-bottom: 10px; display: none; }
 
         .love-page {
             position: fixed;
@@ -1418,9 +1113,7 @@
             overflow: hidden;
         }
 
-        .love-page.visible {
-            display: flex;
-        }
+        .love-page.visible { display: flex; }
 
         .love-bg {
             position: absolute;
@@ -1437,11 +1130,7 @@
             animation: fadeInUp 0.8s ease-out;
         }
 
-        .love-content .heart-big {
-            font-size: 72px;
-            animation: heartbeat 1.2s ease-in-out infinite;
-            margin-bottom: 20px;
-        }
+        .love-content .heart-big { font-size: 72px; animation: heartbeat 1.2s ease-in-out infinite; margin-bottom: 20px; }
 
         .love-content h1 {
             font-size: 42px;
@@ -1455,22 +1144,8 @@
             margin-bottom: 12px;
         }
 
-        .love-content .love-subtitle {
-            font-size: 16px;
-            color: rgba(255, 180, 210, 0.6);
-            font-weight: 400;
-            margin-bottom: 8px;
-            font-style: italic;
-        }
-
-        .love-content .love-encouragement {
-            font-size: 14px;
-            color: rgba(255, 180, 210, 0.9);
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            margin-bottom: 28px;
-            text-transform: uppercase;
-        }
+        .love-content .love-subtitle { font-size: 16px; color: rgba(255, 180, 210, 0.6); font-weight: 400; margin-bottom: 8px; font-style: italic; }
+        .love-content .love-encouragement { font-size: 14px; color: rgba(255, 180, 210, 0.9); font-weight: 700; letter-spacing: 1.5px; margin-bottom: 28px; text-transform: uppercase; }
 
         .love-content .love-photo {
             width: 220px;
@@ -1510,19 +1185,9 @@
             margin-top: 10px;
         }
 
-        .love-back-btn:hover {
-            background: rgba(255, 100, 150, 0.2);
-            border-color: rgba(255, 100, 150, 0.5);
-        }
+        .love-back-btn:hover { background: rgba(255, 100, 150, 0.2); border-color: rgba(255, 100, 150, 0.5); }
 
-        /* Floating hearts */
-        .floating-hearts {
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-            overflow: hidden;
-            pointer-events: none;
-        }
+        .floating-hearts { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
 
         .floating-heart {
             position: absolute;
@@ -1533,406 +1198,104 @@
         }
 
         @keyframes floatHeart {
-            0% {
-                transform: translateY(0) rotate(0deg) scale(0.5);
-                opacity: 0;
-            }
-
-            10% {
-                opacity: 0.8;
-            }
-
-            90% {
-                opacity: 0.3;
-            }
-
-            100% {
-                transform: translateY(-100vh) rotate(45deg) scale(1.2);
-                opacity: 0;
-            }
+            0% { transform: translateY(0) rotate(0deg) scale(0.5); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) rotate(45deg) scale(1.2); opacity: 0; }
         }
 
         @keyframes heartbeat {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            15% {
-                transform: scale(1.15);
-            }
-
-            30% {
-                transform: scale(1);
-            }
-
-            45% {
-                transform: scale(1.1);
-            }
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.15); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.1); }
         }
 
         @keyframes gradientShift {
-
-            0%,
-            100% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
-        /* ── Responsive: Tablet (iPad) ── */
-        @media (max-width: 1024px) {
-            .card-container {
-                width: 520px;
-                max-width: calc(100vw - 140px);
-            }
-        }
-
-        /* ── Responsive: Small Tablet / Large Phone ── */
+        /* ── Responsive ── */
         @media (max-width: 768px) {
-            header {
-                padding: 12px 16px;
-            }
-
-            .toolbar {
-                padding: 10px 16px;
-                gap: 8px;
-            }
-
-            .card-stage {
-                padding: 16px 8px 28px;
-                min-height: 340px;
-                flex-wrap: wrap;
-                gap: 16px;
-            }
-
-            .card-container {
-                width: 100%;
-                max-width: calc(100vw - 32px);
-                height: 320px;
-                margin: 0;
-            }
-
-            /* Hide side nav arrows, use mobile controls instead */
-            .card-nav-btn {
-                display: none;
-            }
-
-            .mobile-controls {
-                display: flex;
-            }
-
-            .scratchpad-container {
-                margin-left: 0;
-                width: 100%;
-                max-width: calc(100vw - 100px);
-            }
-
-            .card-text {
-                font-size: 16px;
-                padding: 10px 18px 14px;
-            }
-
-            .card-grid-section {
-                padding: 0 16px 32px;
-            }
-
-            .card-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 8px;
-            }
-
-            .user-name {
-                display: none;
-            }
-
-            .btn {
-                padding: 9px 16px;
-                font-size: 12px;
-            }
-
-
-            .deck-bar {
-                padding: 8px 16px;
-                gap: 6px;
-            }
-
-            .deck-chip {
-                padding: 5px 12px;
-                font-size: 11px;
-            }
-
-            .login-card {
-                padding: 36px 28px;
-            }
-
-            .draw-toolbar {
-                padding: 6px 10px;
-                bottom: 8px;
-            }
+            header { padding: 12px 16px; }
+            .toolbar { padding: 8px 12px; gap: 5px; }
+            .card-stage { padding: 16px 8px 28px; min-height: 340px; flex-wrap: wrap; gap: 16px; }
+            .card-container { width: 100%; max-width: calc(100vw - 32px); height: 320px; margin: 0; }
+            .card-nav-btn { display: none; }
+            .mobile-controls { display: flex; }
+            .scratchpad-container { margin-left: 0; width: 100%; max-width: calc(100vw - 100px); }
+            .card-text { font-size: 16px; padding: 10px 18px 14px; }
+            .card-grid-section { padding: 0 16px 32px; }
+            .card-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+            .user-name { display: none; }
+            .deck-bar { padding: 8px 16px; gap: 6px; }
+            .deck-chip { padding: 5px 12px; font-size: 11px; }
+            .login-card { padding: 36px 28px; }
         }
 
-        /* ── Responsive: Phone ── */
         @media (max-width: 480px) {
-            header {
-                padding: 10px 12px;
-                gap: 8px;
-            }
-
-            .header-left .logo-text {
-                font-size: 17px;
-            }
-
-            .header-right {
-                gap: 6px;
-            }
-
-            .sync-indicator {
-                display: none;
-            }
-
-            .user-avatar {
-                width: 28px;
-                height: 28px;
-            }
-
-            .toolbar {
-                padding: 8px 12px;
-                gap: 6px;
-            }
-
-            .btn {
-                padding: 8px 12px;
-                font-size: 11px;
-                gap: 5px;
-                border-radius: 8px;
-            }
-
-            .btn-accent {
-                padding: 8px 14px;
-            }
-
-            .card-counter {
-                font-size: 11px;
-                padding: 4px 10px;
-            }
-
-            .card-stage {
-                padding: 10px 4px 20px;
-                min-height: 280px;
-            }
-
-            .card-container {
-                height: 260px;
-                margin: 0;
-                max-width: calc(100vw - 24px);
-            }
-
-
-            .card-face-label {
-                padding: 10px 14px 0;
-                font-size: 9px;
-            }
-
-            .card-face-label .side-badge {
-                font-size: 8px;
-                padding: 2px 8px;
-            }
-
-            .card-text {
-                font-size: 14px;
-                padding: 8px 14px 10px;
-                line-height: 1.5;
-            }
-
-            .card-flip-hint {
-                font-size: 9px;
-                padding: 0 14px 6px;
-            }
-
-            .card-face {
-                border-radius: 14px;
-            }
-
-            .canvas-layer {
-                border-radius: 14px;
-            }
-
-            .card-grid-section {
-                padding: 0 12px 28px;
-            }
-
-            .section-header {
-                font-size: 11px;
-                margin-bottom: 10px;
-            }
-
-            .card-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 6px;
-            }
-
-            .grid-card {
-                padding: 10px;
-                min-height: 65px;
-                border-radius: 8px;
-            }
-
-            .grid-card .gc-front {
-                font-size: 12px;
-            }
-
-            .grid-card .gc-back {
-                font-size: 10px;
-            }
-
-            .draw-toolbar {
-                padding: 5px 8px;
-                gap: 4px;
-                border-radius: 10px;
-                bottom: 6px;
-            }
-
-            .color-swatch {
-                width: 22px;
-                height: 22px;
-            }
-
-            .eraser-btn {
-                font-size: 10px;
-                padding: 3px 8px;
-            }
-
-            .draw-size {
-                width: 44px;
-            }
-
-            .login-card {
-                padding: 32px 24px;
-                border-radius: 18px;
-            }
-
-            .login-card .logo {
-                font-size: 36px;
-            }
-
-            .login-card h1 {
-                font-size: 24px;
-            }
-
-            .login-card p {
-                font-size: 13px;
-                margin-bottom: 24px;
-            }
-
-            .btn-google {
-                padding: 12px 24px;
-                font-size: 14px;
-            }
-
-            .toast-container {
-                bottom: 12px;
-                right: 12px;
-                left: 12px;
-            }
-
-            .toast {
-                font-size: 12px;
-                padding: 10px 14px;
-            }
-
-            .empty-state {
-                padding: 40px 16px;
-            }
-
-            .empty-state .icon {
-                font-size: 48px;
-            }
-
-            .empty-state h2 {
-                font-size: 18px;
-            }
-
-            .empty-state p {
-                font-size: 13px;
-            }
-
-            .modal-box {
-                padding: 22px 24px;
-            }
-
-            /* Hide bg orbs on small phones for perf */
-            .bg-glow .orb {
-                opacity: 0.15;
-            }
+            header { padding: 10px 12px; gap: 8px; }
+            .header-left .logo-text { font-size: 17px; }
+            .header-right { gap: 6px; }
+            .sync-indicator { display: none; }
+            .user-avatar { width: 28px; height: 28px; }
+            .toolbar { padding: 6px 10px; gap: 4px; }
+            .btn { padding: 7px 10px; font-size: 11px; gap: 4px; border-radius: 8px; }
+            .card-counter { font-size: 11px; padding: 4px 10px; }
+            .card-stage { padding: 10px 4px 20px; min-height: 280px; }
+            .card-container { height: 260px; margin: 0; max-width: calc(100vw - 24px); }
+            .card-face-label { padding: 10px 14px 0; font-size: 9px; }
+            .card-face-label .side-badge { font-size: 8px; padding: 2px 8px; }
+            .card-text { font-size: 14px; padding: 8px 14px 10px; line-height: 1.5; }
+            .card-flip-hint { font-size: 9px; padding: 0 14px 6px; }
+            .card-face { border-radius: 14px; }
+            .canvas-layer { border-radius: 14px; }
+            .card-grid-section { padding: 0 12px 28px; }
+            .section-header { font-size: 11px; margin-bottom: 10px; }
+            .card-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 6px; }
+            .grid-card { padding: 10px; min-height: 65px; border-radius: 8px; }
+            .grid-card .gc-front { font-size: 12px; }
+            .grid-card .gc-back { font-size: 10px; }
+            .login-card { padding: 32px 24px; border-radius: 18px; }
+            .login-card .logo { font-size: 36px; }
+            .login-card h1 { font-size: 24px; }
+            .login-card p { font-size: 13px; margin-bottom: 24px; }
+            .btn-google { padding: 12px 24px; font-size: 14px; }
+            .toast-container { bottom: 12px; right: 12px; left: 12px; }
+            .toast { font-size: 12px; padding: 10px 14px; }
+            .empty-state { padding: 40px 16px; }
+            .empty-state .icon { font-size: 48px; }
+            .empty-state h2 { font-size: 18px; }
+            .empty-state p { font-size: 13px; }
+            .modal-box { padding: 22px 24px; }
+            .bg-glow .orb { opacity: 0.15; }
         }
 
-        /* ── Touch-friendly: increase targets on any touch device ── */
         @media (pointer: coarse) {
-            .card-nav-btn {
-                width: 44px;
-                height: 44px;
-            }
-
-            .btn {
-                min-height: 40px;
-            }
-
-            .gc-delete {
-                width: 32px;
-                height: 32px;
-                opacity: 1 !important;
-            }
-
-            .color-swatch {
-                width: 28px;
-                height: 28px;
-            }
-
-            .eraser-btn {
-                min-height: 28px;
-            }
+            .card-nav-btn { width: 44px; height: 44px; }
+            .btn { min-height: 38px; }
+            .gc-delete { width: 32px; height: 32px; opacity: 1 !important; }
+            .color-swatch { width: 24px; height: 24px; }
+            .eraser-btn { min-height: 26px; }
         }
 
-        /* ── Scrollbar ── */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* ── Selection ── */
-        ::selection {
-            background: rgba(124, 92, 252, 0.3);
-        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+        ::selection { background: rgba(124, 92, 252, 0.3); }
     </style>
 </head>
 
 <body>
 
-    <!-- Animated background -->
     <div class="bg-glow">
         <div class="orb"></div>
         <div class="orb"></div>
         <div class="orb"></div>
     </div>
 
-    <!-- ── Login Screen ── -->
     <div id="login-screen">
         <div class="login-card">
             <div class="logo">🧠</div>
@@ -1940,21 +1303,16 @@
             <p>Smart flashcards with drawing mode &amp; cloud sync.<br>Study anywhere, remember everything.</p>
             <button class="btn-google" id="btn-login">
                 <svg viewBox="0 0 24 24">
-                    <path fill="#4285F4"
-                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z" />
-                    <path fill="#34A853"
-                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                    <path fill="#FBBC05"
-                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                    <path fill="#EA4335"
-                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
                 Sign in with Google
             </button>
         </div>
     </div>
 
-    <!-- ── Main App ── -->
     <div id="app">
         <header>
             <div class="header-left">
@@ -1972,49 +1330,40 @@
             </div>
         </header>
 
-        <!-- Deck Bar -->
         <div class="deck-bar" id="deck-bar"></div>
 
-        <!-- Toolbar -->
         <div class="toolbar" id="toolbar">
-            <button class="btn btn-accent" id="btn-add">
-                <span>＋</span> New Card
-            </button>
+            <button class="btn btn-accent" id="btn-add"><span>＋</span> New Card</button>
             <button class="btn" id="btn-shuffle">🔀 Shuffle</button>
             <button class="btn" id="btn-draw-toggle">🖊️ Draw</button>
-            <button class="btn" id="btn-scratchpad-toggle">📝 Scratchpad</button>
-            <button class="btn" id="btn-clear-canvas" style="display:none">🗑️ Clear Drawing</button>
+            <button class="btn" id="btn-scratchpad-toggle">📝 Pad</button>
+            <button class="btn" id="btn-clear-canvas" style="display:none">🗑️ Clear</button>
             <div class="spacer"></div>
             <span class="card-counter" id="card-counter">0 / 0</span>
         </div>
 
-        <!-- Card Stage -->
         <div class="card-stage" id="card-stage" style="display:none">
             <button class="card-nav-btn" id="btn-prev">‹</button>
 
             <div class="card-container" id="card-container">
                 <div class="card-inner" id="card-inner">
-                    <!-- Front -->
                     <div class="card-face front">
                         <div class="card-face-label">
                             <span>Question</span>
                             <span class="side-badge">FRONT</span>
                         </div>
-                        <div class="card-text" id="front-text" contenteditable="true"
-                            data-placeholder="Click to type your question…"></div>
+                        <div class="card-text" id="front-text" contenteditable="true" data-placeholder="Click to type your question…"></div>
                         <div class="card-flip-hint">Click outside text to flip</div>
                         <canvas class="canvas-layer" id="canvas-front"></canvas>
                         <div class="draw-toolbar" id="draw-toolbar-front"></div>
                         <div class="flip-zone" id="flip-front"></div>
                     </div>
-                    <!-- Back -->
                     <div class="card-face back">
                         <div class="card-face-label">
                             <span>Answer</span>
                             <span class="side-badge">BACK</span>
                         </div>
-                        <div class="card-text" id="back-text" contenteditable="true"
-                            data-placeholder="Click to type the answer…"></div>
+                        <div class="card-text" id="back-text" contenteditable="true" data-placeholder="Click to type the answer…"></div>
                         <div class="card-flip-hint">Click outside text to flip</div>
                         <canvas class="canvas-layer" id="canvas-back"></canvas>
                         <div class="draw-toolbar" id="draw-toolbar-back"></div>
@@ -2025,32 +1374,24 @@
 
             <button class="card-nav-btn" id="btn-next">›</button>
 
-            <!-- Mobile Controls -->
             <div class="mobile-controls">
                 <button class="mobile-btn" id="btn-mobile-prev">‹</button>
                 <button class="mobile-btn flip-btn" id="btn-mobile-flip">↺ Flip</button>
                 <button class="mobile-btn" id="btn-mobile-next">›</button>
             </div>
 
-            <!-- Scratchpad -->
             <div class="scratchpad-container" id="scratchpad-container">
                 <div class="scratchpad-header">
                     <span>📝 Scratchpad</span>
-                    <button class="btn btn-sm" id="btn-clear-scratchpad"
-                        style="background:transparent; border:1px solid rgba(255,255,255,0.2); padding:4px 8px; color:var(--text-secondary);">🗑️
-                        Clear</button>
+                    <button class="btn btn-sm" id="btn-clear-scratchpad" style="background:transparent; border:1px solid rgba(255,255,255,0.2); padding:4px 8px; color:var(--text-secondary);">🗑️ Clear</button>
                 </div>
-                <!-- Mini drawing tools for the scratchpad -->
-                <div class="draw-toolbar active" id="draw-toolbar-scratchpad"
-                    style="position:static; transform:none; display:flex; padding:6px 12px; background:rgba(0,0,0,0.2); border-radius:0; border:none; border-bottom:1px solid var(--glass-border); flex-wrap:wrap; box-shadow:none;">
-                </div>
+                <div class="draw-toolbar active" id="draw-toolbar-scratchpad" style="position:static; transform:none; display:flex; padding:6px 12px; background:rgba(0,0,0,0.2); border-radius:0; border:none; border-bottom:1px solid var(--glass-border); flex-wrap:wrap; box-shadow:none; cursor:default;"></div>
                 <div class="scratchpad-body">
                     <canvas class="scratchpad-canvas" id="canvas-scratchpad"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- Empty State -->
         <div class="empty-state" id="empty-state">
             <div class="icon">📚</div>
             <h2>No flashcards yet</h2>
@@ -2058,17 +1399,14 @@
             <button class="btn btn-accent" id="btn-create-first">＋ Create First Card</button>
         </div>
 
-        <!-- Card Grid -->
         <div class="card-grid-section" id="grid-section" style="display:none">
             <div class="section-header">All Cards</div>
             <div class="card-grid" id="card-grid"></div>
         </div>
     </div>
 
-    <!-- Toasts -->
     <div class="toast-container" id="toast-container"></div>
 
-    <!-- Secret Love Page -->
     <div class="love-page" id="love-page">
         <div class="love-bg"></div>
         <div class="floating-hearts" id="floating-hearts"></div>
@@ -2082,7 +1420,6 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import {
@@ -2092,7 +1429,6 @@
             getFirestore, collection, doc, setDoc, getDocs, deleteDoc, writeBatch, addDoc
         } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
-        // ── Firebase Config ──
         const firebaseConfig = {
             apiKey: "AIzaSyAVSmR8cr96SNal43ZDjBeSSE1muawNX_Y",
             authDomain: "flashcard-app-premed.firebaseapp.com",
@@ -2107,7 +1443,6 @@
         const db = getFirestore(fbApp);
         const provider = new GoogleAuthProvider();
 
-        // ── State ──
         let currentUser = null;
         let cards = [];
         let currentIndex = 0;
@@ -2123,7 +1458,9 @@
         let currentDeckId = null;
         let scratchpadOpen = false;
 
-        // ── DOM Refs ──
+        // ── Pinch zoom state per canvas ──
+        const canvasZoom = {};  // { canvasId: { scale, offsetX, offsetY } }
+
         const $ = id => document.getElementById(id);
         const loginScreen = $('login-screen');
         const appEl = $('app');
@@ -2150,9 +1487,7 @@
             try {
                 await signInWithPopup(auth, provider);
             } catch (e) {
-                if (e.code !== 'auth/popup-closed-by-user') {
-                    showToast('Sign-in failed: ' + e.message, 'error');
-                }
+                if (e.code !== 'auth/popup-closed-by-user') showToast('Sign-in failed: ' + e.message, 'error');
             }
             btn.disabled = false;
             btn.innerHTML = '<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Sign in with Google';
@@ -2186,26 +1521,16 @@
             }
         });
 
-        // ── Firestore: Decks ──
-        function userDecksCol() {
-            return collection(db, 'users', currentUser.uid, 'decks');
-        }
-
-        function deckCardsCol(deckId) {
-            return collection(db, 'users', currentUser.uid, 'decks', deckId, 'cards');
-        }
+        function userDecksCol() { return collection(db, 'users', currentUser.uid, 'decks'); }
+        function deckCardsCol(deckId) { return collection(db, 'users', currentUser.uid, 'decks', deckId, 'cards'); }
 
         async function loadDecks() {
             setSyncing(true);
             try {
-                // Check for old-style cards and migrate
                 const oldCol = collection(db, 'users', currentUser.uid, 'flashcards');
                 const oldSnap = await getDocs(oldCol);
                 if (!oldSnap.empty) {
-                    // Migrate old cards to a "General" deck
-                    const deckRef = await addDoc(userDecksCol(), {
-                        name: 'General', order: 0, createdAt: Date.now()
-                    });
+                    const deckRef = await addDoc(userDecksCol(), { name: 'General', order: 0, createdAt: Date.now() });
                     const batch = writeBatch(db);
                     let idx = 0;
                     oldSnap.forEach(d => {
@@ -2218,19 +1543,13 @@
                     showToast('Migrated existing cards to General deck', 'info');
                 }
 
-                // Load all decks
                 const snap = await getDocs(userDecksCol());
                 decks = [];
-                snap.forEach(d => {
-                    decks.push({ id: d.id, ...d.data() });
-                });
+                snap.forEach(d => { decks.push({ id: d.id, ...d.data() }); });
                 decks.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-                // If no decks, create a default
                 if (decks.length === 0) {
-                    const ref = await addDoc(userDecksCol(), {
-                        name: 'General', order: 0, createdAt: Date.now()
-                    });
+                    const ref = await addDoc(userDecksCol(), { name: 'General', order: 0, createdAt: Date.now() });
                     decks.push({ id: ref.id, name: 'General', order: 0 });
                 }
 
@@ -2247,19 +1566,14 @@
         async function createDeck(name) {
             if (!currentUser) return;
             try {
-                const ref = await addDoc(userDecksCol(), {
-                    name, order: decks.length, createdAt: Date.now()
-                });
+                const ref = await addDoc(userDecksCol(), { name, order: decks.length, createdAt: Date.now() });
                 decks.push({ id: ref.id, name, order: decks.length });
                 currentDeckId = ref.id;
                 cards = []; currentIndex = 0;
                 renderDeckBar();
                 renderAll();
                 showToast(`Created "${name}"`, 'success');
-            } catch (e) {
-                console.error('Create deck error:', e);
-                showToast('Failed to create deck', 'error');
-            }
+            } catch (e) { showToast('Failed to create deck', 'error'); }
         }
 
         async function renameDeck(deckId, newName) {
@@ -2270,20 +1584,14 @@
                 if (d) d.name = newName;
                 renderDeckBar();
                 showToast('Deck renamed', 'success');
-            } catch (e) {
-                console.error('Rename error:', e);
-            }
+            } catch (e) { console.error('Rename error:', e); }
         }
 
         async function deleteDeckConfirm(deckId) {
             const deck = decks.find(d => d.id === deckId);
-            if (!deck || decks.length <= 1) {
-                showToast('Cannot delete the only deck', 'error');
-                return;
-            }
+            if (!deck || decks.length <= 1) { showToast('Cannot delete the only deck', 'error'); return; }
             showConfirm('Delete Deck', `Delete "${deck.name}" and all its cards? This cannot be undone.`, async () => {
                 try {
-                    // Delete all cards in the deck
                     const cardsSnap = await getDocs(deckCardsCol(deckId));
                     if (!cardsSnap.empty) {
                         const batch = writeBatch(db);
@@ -2292,15 +1600,10 @@
                     }
                     await deleteDoc(doc(db, 'users', currentUser.uid, 'decks', deckId));
                     decks = decks.filter(d => d.id !== deckId);
-                    if (currentDeckId === deckId) {
-                        currentDeckId = decks[0].id;
-                        await loadCards();
-                    }
+                    if (currentDeckId === deckId) { currentDeckId = decks[0].id; await loadCards(); }
                     renderDeckBar();
                     showToast('Deck deleted', 'error');
-                } catch (e) {
-                    console.error('Delete deck error:', e);
-                }
+                } catch (e) { console.error('Delete deck error:', e); }
             });
         }
 
@@ -2316,27 +1619,13 @@
         function showDeckModal(title, defaultVal, onSave) {
             const overlay = document.createElement('div');
             overlay.className = 'deck-modal-overlay';
-            overlay.innerHTML = `
-                <div class="deck-modal">
-                    <h3>${title}</h3>
-                    <input type="text" id="deck-name-input" value="${escHtml(defaultVal)}" maxlength="40" placeholder="e.g. Chapter 1 - Reactions" />
-                    <div class="modal-actions">
-                        <button class="btn btn-sm" id="deck-modal-cancel">Cancel</button>
-                        <button class="btn btn-sm btn-accent" id="deck-modal-save">Save</button>
-                    </div>
-                </div>`;
+            overlay.innerHTML = `<div class="deck-modal"><h3>${title}</h3><input type="text" id="deck-name-input" value="${escHtml(defaultVal)}" maxlength="40" placeholder="e.g. Chapter 1 - Reactions" /><div class="modal-actions"><button class="btn btn-sm" id="deck-modal-cancel">Cancel</button><button class="btn btn-sm btn-accent" id="deck-modal-save">Save</button></div></div>`;
             document.body.appendChild(overlay);
             const input = overlay.querySelector('#deck-name-input');
             input.focus(); input.select();
             overlay.querySelector('#deck-modal-cancel').addEventListener('click', () => overlay.remove());
-            overlay.querySelector('#deck-modal-save').addEventListener('click', () => {
-                const val = input.value.trim();
-                if (val) { onSave(val); overlay.remove(); }
-            });
-            input.addEventListener('keydown', e => {
-                if (e.key === 'Enter') { const val = input.value.trim(); if (val) { onSave(val); overlay.remove(); } }
-                if (e.key === 'Escape') overlay.remove();
-            });
+            overlay.querySelector('#deck-modal-save').addEventListener('click', () => { const val = input.value.trim(); if (val) { onSave(val); overlay.remove(); } });
+            input.addEventListener('keydown', e => { if (e.key === 'Enter') { const val = input.value.trim(); if (val) { onSave(val); overlay.remove(); } } if (e.key === 'Escape') overlay.remove(); });
             overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
         }
 
@@ -2346,37 +1635,22 @@
             decks.forEach(deck => {
                 const chip = document.createElement('div');
                 chip.className = 'deck-chip' + (deck.id === currentDeckId ? ' active' : '');
-                chip.innerHTML = `
-                    <span>${escHtml(deck.name)}</span>
-                    <span class="deck-actions">
-                        <button class="deck-action-btn" data-action="rename" title="Rename">✏</button>
-                        <button class="deck-action-btn" data-action="delete" title="Delete">✕</button>
-                    </span>`;
+                chip.innerHTML = `<span>${escHtml(deck.name)}</span><span class="deck-actions"><button class="deck-action-btn" data-action="rename" title="Rename">✏</button><button class="deck-action-btn" data-action="delete" title="Delete">✕</button></span>`;
                 chip.addEventListener('click', (e) => {
                     const action = e.target.closest('[data-action]');
                     if (action) {
                         e.stopPropagation();
-                        if (action.dataset.action === 'rename') {
-                            showDeckModal('Rename Deck', deck.name, (name) => renameDeck(deck.id, name));
-                        } else if (action.dataset.action === 'delete') {
-                            deleteDeckConfirm(deck.id);
-                        }
-                    } else {
-                        switchDeck(deck.id);
-                    }
+                        if (action.dataset.action === 'rename') showDeckModal('Rename Deck', deck.name, (name) => renameDeck(deck.id, name));
+                        else if (action.dataset.action === 'delete') deleteDeckConfirm(deck.id);
+                    } else { switchDeck(deck.id); }
                 });
                 bar.appendChild(chip);
             });
-            // Add deck button
             const addChip = document.createElement('div');
             addChip.className = 'deck-chip add-deck';
             addChip.innerHTML = '<span>＋</span> New Set';
-            addChip.addEventListener('click', () => {
-                showDeckModal('Create New Set', '', (name) => createDeck(name));
-            });
+            addChip.addEventListener('click', () => { showDeckModal('Create New Set', '', (name) => createDeck(name)); });
             bar.appendChild(addChip);
-
-            // Secret chip
             const secretChip = document.createElement('div');
             secretChip.className = 'secret-chip';
             secretChip.innerHTML = '🔒 Secret';
@@ -2384,53 +1658,31 @@
             bar.appendChild(secretChip);
         }
 
-        // ── Secret Love Page ──
         function showSecretCodeModal() {
             const overlay = document.createElement('div');
             overlay.className = 'secret-code-overlay';
-            overlay.innerHTML = `
-                <div class="secret-code-box">
-                    <div class="lock-icon">🔐</div>
-                    <h3>Enter the secret code</h3>
-                    <p>Only someone special knows this...</p>
-                    <input type="password" id="secret-code-input" maxlength="8" placeholder="••••••••" />
-                    <div class="wrong-code" id="wrong-code-msg">Wrong code, try again 💔</div>
-                    <div class="modal-actions" style="justify-content:center; gap:12px;">
-                        <button class="btn btn-sm" id="secret-cancel" style="border-color:rgba(255,100,150,0.2); color:#f9a8c9;">Cancel</button>
-                        <button class="btn btn-sm" id="secret-submit" style="background:rgba(255,100,150,0.15); border-color:rgba(255,100,150,0.4); color:#ffc0d6;">Unlock 💕</button>
-                    </div>
-                </div>`;
+            overlay.innerHTML = `<div class="secret-code-box"><div class="lock-icon">🔐</div><h3>Enter the secret code</h3><p>Only someone special knows this...</p><input type="password" id="secret-code-input" maxlength="8" placeholder="••••••••" /><div class="wrong-code" id="wrong-code-msg">Wrong code, try again 💔</div><div class="modal-actions" style="justify-content:center; gap:12px;"><button class="btn btn-sm" id="secret-cancel" style="border-color:rgba(255,100,150,0.2); color:#f9a8c9;">Cancel</button><button class="btn btn-sm" id="secret-submit" style="background:rgba(255,100,150,0.15); border-color:rgba(255,100,150,0.4); color:#ffc0d6;">Unlock 💕</button></div></div>`;
             document.body.appendChild(overlay);
             const input = overlay.querySelector('#secret-code-input');
             input.focus();
-
             function tryUnlock() {
-                if (input.value === '08312024') {
-                    overlay.remove();
-                    openLovePage();
-                } else {
+                if (input.value === '08312024') { overlay.remove(); openLovePage(); }
+                else {
                     const msg = overlay.querySelector('#wrong-code-msg');
-                    msg.style.display = 'block';
-                    input.value = '';
+                    msg.style.display = 'block'; input.value = '';
                     input.style.borderColor = '#f43f5e';
                     setTimeout(() => { input.style.borderColor = ''; msg.style.display = 'none'; }, 1500);
                 }
             }
-
             overlay.querySelector('#secret-cancel').addEventListener('click', () => overlay.remove());
             overlay.querySelector('#secret-submit').addEventListener('click', tryUnlock);
-            input.addEventListener('keydown', e => {
-                if (e.key === 'Enter') tryUnlock();
-                if (e.key === 'Escape') overlay.remove();
-            });
+            input.addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); if (e.key === 'Escape') overlay.remove(); });
             overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
         }
 
         function openLovePage() {
             const page = $('love-page');
             page.classList.add('visible');
-
-            // Create floating hearts
             const heartsContainer = $('floating-hearts');
             heartsContainer.innerHTML = '';
             const heartEmojis = ['❤️', '💕', '💖', '💗', '💘', '💝', '🩷', '🤍'];
@@ -2446,9 +1698,7 @@
             }
         }
 
-        $('love-back-btn').addEventListener('click', () => {
-            $('love-page').classList.remove('visible');
-        });
+        $('love-back-btn').addEventListener('click', () => { $('love-page').classList.remove('visible'); });
 
         async function loadCards() {
             setSyncing(true);
@@ -2457,70 +1707,40 @@
                 cards = [];
                 snap.forEach(d => {
                     const data = d.data();
-                    cards.push({
-                        id: d.id,
-                        front: data.front || '',
-                        back: data.back || '',
-                        drawFront: data.drawFront || '',
-                        drawBack: data.drawBack || '',
-                        scratchpad: data.scratchpad || '',
-                        order: data.order ?? 0
-                    });
+                    cards.push({ id: d.id, front: data.front || '', back: data.back || '', drawFront: data.drawFront || '', drawBack: data.drawBack || '', scratchpad: data.scratchpad || '', order: data.order ?? 0 });
                 });
                 cards.sort((a, b) => a.order - b.order);
                 currentIndex = 0;
                 cardContainer.classList.remove('flipped');
                 renderAll();
-            } catch (e) {
-                console.error('Load error:', e);
-                showToast('Failed to load cards', 'error');
-            }
+            } catch (e) { console.error('Load error:', e); showToast('Failed to load cards', 'error'); }
             setSyncing(false);
         }
 
         async function saveAllCards() {
             if (!currentUser || !currentDeckId || isSaving) return;
-            isSaving = true;
-            setSyncing(true);
+            isSaving = true; setSyncing(true);
             try {
                 const batchSize = 450;
                 for (let i = 0; i < cards.length; i += batchSize) {
                     const batch = writeBatch(db);
-                    const slice = cards.slice(i, i + batchSize);
-                    slice.forEach((c, j) => {
+                    cards.slice(i, i + batchSize).forEach((c, j) => {
                         const ref = doc(db, 'users', currentUser.uid, 'decks', currentDeckId, 'cards', c.id);
-                        batch.set(ref, {
-                            front: c.front || '',
-                            back: c.back || '',
-                            drawFront: c.drawFront || '',
-                            drawBack: c.drawBack || '',
-                            scratchpad: c.scratchpad || '',
-                            order: i + j
-                        });
+                        batch.set(ref, { front: c.front || '', back: c.back || '', drawFront: c.drawFront || '', drawBack: c.drawBack || '', scratchpad: c.scratchpad || '', order: i + j });
                     });
                     await batch.commit();
                 }
-            } catch (e) {
-                console.error('Save error:', e);
-                showToast('Sync failed — will retry', 'error');
-            }
-            isSaving = false;
-            setSyncing(false);
+            } catch (e) { console.error('Save error:', e); showToast('Sync failed — will retry', 'error'); }
+            isSaving = false; setSyncing(false);
         }
 
-        function debouncedSave() {
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(saveAllCards, 1500);
-        }
+        function debouncedSave() { clearTimeout(saveTimeout); saveTimeout = setTimeout(saveAllCards, 1500); }
 
         async function deleteCardFromDB(id) {
             if (!currentUser || !currentDeckId) return;
-            try {
-                await deleteDoc(doc(db, 'users', currentUser.uid, 'decks', currentDeckId, 'cards', id));
-            } catch (e) { console.error('Delete error:', e); }
+            try { await deleteDoc(doc(db, 'users', currentUser.uid, 'decks', currentDeckId, 'cards', id)); } catch (e) { console.error('Delete error:', e); }
         }
 
-        // ── Cards Logic ──
         function addCard() {
             const id = 'card_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
             cards.push({ id, front: '', back: '', drawFront: '', drawBack: '', scratchpad: '', order: cards.length });
@@ -2536,77 +1756,46 @@
             if (cards.length === 0 || idx < 0 || idx >= cards.length) return;
             const card = cards[idx];
             const preview = card.front ? card.front.substring(0, 40) : 'Empty card';
-
-            showConfirm(
-                'Delete Card',
-                `Delete "${preview}${card.front && card.front.length > 40 ? '…' : ''}"? This cannot be undone.`,
-                () => {
-                    const removed = cards.splice(idx, 1)[0];
-                    deleteCardFromDB(removed.id);
-                    if (currentIndex >= cards.length) currentIndex = Math.max(0, cards.length - 1);
-                    renderAll();
-                    showToast('Card deleted', 'error');
-                    debouncedSave();
-                }
-            );
+            showConfirm('Delete Card', `Delete "${preview}${card.front && card.front.length > 40 ? '…' : ''}"? This cannot be undone.`, () => {
+                const removed = cards.splice(idx, 1)[0];
+                deleteCardFromDB(removed.id);
+                if (currentIndex >= cards.length) currentIndex = Math.max(0, cards.length - 1);
+                renderAll(); showToast('Card deleted', 'error'); debouncedSave();
+            });
         }
 
         function prevCard() {
-            if (currentIndex > 0) {
-                saveDrawingData();
-                currentIndex--;
-                cardContainer.classList.remove('flipped');
-                renderCard();
-            }
+            if (currentIndex > 0) { saveDrawingData(); currentIndex--; cardContainer.classList.remove('flipped'); renderCard(); }
         }
 
         function nextCard() {
-            if (currentIndex < cards.length - 1) {
-                saveDrawingData();
-                currentIndex++;
-                cardContainer.classList.remove('flipped');
-                renderCard();
-            }
+            if (currentIndex < cards.length - 1) { saveDrawingData(); currentIndex++; cardContainer.classList.remove('flipped'); renderCard(); }
         }
 
         function goToCard(idx) {
             if (idx === currentIndex) return;
-            saveDrawingData();
-            currentIndex = idx;
-            cardContainer.classList.remove('flipped');
-            renderCard();
+            saveDrawingData(); currentIndex = idx; cardContainer.classList.remove('flipped'); renderCard();
             cardStage.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         function shuffleCards() {
             if (cards.length < 2) return;
             saveDrawingData();
-            for (let i = cards.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [cards[i], cards[j]] = [cards[j], cards[i]];
-            }
-            currentIndex = 0;
-            cardContainer.classList.remove('flipped');
-            renderAll();
-            showToast('Cards shuffled!', 'info');
-            debouncedSave();
+            for (let i = cards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cards[i], cards[j]] = [cards[j], cards[i]]; }
+            currentIndex = 0; cardContainer.classList.remove('flipped'); renderAll();
+            showToast('Cards shuffled!', 'info'); debouncedSave();
         }
 
-        function flipCard() {
-            if (drawMode || cards.length === 0) return;
-            cardContainer.classList.toggle('flipped');
-        }
+        function flipCard() { if (drawMode || cards.length === 0) return; cardContainer.classList.toggle('flipped'); }
 
         function saveCurrentCardText() {
             if (cards.length === 0) return;
             const card = cards[currentIndex];
             card.front = frontText.innerText.trim();
             card.back = backText.innerText.trim();
-            renderGrid();
-            debouncedSave();
+            renderGrid(); debouncedSave();
         }
 
-        // ── Event Bindings ──
         $('btn-add').addEventListener('click', addCard);
         $('btn-create-first').addEventListener('click', addCard);
         $('btn-shuffle').addEventListener('click', shuffleCards);
@@ -2620,46 +1809,21 @@
         frontText.addEventListener('input', saveCurrentCardText);
         backText.addEventListener('input', saveCurrentCardText);
 
-        // Prevent flip-zone from interfering with text editing
         frontText.addEventListener('pointerdown', e => e.stopPropagation());
         backText.addEventListener('pointerdown', e => e.stopPropagation());
         frontText.addEventListener('click', e => e.stopPropagation());
         backText.addEventListener('click', e => e.stopPropagation());
 
-        // Make flip-zone sit behind text area but capture clicks on the rest of the card
-        document.querySelectorAll('.flip-zone').forEach(zone => {
-            zone.style.zIndex = '1';
-        });
-        document.querySelectorAll('.card-text').forEach(txt => {
-            txt.style.zIndex = '3';
-        });
-        document.querySelectorAll('.card-face-label').forEach(lbl => {
-            lbl.style.zIndex = '3';
-            lbl.style.position = 'relative';
-        });
-        document.querySelectorAll('.card-flip-hint').forEach(h => {
-            h.style.zIndex = '3';
-            h.style.position = 'relative';
-            h.style.pointerEvents = 'none';
-        });
+        document.querySelectorAll('.flip-zone').forEach(zone => { zone.style.zIndex = '1'; });
+        document.querySelectorAll('.card-text').forEach(txt => { txt.style.zIndex = '3'; });
+        document.querySelectorAll('.card-face-label').forEach(lbl => { lbl.style.zIndex = '3'; lbl.style.position = 'relative'; });
+        document.querySelectorAll('.card-flip-hint').forEach(h => { h.style.zIndex = '3'; h.style.position = 'relative'; h.style.pointerEvents = 'none'; });
 
-        // ── Render ──
-        function renderAll() {
-            renderCard();
-            renderGrid();
-            updateVisibility();
-        }
+        function renderAll() { renderCard(); renderGrid(); updateVisibility(); }
 
         function updateVisibility() {
-            if (cards.length === 0) {
-                cardStage.style.display = 'none';
-                emptyState.style.display = 'flex';
-                gridSection.style.display = 'none';
-            } else {
-                cardStage.style.display = 'flex';
-                emptyState.style.display = 'none';
-                gridSection.style.display = 'block';
-            }
+            if (cards.length === 0) { cardStage.style.display = 'none'; emptyState.style.display = 'flex'; gridSection.style.display = 'none'; }
+            else { cardStage.style.display = 'flex'; emptyState.style.display = 'none'; gridSection.style.display = 'block'; }
         }
 
         function renderCard() {
@@ -2668,16 +1832,12 @@
             frontText.innerText = card.front || '';
             backText.innerText = card.back || '';
             counterEl.textContent = `${currentIndex + 1} / ${cards.length}`;
-
             frontText.classList.toggle('has-drawing', !!card.drawFront);
             backText.classList.toggle('has-drawing', !!card.drawBack);
-
             $('btn-prev').disabled = currentIndex === 0;
             $('btn-next').disabled = currentIndex === cards.length - 1;
             $('btn-mobile-prev').disabled = currentIndex === 0;
             $('btn-mobile-next').disabled = currentIndex === cards.length - 1;
-
-            // Restore drawings
             requestAnimationFrame(() => {
                 resizeCanvases();
                 loadDrawingToCanvas(ctxFront, canvasFront, card.drawFront);
@@ -2691,30 +1851,18 @@
             cards.forEach((card, idx) => {
                 const el = document.createElement('div');
                 el.className = 'grid-card' + (idx === currentIndex ? ' active' : '');
-
                 let frontDesc = escHtml(card.front);
                 let frontDrawingHtml = card.drawFront ? `<img src="${card.drawFront}" class="grid-card-drawing-preview" alt="Drawing" />` : '';
                 if (!frontDesc && !card.drawFront) frontDesc = '<em style="color:var(--text-muted)">Empty</em>';
-
                 let backDesc = escHtml(card.back);
                 if (!backDesc && card.drawBack) backDesc = '<em style="color:var(--text-muted)">[Drawing]</em>';
-
-                el.innerHTML = `
-          <span class="gc-num">#${idx + 1}</span>
-          <div class="gc-front">${frontDrawingHtml}${frontDesc}</div>
-          <div class="gc-back">${backDesc}</div>
-          <button class="gc-delete" data-idx="${idx}" title="Delete card">✕</button>
-        `;
+                el.innerHTML = `<span class="gc-num">#${idx + 1}</span><div class="gc-front">${frontDrawingHtml}${frontDesc}</div><div class="gc-back">${backDesc}</div><button class="gc-delete" data-idx="${idx}" title="Delete card">✕</button>`;
                 el.addEventListener('click', (e) => {
-                    if (e.target.closest('.gc-delete')) {
-                        deleteCard(parseInt(e.target.closest('.gc-delete').dataset.idx));
-                    } else {
-                        goToCard(idx);
-                    }
+                    if (e.target.closest('.gc-delete')) deleteCard(parseInt(e.target.closest('.gc-delete').dataset.idx));
+                    else goToCard(idx);
                 });
                 cardGrid.appendChild(el);
             });
-            // Add card tile
             const addEl = document.createElement('div');
             addEl.className = 'grid-card add-card';
             addEl.innerHTML = '<span class="plus">＋</span>Add Card';
@@ -2729,38 +1877,76 @@
             return d.innerHTML;
         }
 
-        // ── Drawing ──
         function resizeCanvases() {
             [canvasFront, canvasBack, canvasScratchpad].forEach(c => {
                 const rect = c.parentElement.getBoundingClientRect();
                 if (rect.width === 0 || rect.height === 0) return;
                 if (c.width !== Math.floor(rect.width) || c.height !== Math.floor(rect.height)) {
-                    // Save current content before resize
-                    const tempData = c.toDataURL();
                     c.width = Math.floor(rect.width);
                     c.height = Math.floor(rect.height);
-                    // Don't restore temp — we restore from card data after
                 }
             });
         }
 
+        // ── Draggable draw toolbar ──
+        function makeDraggable(toolbar) {
+            let dragStartX, dragStartY, origLeft, origTop;
+            let isDragging = false;
+
+            toolbar.addEventListener('pointerdown', (e) => {
+                // Only drag on the toolbar itself, not buttons/swatches inside
+                if (e.target !== toolbar && !e.target.classList.contains('drag-handle')) return;
+                isDragging = true;
+                toolbar.classList.add('dragging');
+                toolbar.setPointerCapture(e.pointerId);
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+
+                // Convert current position to absolute left/top
+                const rect = toolbar.getBoundingClientRect();
+                const parentRect = toolbar.parentElement.getBoundingClientRect();
+                origLeft = rect.left - parentRect.left;
+                origTop = rect.top - parentRect.top;
+
+                // Switch from transform-based to explicit left/top positioning
+                toolbar.style.transform = 'none';
+                toolbar.style.left = origLeft + 'px';
+                toolbar.style.top = origTop + 'px';
+                toolbar.style.bottom = 'auto';
+            });
+
+            toolbar.addEventListener('pointermove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const dx = e.clientX - dragStartX;
+                const dy = e.clientY - dragStartY;
+                const parentRect = toolbar.parentElement.getBoundingClientRect();
+                const toolbarRect = toolbar.getBoundingClientRect();
+
+                let newLeft = origLeft + dx;
+                let newTop = origTop + dy;
+
+                // Clamp inside card
+                newLeft = Math.max(0, Math.min(newLeft, parentRect.width - toolbarRect.width));
+                newTop = Math.max(0, Math.min(newTop, parentRect.height - toolbarRect.height));
+
+                toolbar.style.left = newLeft + 'px';
+                toolbar.style.top = newTop + 'px';
+            });
+
+            toolbar.addEventListener('pointerup', () => { isDragging = false; toolbar.classList.remove('dragging'); });
+            toolbar.addEventListener('pointercancel', () => { isDragging = false; toolbar.classList.remove('dragging'); });
+        }
+
         $('btn-draw-toggle').addEventListener('click', () => {
             drawMode = !drawMode;
-
-            // Toggle body class for CSS hiding of placeholder/text
             document.body.classList.toggle('draw-mode', drawMode);
-
             $('btn-draw-toggle').classList.toggle('btn-active', drawMode);
             $('btn-clear-canvas').style.display = drawMode ? 'inline-flex' : 'none';
-
             canvasFront.classList.toggle('active', drawMode);
             canvasBack.classList.toggle('active', drawMode);
-
-            // Disable text editing while drawing
             frontText.contentEditable = drawMode ? 'false' : 'true';
             backText.contentEditable = drawMode ? 'false' : 'true';
-
-            // Hide flip zones when drawing
             document.querySelectorAll('.flip-zone').forEach(z => z.style.display = drawMode ? 'none' : '');
 
             if (drawMode) {
@@ -2772,27 +1958,21 @@
                     loadDrawingToCanvas(ctxBack, canvasBack, cards[currentIndex].drawBack);
                 }
             }
-            document.querySelectorAll('.draw-toolbar').forEach(t => t.classList.toggle('active', drawMode || scratchpadOpen));
-
-            $('btn-draw-toggle').textContent = drawMode ? '✏️ Drawing ON' : '🖊️ Draw';
+            document.querySelectorAll('#draw-toolbar-front, #draw-toolbar-back').forEach(t => t.classList.toggle('active', drawMode));
+            $('btn-draw-toggle').textContent = drawMode ? '✏️ ON' : '🖊️ Draw';
         });
 
         $('btn-scratchpad-toggle').addEventListener('click', () => {
             scratchpadOpen = !scratchpadOpen;
             document.body.classList.toggle('scratchpad-open', scratchpadOpen);
             $('btn-scratchpad-toggle').classList.toggle('btn-active', scratchpadOpen);
-
             if (scratchpadOpen) {
                 buildDrawToolbar('draw-toolbar-scratchpad');
-                // Need a tiny delay for layout to settle before measuring canvas rect
                 setTimeout(() => {
                     resizeCanvases();
-                    if (cards.length) {
-                        loadDrawingToCanvas(ctxScratchpad, canvasScratchpad, cards[currentIndex].scratchpad);
-                    }
+                    if (cards.length) loadDrawingToCanvas(ctxScratchpad, canvasScratchpad, cards[currentIndex].scratchpad);
                 }, 50);
             }
-            document.querySelectorAll('.draw-toolbar').forEach(t => t.classList.toggle('active', drawMode || scratchpadOpen));
         });
 
         const swatchColors = ['#000000', '#7c5cfc', '#38bdf8', '#22c55e', '#f59e0b', '#f43f5e', '#e879f9', '#ffffff'];
@@ -2801,45 +1981,37 @@
             const toolbar = $(id);
             if (toolbar.children.length) return;
 
+            // Add drag handle for card toolbars
+            if (id !== 'draw-toolbar-scratchpad') {
+                const handle = document.createElement('span');
+                handle.className = 'drag-handle';
+                handle.textContent = '⠿';
+                handle.title = 'Drag toolbar';
+                toolbar.appendChild(handle);
+                makeDraggable(toolbar);
+            }
+
             swatchColors.forEach(color => {
                 const sw = document.createElement('div');
                 sw.className = 'color-swatch' + (color === drawColor && !eraserMode ? ' active' : '');
                 sw.style.background = color;
                 sw.dataset.color = color;
-                sw.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    drawColor = color;
-                    eraserMode = false;
-                    highlighterMode = false;
-                    updateSwatchStates();
-                });
+                sw.addEventListener('click', (e) => { e.stopPropagation(); drawColor = color; eraserMode = false; highlighterMode = false; updateSwatchStates(); });
                 toolbar.appendChild(sw);
             });
 
-            // Eraser button with icon
             const eraser = document.createElement('button');
             eraser.className = 'eraser-btn' + (eraserMode ? ' active' : '');
             eraser.title = 'Eraser';
-            eraser.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.6-10.6c.79-.78 2.05-.78 2.83 0M4.22 15.58l3.54 3.53c.78.79 2.04.79 2.83 0l3.53-3.53l-4.95-4.95l-4.95 4.95z"/></svg> Eraser`;
-            eraser.addEventListener('click', (e) => {
-                e.stopPropagation();
-                eraserMode = !eraserMode;
-                highlighterMode = false;
-                updateSwatchStates();
-            });
+            eraser.innerHTML = `<svg viewBox="0 0 24 24"><path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.6-10.6c.79-.78 2.05-.78 2.83 0M4.22 15.58l3.54 3.53c.78.79 2.04.79 2.83 0l3.53-3.53l-4.95-4.95l-4.95 4.95z"/></svg> Erase`;
+            eraser.addEventListener('click', (e) => { e.stopPropagation(); eraserMode = !eraserMode; highlighterMode = false; updateSwatchStates(); });
             toolbar.appendChild(eraser);
 
-            // Highlighter button
             const highlighter = document.createElement('button');
             highlighter.className = 'highlighter-btn' + (highlighterMode ? ' active' : '');
             highlighter.title = 'Highlighter';
-            highlighter.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.5 1.15L23 5.65l-2.8 2.8L15.7 4l2.8-2.85M7 14.15l8.5-8.5 4.5 4.5-8.5 8.5H7v-4.5M3.5 19.15h5l-5 5v-5z"/></svg> Highlight`;
-            highlighter.addEventListener('click', (e) => {
-                e.stopPropagation();
-                highlighterMode = !highlighterMode;
-                eraserMode = false;
-                updateSwatchStates();
-            });
+            highlighter.innerHTML = `<svg viewBox="0 0 24 24"><path d="M18.5 1.15L23 5.65l-2.8 2.8L15.7 4l2.8-2.85M7 14.15l8.5-8.5 4.5 4.5-8.5 8.5H7v-4.5M3.5 19.15h5l-5 5v-5z"/></svg> Hi`;
+            highlighter.addEventListener('click', (e) => { e.stopPropagation(); highlighterMode = !highlighterMode; eraserMode = false; updateSwatchStates(); });
             toolbar.appendChild(highlighter);
 
             const sep = document.createElement('div');
@@ -2853,188 +2025,116 @@
             range.addEventListener('click', (e) => e.stopPropagation());
             toolbar.appendChild(range);
 
-            // Separator before undo/redo
             const sep2 = document.createElement('div');
             sep2.className = 'sep';
             toolbar.appendChild(sep2);
 
-            // Undo button
             const canvasInfo = getCanvasForToolbar(id);
             const undoBtn = document.createElement('button');
-            undoBtn.className = 'undo-redo-btn';
-            undoBtn.title = 'Undo last stroke';
-            undoBtn.dataset.action = 'undo';
-            undoBtn.dataset.canvas = canvasInfo ? canvasInfo.canvas.id : '';
-            undoBtn.innerHTML = '↩';
-            undoBtn.disabled = true;
-            undoBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (canvasInfo) undoCanvas(canvasInfo.canvas, canvasInfo.ctx);
-            });
+            undoBtn.className = 'undo-redo-btn'; undoBtn.title = 'Undo'; undoBtn.dataset.action = 'undo';
+            undoBtn.dataset.canvas = canvasInfo ? canvasInfo.canvas.id : ''; undoBtn.innerHTML = '↩'; undoBtn.disabled = true;
+            undoBtn.addEventListener('click', (e) => { e.stopPropagation(); if (canvasInfo) undoCanvas(canvasInfo.canvas, canvasInfo.ctx); });
             toolbar.appendChild(undoBtn);
 
-            // Redo button
             const redoBtn = document.createElement('button');
-            redoBtn.className = 'undo-redo-btn';
-            redoBtn.title = 'Redo stroke';
-            redoBtn.dataset.action = 'redo';
-            redoBtn.dataset.canvas = canvasInfo ? canvasInfo.canvas.id : '';
-            redoBtn.innerHTML = '↪';
-            redoBtn.disabled = true;
-            redoBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (canvasInfo) redoCanvas(canvasInfo.canvas, canvasInfo.ctx);
-            });
+            redoBtn.className = 'undo-redo-btn'; redoBtn.title = 'Redo'; redoBtn.dataset.action = 'redo';
+            redoBtn.dataset.canvas = canvasInfo ? canvasInfo.canvas.id : ''; redoBtn.innerHTML = '↪'; redoBtn.disabled = true;
+            redoBtn.addEventListener('click', (e) => { e.stopPropagation(); if (canvasInfo) redoCanvas(canvasInfo.canvas, canvasInfo.ctx); });
             toolbar.appendChild(redoBtn);
         }
 
         function updateSwatchStates() {
-            document.querySelectorAll('.color-swatch').forEach(sw => {
-                sw.classList.toggle('active', !eraserMode && !highlighterMode && sw.dataset.color === drawColor);
-            });
-            document.querySelectorAll('.eraser-btn').forEach(eb => {
-                eb.classList.toggle('active', eraserMode);
-            });
-            document.querySelectorAll('.highlighter-btn').forEach(hb => {
-                hb.classList.toggle('active', highlighterMode);
-            });
+            document.querySelectorAll('.color-swatch').forEach(sw => { sw.classList.toggle('active', !eraserMode && !highlighterMode && sw.dataset.color === drawColor); });
+            document.querySelectorAll('.eraser-btn').forEach(eb => { eb.classList.toggle('active', eraserMode); });
+            document.querySelectorAll('.highlighter-btn').forEach(hb => { hb.classList.toggle('active', highlighterMode); });
         }
 
-        // Canvas drawing handlers — with Apple Pencil pressure sensitivity & smooth curves
-        let lastPoint = null;       // for quadratic curve smoothing
-        let penDetected = false;    // once we see a pen, ignore finger
+        let lastPoint = null;
+        let penDetected = false;
 
-        // Undo/Redo history per canvas (keyed by canvas id)
         const canvasHistory = {};
-        function getHistory(canvasId) {
-            if (!canvasHistory[canvasId]) canvasHistory[canvasId] = { undo: [], redo: [] };
-            return canvasHistory[canvasId];
-        }
-        function clearHistory(canvasId) {
-            canvasHistory[canvasId] = { undo: [], redo: [] };
-            updateUndoRedoButtons();
-        }
-        function clearAllHistory() {
-            for (const key in canvasHistory) delete canvasHistory[key];
-            updateUndoRedoButtons();
-        }
+        function getHistory(canvasId) { if (!canvasHistory[canvasId]) canvasHistory[canvasId] = { undo: [], redo: [] }; return canvasHistory[canvasId]; }
         function pushUndoSnapshot(canvas) {
             const hist = getHistory(canvas.id);
-            hist.undo.push(canvas.toDataURL());
-            hist.redo = []; // new stroke clears redo
-            // Limit history to 30 strokes to save memory
+            hist.undo.push(canvas.toDataURL()); hist.redo = [];
             if (hist.undo.length > 30) hist.undo.shift();
             updateUndoRedoButtons();
         }
         function undoCanvas(canvas, ctx) {
             const hist = getHistory(canvas.id);
             if (hist.undo.length === 0) return;
-            // Save current state to redo before restoring
             hist.redo.push(canvas.toDataURL());
             const prev = hist.undo.pop();
             const img = new Image();
-            img.onload = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                saveDrawingData();
-                renderGrid();
-                debouncedSave();
-                updateUndoRedoButtons();
-            };
+            img.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); saveDrawingData(); renderGrid(); debouncedSave(); updateUndoRedoButtons(); };
             img.src = prev;
         }
         function redoCanvas(canvas, ctx) {
             const hist = getHistory(canvas.id);
             if (hist.redo.length === 0) return;
-            // Save current state to undo before restoring
             hist.undo.push(canvas.toDataURL());
             const next = hist.redo.pop();
             const img = new Image();
-            img.onload = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                saveDrawingData();
-                renderGrid();
-                debouncedSave();
-                updateUndoRedoButtons();
-            };
+            img.onload = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0, canvas.width, canvas.height); saveDrawingData(); renderGrid(); debouncedSave(); updateUndoRedoButtons(); };
             img.src = next;
         }
         function updateUndoRedoButtons() {
-            document.querySelectorAll('.undo-redo-btn[data-action="undo"]').forEach(btn => {
-                const canvasId = btn.dataset.canvas;
-                btn.disabled = !canvasHistory[canvasId] || canvasHistory[canvasId].undo.length === 0;
-            });
-            document.querySelectorAll('.undo-redo-btn[data-action="redo"]').forEach(btn => {
-                const canvasId = btn.dataset.canvas;
-                btn.disabled = !canvasHistory[canvasId] || canvasHistory[canvasId].redo.length === 0;
-            });
+            document.querySelectorAll('.undo-redo-btn[data-action="undo"]').forEach(btn => { const id = btn.dataset.canvas; btn.disabled = !canvasHistory[id] || canvasHistory[id].undo.length === 0; });
+            document.querySelectorAll('.undo-redo-btn[data-action="redo"]').forEach(btn => { const id = btn.dataset.canvas; btn.disabled = !canvasHistory[id] || canvasHistory[id].redo.length === 0; });
         }
-        // Map toolbar IDs to their canvas + ctx
-        function getCanvasForToolbar(toolbarId) {
-            if (toolbarId === 'draw-toolbar-front') return { canvas: canvasFront, ctx: ctxFront };
-            if (toolbarId === 'draw-toolbar-back') return { canvas: canvasBack, ctx: ctxBack };
-            if (toolbarId === 'draw-toolbar-scratchpad') return { canvas: canvasScratchpad, ctx: ctxScratchpad };
+        function getCanvasForToolbar(id) {
+            if (id === 'draw-toolbar-front') return { canvas: canvasFront, ctx: ctxFront };
+            if (id === 'draw-toolbar-back') return { canvas: canvasBack, ctx: ctxBack };
+            if (id === 'draw-toolbar-scratchpad') return { canvas: canvasScratchpad, ctx: ctxScratchpad };
             return null;
         }
 
         function getPressureWidth(e, baseSize) {
-            // Apple Pencil (pointerType === 'pen') provides real pressure 0-1
-            // Fallback: mouse/touch get pressure 0.5 by default
-            if (e.pointerType === 'pen' && e.pressure > 0) {
-                return Math.max(0.5, baseSize * (0.3 + e.pressure * 1.4));
-            }
+            if (e.pointerType === 'pen' && e.pressure > 0) return Math.max(0.5, baseSize * (0.3 + e.pressure * 1.4));
             return baseSize;
         }
 
+        // ── Pinch-to-zoom per canvas ──
+        function initZoom(canvas) {
+            canvasZoom[canvas.id] = { scale: 1, offsetX: 0, offsetY: 0 };
+        }
+        initZoom(canvasFront);
+        initZoom(canvasBack);
+        initZoom(canvasScratchpad);
+
+        const activeTouches = {};  // track ongoing touches per canvas
+
         function setupCanvas(canvas, ctx, isScratchpad = false) {
-            // Prevent iOS scroll/zoom while drawing
             canvas.style.touchAction = 'none';
 
+            // Drawing
             canvas.addEventListener('pointerdown', e => {
                 if (!isScratchpad && !drawMode) return;
                 if (isScratchpad && !scratchpadOpen) return;
-
-                // If we detect a pen (Apple Pencil), reject finger touches
                 if (e.pointerType === 'pen') penDetected = true;
                 if (penDetected && e.pointerType === 'touch') return;
 
                 e.stopPropagation(); e.preventDefault();
                 canvas.setPointerCapture(e.pointerId);
                 isDrawing = true;
-                const rect = canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                lastPoint = { x, y };
-
-                // Save snapshot BEFORE drawing the new stroke (for undo)
                 pushUndoSnapshot(canvas);
 
-                const baseSize = eraserMode ? drawSize * 3
-                    : highlighterMode ? drawSize * 3
-                        : drawSize;
+                const rect = canvas.getBoundingClientRect();
+                const zoom = canvasZoom[canvas.id];
+                const x = (e.clientX - rect.left - zoom.offsetX) / zoom.scale;
+                const y = (e.clientY - rect.top - zoom.offsetY) / zoom.scale;
+                lastPoint = { x, y };
+
+                const baseSize = eraserMode ? drawSize * 3 : highlighterMode ? drawSize * 3 : drawSize;
                 const pressureWidth = getPressureWidth(e, baseSize);
 
-                if (eraserMode) {
-                    ctx.globalCompositeOperation = 'destination-out';
-                    ctx.globalAlpha = 1;
-                } else if (highlighterMode) {
-                    ctx.globalCompositeOperation = 'source-over';
-                    ctx.globalAlpha = 0.3;
-                    ctx.strokeStyle = drawColor;
-                } else {
-                    ctx.globalCompositeOperation = 'source-over';
-                    ctx.globalAlpha = 1;
-                    ctx.strokeStyle = drawColor;
-                }
-                ctx.lineWidth = pressureWidth;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
+                if (eraserMode) { ctx.globalCompositeOperation = 'destination-out'; ctx.globalAlpha = 1; }
+                else if (highlighterMode) { ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 0.3; ctx.strokeStyle = drawColor; }
+                else { ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; ctx.strokeStyle = drawColor; }
 
-                // Draw a dot for single taps
-                ctx.beginPath();
-                ctx.arc(x, y, pressureWidth / 2, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.lineWidth = pressureWidth / zoom.scale;
+                ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+                ctx.beginPath(); ctx.arc(x, y, pressureWidth / zoom.scale / 2, 0, Math.PI * 2); ctx.fill();
             });
 
             canvas.addEventListener('pointermove', e => {
@@ -3044,25 +2144,19 @@
                 if (penDetected && e.pointerType === 'touch') return;
                 e.stopPropagation(); e.preventDefault();
 
-                // Use coalesced events for higher-fidelity Apple Pencil strokes
                 const events = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
                 const rect = canvas.getBoundingClientRect();
+                const zoom = canvasZoom[canvas.id];
 
                 for (const pe of events) {
-                    const x = pe.clientX - rect.left;
-                    const y = pe.clientY - rect.top;
-
-                    const baseSize = eraserMode ? drawSize * 3
-                        : highlighterMode ? drawSize * 3
-                            : drawSize;
-                    ctx.lineWidth = getPressureWidth(pe, baseSize);
-
+                    const x = (pe.clientX - rect.left - zoom.offsetX) / zoom.scale;
+                    const y = (pe.clientY - rect.top - zoom.offsetY) / zoom.scale;
+                    const baseSize = eraserMode ? drawSize * 3 : highlighterMode ? drawSize * 3 : drawSize;
+                    ctx.lineWidth = getPressureWidth(pe, baseSize) / zoom.scale;
                     if (lastPoint) {
-                        // Smooth quadratic Bezier through midpoints
                         const midX = (lastPoint.x + x) / 2;
                         const midY = (lastPoint.y + y) / 2;
-                        ctx.beginPath();
-                        ctx.moveTo(lastPoint.x, lastPoint.y);
+                        ctx.beginPath(); ctx.moveTo(lastPoint.x, lastPoint.y);
                         ctx.quadraticCurveTo(lastPoint.x, lastPoint.y, midX, midY);
                         ctx.stroke();
                     }
@@ -3073,25 +2167,73 @@
             const endDraw = (e) => {
                 if (!isDrawing) return;
                 if (e) { e.stopPropagation(); e.preventDefault(); }
-                isDrawing = false;
-                lastPoint = null;
-                ctx.globalCompositeOperation = 'source-over';
-                ctx.globalAlpha = 1;
-                // Reset pen detection after a short delay
-                // so the user can switch between pencil and touch
+                isDrawing = false; lastPoint = null;
+                ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
                 setTimeout(() => { if (!isDrawing) penDetected = false; }, 800);
-                saveDrawingData();
-                renderGrid();
-                debouncedSave();
-                updateUndoRedoButtons();
+                saveDrawingData(); renderGrid(); debouncedSave(); updateUndoRedoButtons();
             };
 
             canvas.addEventListener('pointerup', endDraw);
             canvas.addEventListener('pointercancel', endDraw);
-            canvas.addEventListener('click', e => {
-                if (drawMode || isScratchpad) { e.stopPropagation(); e.preventDefault(); }
+            canvas.addEventListener('click', e => { if (drawMode || isScratchpad) { e.stopPropagation(); e.preventDefault(); } });
+
+            // ── Pinch to zoom (touch events) ──
+            let pinchStartDist = null;
+            let pinchStartScale = 1;
+            let pinchMidX = 0, pinchMidY = 0;
+            const touchMap = {};
+
+            canvas.addEventListener('touchstart', (e) => {
+                if (!drawMode && !isScratchpad) return;
+                Array.from(e.changedTouches).forEach(t => { touchMap[t.identifier] = { x: t.clientX, y: t.clientY }; });
+                if (Object.keys(touchMap).length === 2) {
+                    e.preventDefault();
+                    isDrawing = false; // stop drawing on pinch
+                    const touches = Object.values(touchMap);
+                    pinchStartDist = Math.hypot(touches[1].x - touches[0].x, touches[1].y - touches[0].y);
+                    pinchStartScale = canvasZoom[canvas.id].scale;
+                    pinchMidX = (touches[0].x + touches[1].x) / 2;
+                    pinchMidY = (touches[0].y + touches[1].y) / 2;
+                }
+            }, { passive: false });
+
+            canvas.addEventListener('touchmove', (e) => {
+                if (!drawMode && !isScratchpad) return;
+                Array.from(e.changedTouches).forEach(t => { touchMap[t.identifier] = { x: t.clientX, y: t.clientY }; });
+                if (Object.keys(touchMap).length === 2) {
+                    e.preventDefault();
+                    const touches = Object.values(touchMap);
+                    const dist = Math.hypot(touches[1].x - touches[0].x, touches[1].y - touches[0].y);
+                    const zoom = canvasZoom[canvas.id];
+                    const newScale = Math.max(0.5, Math.min(5, pinchStartScale * (dist / pinchStartDist)));
+
+                    // Zoom toward pinch midpoint
+                    const rect = canvas.getBoundingClientRect();
+                    const midX = (touches[0].x + touches[1].x) / 2 - rect.left;
+                    const midY = (touches[0].y + touches[1].y) / 2 - rect.top;
+
+                    zoom.offsetX = midX - (midX - zoom.offsetX) * (newScale / zoom.scale);
+                    zoom.offsetY = midY - (midY - zoom.offsetY) * (newScale / zoom.scale);
+                    zoom.scale = newScale;
+
+                    applyZoom(canvas, ctx);
+                }
+            }, { passive: false });
+
+            canvas.addEventListener('touchend', (e) => {
+                Array.from(e.changedTouches).forEach(t => { delete touchMap[t.identifier]; });
+                if (Object.keys(touchMap).length < 2) pinchStartDist = null;
             });
         }
+
+        function applyZoom(canvas, ctx) {
+            // Re-draw canvas with zoom transform (we use CSS transform for visual only,
+            // actual drawing coords are adjusted in pointer handlers)
+            const zoom = canvasZoom[canvas.id];
+            canvas.style.transformOrigin = '0 0';
+            canvas.style.transform = `translate(${zoom.offsetX}px, ${zoom.offsetY}px) scale(${zoom.scale})`;
+        }
+
         setupCanvas(canvasFront, ctxFront);
         setupCanvas(canvasBack, ctxBack);
         setupCanvas(canvasScratchpad, ctxScratchpad, true);
@@ -3099,9 +2241,7 @@
         function isCanvasBlank(canvas) {
             const ctx = canvas.getContext('2d');
             const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-            for (let i = 3; i < data.length; i += 4) {
-                if (data[i] !== 0) return false;
-            }
+            for (let i = 3; i < data.length; i += 4) { if (data[i] !== 0) return false; }
             return true;
         }
 
@@ -3111,7 +2251,6 @@
             card.drawFront = isCanvasBlank(canvasFront) ? '' : canvasFront.toDataURL('image/png');
             card.drawBack = isCanvasBlank(canvasBack) ? '' : canvasBack.toDataURL('image/png');
             card.scratchpad = isCanvasBlank(canvasScratchpad) ? '' : canvasScratchpad.toDataURL('image/png');
-
             frontText.classList.toggle('has-drawing', !!card.drawFront);
             backText.classList.toggle('has-drawing', !!card.drawBack);
         }
@@ -3120,70 +2259,37 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             if (!dataUrl) return;
             const img = new Image();
-            img.onload = () => {
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            };
+            img.onload = () => { ctx.drawImage(img, 0, 0, canvas.width, canvas.height); };
             img.src = dataUrl;
         }
 
         $('btn-clear-canvas').addEventListener('click', () => {
             if (cards.length === 0) return;
             const isFlipped = cardContainer.classList.contains('flipped');
-            if (isFlipped) {
-                ctxBack.clearRect(0, 0, canvasBack.width, canvasBack.height);
-                cards[currentIndex].drawBack = '';
-                backText.classList.remove('has-drawing');
-            } else {
-                ctxFront.clearRect(0, 0, canvasFront.width, canvasFront.height);
-                cards[currentIndex].drawFront = '';
-                frontText.classList.remove('has-drawing');
-            }
-            renderGrid();
-            debouncedSave();
-            showToast('Drawing cleared', 'info');
+            if (isFlipped) { ctxBack.clearRect(0, 0, canvasBack.width, canvasBack.height); cards[currentIndex].drawBack = ''; backText.classList.remove('has-drawing'); }
+            else { ctxFront.clearRect(0, 0, canvasFront.width, canvasFront.height); cards[currentIndex].drawFront = ''; frontText.classList.remove('has-drawing'); }
+            renderGrid(); debouncedSave(); showToast('Drawing cleared', 'info');
         });
 
         $('btn-clear-scratchpad').addEventListener('click', () => {
             if (cards.length === 0) return;
             ctxScratchpad.clearRect(0, 0, canvasScratchpad.width, canvasScratchpad.height);
             cards[currentIndex].scratchpad = '';
-            debouncedSave();
-            showToast('Scratchpad cleared', 'info');
+            debouncedSave(); showToast('Scratchpad cleared', 'info');
         });
 
-        // ── Confirm Modal ──
         function showConfirm(title, message, onConfirm) {
             const overlay = document.createElement('div');
             overlay.className = 'modal-overlay';
-            overlay.innerHTML = `
-        <div class="modal-box">
-          <h3>${title}</h3>
-          <p>${message}</p>
-          <div class="modal-actions">
-            <button class="btn btn-sm" id="modal-cancel">Cancel</button>
-            <button class="btn btn-sm btn-danger" id="modal-confirm">Delete</button>
-          </div>
-        </div>
-      `;
+            overlay.innerHTML = `<div class="modal-box"><h3>${title}</h3><p>${message}</p><div class="modal-actions"><button class="btn btn-sm" id="modal-cancel">Cancel</button><button class="btn btn-sm btn-danger" id="modal-confirm">Delete</button></div></div>`;
             document.body.appendChild(overlay);
-
             overlay.querySelector('#modal-cancel').addEventListener('click', () => overlay.remove());
-            overlay.querySelector('#modal-confirm').addEventListener('click', () => {
-                overlay.remove();
-                onConfirm();
-            });
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) overlay.remove();
-            });
+            overlay.querySelector('#modal-confirm').addEventListener('click', () => { overlay.remove(); onConfirm(); });
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
         }
 
-        // ── Sync Indicator ──
-        function setSyncing(syncing) {
-            $('sync-dot').classList.toggle('syncing', syncing);
-            $('sync-text').textContent = syncing ? 'Syncing…' : 'Synced';
-        }
+        function setSyncing(syncing) { $('sync-dot').classList.toggle('syncing', syncing); $('sync-text').textContent = syncing ? 'Syncing…' : 'Synced'; }
 
-        // ── Toasts ──
         function showToast(msg, type = 'info') {
             const container = $('toast-container');
             const t = document.createElement('div');
@@ -3191,21 +2297,12 @@
             const icons = { success: '✅', error: '⚠️', info: 'ℹ️' };
             t.innerHTML = `<span>${icons[type] || ''}</span> ${escHtml(msg)}`;
             container.appendChild(t);
-            setTimeout(() => {
-                t.style.opacity = '0';
-                t.style.transform = 'translateX(40px)';
-                t.style.transition = '0.3s ease';
-                setTimeout(() => t.remove(), 300);
-            }, 2800);
+            setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(40px)'; t.style.transition = '0.3s ease'; setTimeout(() => t.remove(), 300); }, 2800);
         }
 
-        // ── Keyboard Shortcuts ──
         document.addEventListener('keydown', e => {
-            // Don't intercept when typing in text fields
             if (document.activeElement?.getAttribute('contenteditable') === 'true') return;
-            // Don't intercept when modal is open
             if (document.querySelector('.modal-overlay')) return;
-
             if (e.key === 'ArrowLeft') { e.preventDefault(); prevCard(); }
             if (e.key === 'ArrowRight') { e.preventDefault(); nextCard(); }
             if (e.key === ' ') { e.preventDefault(); flipCard(); }
@@ -3213,7 +2310,6 @@
             if (e.key === 'd' || e.key === 'D') { if (!e.ctrlKey && !e.metaKey) $('btn-draw-toggle').click(); }
         });
 
-        // ── Resize Handler ──
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
@@ -3222,53 +2318,30 @@
                     resizeCanvases();
                     loadDrawingToCanvas(ctxFront, canvasFront, cards[currentIndex].drawFront);
                     loadDrawingToCanvas(ctxBack, canvasBack, cards[currentIndex].drawBack);
-                    if (scratchpadOpen) {
-                        loadDrawingToCanvas(ctxScratchpad, canvasScratchpad, cards[currentIndex].scratchpad);
-                    }
+                    if (scratchpadOpen) loadDrawingToCanvas(ctxScratchpad, canvasScratchpad, cards[currentIndex].scratchpad);
                 }
             }, 150);
         });
 
-        // ── Before Unload — save pending changes ──
-        window.addEventListener('beforeunload', (e) => {
-            if (saveTimeout) {
-                clearTimeout(saveTimeout);
-                saveAllCards();
-            }
-        });
+        window.addEventListener('beforeunload', () => { if (saveTimeout) { clearTimeout(saveTimeout); saveAllCards(); } });
 
-        // ── Swipe Gesture Support (mobile) ──
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let touchTarget = null;
-
+        // ── Swipe (single finger only, not pinch) ──
+        let touchStartX = 0, touchStartY = 0, touchTarget = null, touchCount = 0;
         cardContainer.addEventListener('touchstart', (e) => {
             if (drawMode) return;
+            touchCount = e.touches.length;
+            if (touchCount > 1) return;
             touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
             touchTarget = e.target;
         }, { passive: true });
-
         cardContainer.addEventListener('touchend', (e) => {
-            if (drawMode) return;
+            if (drawMode || touchCount > 1) return;
             const dx = e.changedTouches[0].clientX - touchStartX;
             const dy = e.changedTouches[0].clientY - touchStartY;
-            const absDx = Math.abs(dx);
-            const absDy = Math.abs(dy);
-
-            // Must be a horizontal swipe (not a tap, not vertical scroll)
-            if (absDx > 50 && absDx > absDy * 1.5) {
-                if (dx > 0) {
-                    prevCard();
-                } else {
-                    nextCard();
-                }
-            } else if (absDx < 10 && absDy < 10) {
-                // It was a tap — flip the card (unless tapping text area)
-                if (!touchTarget?.closest('.card-text')) {
-                    flipCard();
-                }
-            }
+            const absDx = Math.abs(dx), absDy = Math.abs(dy);
+            if (absDx > 50 && absDx > absDy * 1.5) { if (dx > 0) prevCard(); else nextCard(); }
+            else if (absDx < 10 && absDy < 10) { if (!touchTarget?.closest('.card-text')) flipCard(); }
         }, { passive: true });
     </script>
 </body>
