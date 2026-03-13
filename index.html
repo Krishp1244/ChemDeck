@@ -2120,41 +2120,26 @@
         initZoom(canvasBack);
         initZoom(canvasScratchpad);
 
-        // Apply zoom via canvas context transform (NOT CSS) — drawing coords always match
+        // Apply zoom via CSS transform
         function applyZoom(canvas, ctx) {
             const z = canvasZoom[canvas.id];
-            ctx.setTransform(z.scale, 0, 0, z.scale, z.offsetX, z.offsetY);
+            canvas.style.transform = `translate(${z.offsetX}px, ${z.offsetY}px) scale(${z.scale})`;
         }
 
-        // Reset zoom for a canvas and reload its drawing
+        // Reset zoom for a canvas
         function resetZoom(canvas, ctx) {
-            // 1. Save current drawing pixels before we clear anything
-            saveDrawingData();
-            // 2. Get the saved dataUrl for this canvas
-            const card = cards[currentIndex];
-            const dataUrl = canvas === canvasFront ? card.drawFront
-                : canvas === canvasBack ? card.drawBack
-                : card.scratchpad;
-            // 3. Reset zoom state to identity
             canvasZoom[canvas.id] = { scale: 1, offsetX: 0, offsetY: 0 };
-            // 4. Clear canvas and reset transform
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // 5. Redraw at normal scale
-            if (dataUrl) {
-                const img = new Image();
-                img.onload = () => { ctx.drawImage(img, 0, 0, canvas.width, canvas.height); };
-                img.src = dataUrl;
-            }
+            applyZoom(canvas, ctx);
         }
 
-        // Convert screen point to canvas drawing coords (accounts for zoom transform)
+        // Convert screen point to canvas drawing coords
         function screenToCanvas(canvas, clientX, clientY) {
             const rect = canvas.getBoundingClientRect();
-            const z = canvasZoom[canvas.id];
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
             return {
-                x: (clientX - rect.left - z.offsetX) / z.scale,
-                y: (clientY - rect.top - z.offsetY) / z.scale
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top) * scaleY
             };
         }
 
@@ -2270,19 +2255,8 @@
                     z.offsetX = pinchStartMidX - canvasMidX * newScale;
                     z.offsetY = pinchStartMidY - canvasMidY * newScale;
 
-                    // Re-render with new transform
-                    const card = cards[currentIndex];
-                    const dataUrl = canvas === canvasFront ? card.drawFront
-                        : canvas === canvasBack ? card.drawBack
-                        : card.scratchpad;
-                    ctx.setTransform(1, 0, 0, 1, 0, 0);
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    // Apply zoom via CSS
                     applyZoom(canvas, ctx);
-                    if (dataUrl) {
-                        const img = new Image();
-                        img.onload = () => { ctx.drawImage(img, 0, 0, canvas.width, canvas.height); };
-                        img.src = dataUrl;
-                    }
                 }
             }, { passive: false });
 
@@ -2306,23 +2280,14 @@
         function saveDrawingData() {
             if (cards.length === 0) return;
             const card = cards[currentIndex];
-            // Must reset transform to identity so toDataURL captures full unscaled drawing
-            ctxFront.setTransform(1, 0, 0, 1, 0, 0);
-            ctxBack.setTransform(1, 0, 0, 1, 0, 0);
-            ctxScratchpad.setTransform(1, 0, 0, 1, 0, 0);
             card.drawFront = isCanvasBlank(canvasFront) ? '' : canvasFront.toDataURL('image/png');
             card.drawBack = isCanvasBlank(canvasBack) ? '' : canvasBack.toDataURL('image/png');
             card.scratchpad = isCanvasBlank(canvasScratchpad) ? '' : canvasScratchpad.toDataURL('image/png');
-            // Re-apply zoom so canvas visually stays at current zoom level
-            applyZoom(canvasFront, ctxFront);
-            applyZoom(canvasBack, ctxBack);
-            applyZoom(canvasScratchpad, ctxScratchpad);
             frontText.classList.toggle('has-drawing', !!card.drawFront);
             backText.classList.toggle('has-drawing', !!card.drawBack);
         }
 
         function loadDrawingToCanvas(ctx, canvas, dataUrl) {
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             applyZoom(canvas, ctx);
             if (!dataUrl) return;
