@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>FlashForge — Smart Flashcards</title>
+    <meta name="description" content="A beautiful flashcard app with drawing mode, Google sign-in, and cloud sync." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: rgba(255, 255, 255, 0.04);
+            --bg-card-hover: rgba(255, 255, 255, 0.07);
+            --glass: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f0f0f5;
+            --text-secondary: #8a8a9a;
+            --text-muted: #55556a;
+            --accent: #7c5cfc;
+            --accent-glow: rgba(124, 92, 252, 0.35);
+            --accent-light: #a78bfa;
+            --accent-2: #38bdf8;
+            --accent-2-glow: rgba(56, 189, 248, 0.25);
+            --danger: #f43f5e;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-xs: 6px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── Animated Background ── */
+        .bg-glow {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bg-glow .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.3;
+            animation: orbFloat 20s ease-in-out infinite alternate;
+        }
+
+        .bg-glow .orb:nth-child(1) {
+            width: 600px;
+            height: 600px;
+            background: var(--accent);
+            top: -10%;
+            left: -10%;
+            animation-duration: 25s;
+        }
+
+        .bg-glow .orb:nth-child(2) {
+            width: 500px;
+            height: 500px;
+            background: var(--accent-2);
+            bottom: -15%;
+            right: -10%;
+            animation-duration: 30s;
+            animation-delay: -5s;
+        }
+
+        .bg-glow .orb:nth-child(3) {
+            width: 350px;
+            height: 350px;
+            background: #e879f9;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-duration: 22s;
+            animation-delay: -10s;
+        }
+
+        @keyframes orbFloat {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(40px, -30px) scale(1.05);
+            }
+
+            66% {
+                transform: translate(-20px, 40px) scale(0.95);
+            }
+
+            100% {
+                transform: translate(30px, 20px) scale(1.02);
+            }
+        }
+
+        /* ── Login Screen ── */
+        #login-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-primary);
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        #login-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .login-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(24px);
+            border-radius: 24px;
+            padding: 48px 40px;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: var(--shadow), 0 0 80px var(--accent-glow);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .login-card .logo {
+            font-size: 42px;
+            margin-bottom: 8px;
+        }
+
+        .login-card h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .login-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .btn-google {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: #fff;
+            color: #333;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-google:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-google:active {
+            transform: translateY(0);
+        }
+
+        .btn-google svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .btn-google:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        /* ── App Shell ── */
+        #app {
+            display: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        #app.visible {
+            display: block;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Header ── */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 28px;
+            background: rgba(10, 10, 15, 0.75);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-left .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            object-fit: cover;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ── Buttons ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(8px);
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .btn:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255, 255, 255, 0.18);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent), #6941e0);
+            border-color: transparent;
+            color: #fff;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .btn-accent:hover {
+            box-shadow: 0 6px 28px var(--accent-glow);
+            border-color: transparent;
+            background: linear-gradient(135deg, #8b6ffc, #7551f0);
+        }
+
+        .btn-danger {
+            border-color: rgba(244, 63, 94, 0.3);
+            color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: rgba(244, 63, 94, 0.1);
+            border-color: rgba(244, 63, 94, 0.4);
+        }
+
+        .btn-sm {
+            padding: 7px 14px;
+            font-size: 12px;
+            border-radius: var(--radius-xs);
+        }
+
+        .btn-active {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 16px var(--accent-glow) !important;
+            background: rgba(124, 92, 252, 0.15) !important;
+        }
+
+        /* ── Toolbar ── */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar .spacer {
+            flex: 1;
+        }
+
+        .card-counter {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            background: var(--glass);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+        }
+
+        /* ── Card Stage ── */
+        .card-stage {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 28px 36px;
+            min-height: 400px;
+            perspective: 1200px;
+        }
+
+        .card-nav-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            flex-shrink: 0;
+            font-size: 20px;
+            backdrop-filter: blur(8px);
+        }
+
+        .card-nav-btn:hover {
+            background: var(--bg-card-hover);
+            transform: scale(1.08);
+        }
+
+        .card-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ── Flashcard ── */
+        .card-container {
+            width: 580px;
+            max-width: calc(100vw - 160px);
+            height: 360px;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-container.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .card-face.back {
+            transform: rotateY(180deg);
+        }
+
+        .card-face-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            padding: 14px 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .card-face-label .side-badge {
+            background: var(--accent);
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 9px;
+            letter-spacing: 1.5px;
+        }
+
+        .card-face.back .card-face-label .side-badge {
+            background: var(--accent-2);
+        }
+
+        .card-text {
+            flex: 1;
+            padding: 12px 24px 16px;
+            font-size: 18px;
+            line-height: 1.6;
+            font-weight: 400;
+            color: var(--text-primary);
+            overflow-y: auto;
+            outline: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            word-break: break-word;
+            cursor: text;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-text:empty::before {
+            content: attr(data-placeholder);
+            color: var(--text-muted);
+            font-style: italic;
+            pointer-events: none;
+        }
+
+        .card-text:focus {
+            background: rgba(124, 92, 252, 0.04);
+            border-radius: 8px;
+        }
+
+        .card-flip-hint {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 0 20px 10px;
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+            user-select: none;
+        }
+
+        .flip-zone {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            cursor: pointer;
+        }
+
+        /* ── Drawing Canvas ── */
+        .canvas-layer {
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            z-index: 10;
+            display: none;
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        .canvas-layer.active {
+            display: block;
+        }
+
+        .draw-toolbar {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            display: none;
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 8px 12px;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .draw-toolbar.active {
+            display: flex;
+        }
+
+        .color-swatch {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .color-swatch:hover,
+        .color-swatch.active {
+            border-color: #fff;
+            transform: scale(1.15);
+        }
+
+        .color-swatch.eraser {
+            background: repeating-conic-gradient(#999 0% 25%, #eee 0% 50%) 50% / 8px 8px;
+            position: relative;
+        }
+
+        .color-swatch.eraser.active {
+            border-color: var(--danger);
+        }
+
+        .draw-size {
+            width: 50px;
+            accent-color: var(--accent);
+        }
+
+        .draw-toolbar .sep {
+            width: 1px;
+            height: 20px;
+            background: var(--glass-border);
+            margin: 0 4px;
+            flex-shrink: 0;
+        }
+
+        /* ── Card Grid / Sidebar ── */
+        .card-grid-section {
+            padding: 0 28px 40px;
+        }
+
+        .section-header {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 14px;
+            padding-left: 4px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 10px;
+        }
+
+        .grid-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .grid-card:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .grid-card.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .grid-card .gc-front {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .grid-card .gc-back {
+            font-size: 11px;
+            color: var(--text-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+        }
+
+        .grid-card .gc-num {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .grid-card .gc-delete {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: var(--transition);
+            opacity: 0;
+        }
+
+        .grid-card:hover .gc-delete {
+            opacity: 1;
+        }
+
+        .grid-card .gc-delete:hover {
+            color: var(--danger);
+            background: rgba(244, 63, 94, 0.1);
+        }
+
+        .grid-card.add-card {
+            border-style: dashed;
+            border-color: rgba(255, 255, 255, 0.15);
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            gap: 4px;
+            flex-direction: column;
+        }
+
+        .grid-card.add-card:hover {
+            border-color: var(--accent);
+            color: var(--accent-light);
+        }
+
+        .grid-card.add-card .plus {
+            font-size: 28px;
+            line-height: 1;
+        }
+
+        /* ── Empty State ── */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            text-align: center;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        .empty-state h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 24px;
+            max-width: 360px;
+            line-height: 1.5;
+        }
+
+        /* ── Confirm Modal ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: modalFadeIn 0.2s ease;
+        }
+
+        .modal-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            max-width: 360px;
+            width: 90%;
+            box-shadow: var(--shadow);
+            animation: fadeInUp 0.25s ease-out;
+        }
+
+        .modal-box h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .modal-box p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ── Toast ── */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            background: rgba(18, 18, 26, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            padding: 12px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            box-shadow: var(--shadow);
+            animation: toastIn 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast.success {
+            border-left: 3px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 3px solid var(--danger);
+        }
+
+        .toast.info {
+            border-left: 3px solid var(--accent-2);
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ── Sync indicator ── */
+        .sync-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .sync-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success);
+            flex-shrink: 0;
+        }
+
+        .sync-dot.syncing {
+            background: var(--warning);
+            animation: pulse 1s ease infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        /* ── Loading spinner ── */
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            header {
+                padding: 12px 14px;
+            }
+
+            .toolbar {
+                padding: 10px 14px;
+                gap: 8px;
+            }
+
+            .card-stage {
+                padding: 12px 6px 28px;
+                min-height: 320px;
+            }
+
+            .card-container {
+                height: 280px;
+                margin: 0 10px;
+                max-width: calc(100vw - 80px);
+            }
+
+            .card-text {
+                font-size: 15px;
+                padding: 8px 14px 12px;
+            }
+
+            .card-grid-section {
+                padding: 0 14px 32px;
+            }
+
+            .card-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 8px;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+            .btn {
+                padding: 8px 14px;
+                font-size: 12px;
+            }
+
+            .card-nav-btn {
+                width: 38px;
+                height: 38px;
+                font-size: 18px;
+            }
+
+            .draw-toolbar {
+                padding: 6px 8px;
+            }
+
+            .color-swatch {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ── Selection ── */
+        ::selection {
+            background: rgba(124, 92, 252, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Animated background -->
+    <div class="bg-glow">
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+    </div>
+
+    <!-- ── Login Screen ── -->
+    <div id="login-screen">
+        <div class="login-card">
+            <div class="logo">🧠</div>
+            <h1>FlashForge</h1>
+            <p>Smart flashcards with drawing mode &amp; cloud sync.<br>Study anywhere, remember everything.</p>
+            <button class="btn-google" id="btn-login">
+                <svg viewBox="0 0 24 24">
+                    <path fill="#4285F4"
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z" />
+                    <path fill="#34A853"
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="#FBBC05"
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                    <path fill="#EA4335"
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                </svg>
+                Sign in with Google
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Main App ── -->
+    <div id="app">
+        <header>
+            <div class="header-left">
+                <span style="font-size:22px">🧠</span>
+                <span class="logo-text">FlashForge</span>
+            </div>
+            <div class="header-right">
+                <div class="sync-indicator" id="sync-indicator">
+                    <div class="sync-dot" id="sync-dot"></div>
+                    <span id="sync-text">Synced</span>
+                </div>
+                <img class="user-avatar" id="user-avatar" src="" alt="avatar" />
+                <span class="user-name" id="user-name"></span>
+                <button class="btn btn-sm" id="btn-logout">Sign Out</button>
+            </div>
+        </header>
+
+        <!-- Toolbar -->
+        <div class="toolbar" id="toolbar">
+            <button class="btn btn-accent" id="btn-add">
+                <span>＋</span> New Card
+            </button>
+            <button class="btn" id="btn-shuffle">🔀 Shuffle</button>
+            <button class="btn" id="btn-draw-toggle">🖊️ Draw</button>
+            <button class="btn" id="btn-clear-canvas" style="display:none">🗑️ Clear Drawing</button>
+            <div class="spacer"></div>
+            <span class="card-counter" id="card-counter">0 / 0</span>
+        </div>
+
+        <!-- Card Stage -->
+        <div class="card-stage" id="card-stage" style="display:none">
+            <button class="card-nav-btn" id="btn-prev">‹</button>
+
+            <div class="card-container" id="card-container">
+                <div class="card-inner" id="card-inner">
+                    <!-- Front -->
+                    <div class="card-face front">
+                        <div class="card-face-label">
+                            <span>Question</span>
+                            <span class="side-badge">FRONT</span>
+                        </div>
+                        <div class="card-text" id="front-text" contenteditable="true"
+                            data-placeholder="Click to type your question…"></div>
+                        <div class="card-flip-hint">Click outside text to flip</div>
+                        <canvas class="canvas-layer" id="canvas-front"></canvas>
+                        <div class="draw-toolbar" id="draw-toolbar-front"></div>
+                        <div class="flip-zone" id="flip-front"></div>
+                    </div>
+                    <!-- Back -->
+                    <div class="card-face back">
+                        <div class="card-face-label">
+                            <span>Answer</span>
+                            <span class="side-badge">BACK</span>
+                        </div>
+                        <div class="card-text" id="back-text" contenteditable="true"
+                            data-placeholder="Click to type the answer…"></div>
+                        <div class="card-flip-hint">Click outside text to flip</div>
+                        <canvas class="canvas-layer" id="canvas-back"></canvas>
+                        <div class="draw-toolbar" id="draw-toolbar-back"></div>
+                        <div class="flip-zone" id="flip-back"></div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="card-nav-btn" id="btn-next">›</button>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="empty-state">
+            <div class="icon">📚</div>
+            <h2>No flashcards yet</h2>
+            <p>Create your first flashcard to start studying. Your cards sync across all your devices!</p>
+            <button class="btn btn-accent" id="btn-create-first">＋ Create First Card</button>
+        </div>
+
+        <!-- Card Grid -->
+        <div class="card-grid-section" id="grid-section" style="display:none">
+            <div class="section-header">All Cards</div>
+            <div class="card-grid" id="card-grid"></div>
+        </div>
+    </div>
+
+    <!-- Toasts -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import {
+            getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut as fbSignOut
+        } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        import {
+            getFirestore, collection, doc, setDoc, getDocs, deleteDoc, writeBatch
+        } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+
+        // ── Firebase Config ──
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVSmR8cr96SNal43ZDjBeSSE1muawNX_Y",
+            authDomain: "flashcard-app-premed.firebaseapp.com",
+            projectId: "flashcard-app-premed",
+            storageBucket: "flashcard-app-premed.firebasestorage.app",
+            messagingSenderId: "656284668396",
+            appId: "1:656284668396:web:5a445da32381f18efbf0c9"
+        };
+
+        const fbApp = initializeApp(firebaseConfig);
+        const auth = getAuth(fbApp);
+        const db = getFirestore(fbApp);
+        const provider = new GoogleAuthProvider();
+
+        // ── State ──
+        let currentUser = null;
+        let cards = [];
+        let currentIndex = 0;
+        let drawMode = false;
+        let isDrawing = false;
+        let drawColor = "#7c5cfc";
+        let eraserMode = false;
+        let drawSize = 3;
+        let saveTimeout = null;
+        let isSaving = false;
+
+        // ── DOM Refs ──
+        const $ = id => document.getElementById(id);
+        const loginScreen = $('login-screen');
+        const appEl = $('app');
+        const frontText = $('front-text');
+        const backText = $('back-text');
+        const cardContainer = $('card-container');
+        const cardStage = $('card-stage');
+        const emptyState = $('empty-state');
+        const gridSection = $('grid-section');
+        const cardGrid = $('card-grid');
+        const counterEl = $('card-counter');
+        const canvasFront = $('canvas-front');
+        const canvasBack = $('canvas-back');
+        const ctxFront = canvasFront.getContext('2d');
+        const ctxBack = canvasBack.getContext('2d');
+
+        // ── Auth ──
+        $('btn-login').addEventListener('click', async () => {
+            const btn = $('btn-login');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Signing in…';
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (e) {
+                if (e.code !== 'auth/popup-closed-by-user') {
+                    showToast('Sign-in failed: ' + e.message, 'error');
+                }
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Sign in with Google';
+        });
+
+        $('btn-logout').addEventListener('click', async () => {
+            await fbSignOut(auth);
+            cards = []; currentIndex = 0; drawMode = false;
+            $('btn-draw-toggle').textContent = '🖊️ Draw';
+            $('btn-draw-toggle').classList.remove('btn-active');
+            $('btn-clear-canvas').style.display = 'none';
+            canvasFront.classList.remove('active');
+            canvasBack.classList.remove('active');
+            document.querySelectorAll('.draw-toolbar').forEach(t => t.classList.remove('active'));
+        });
+
+        onAuthStateChanged(auth, async user => {
+            currentUser = user;
+            if (user) {
+                loginScreen.classList.add('hidden');
+                appEl.classList.add('visible');
+                $('user-avatar').src = user.photoURL || '';
+                $('user-name').textContent = user.displayName || 'User';
+                await loadCards();
+            } else {
+                loginScreen.classList.remove('hidden');
+                appEl.classList.remove('visible');
+            }
+        });
+
+        // ── Firestore ──
+        function userCardsCol() {
+            return collection(db, 'users', currentUser.uid, 'flashcards');
+        }
+
+        async function loadCards() {
+            setSyncing(true);
+            try {
+                const snap = await getDocs(userCardsCol());
+                cards = [];
+                snap.forEach(d => {
+                    const data = d.data();
+                    cards.push({
+                        id: d.id,
+                        front: data.front || '',
+                        back: data.back || '',
+                        drawFront: data.drawFront || '',
+                        drawBack: data.drawBack || '',
+                        order: data.order ?? 0
+                    });
+                });
+                cards.sort((a, b) => a.order - b.order);
+                currentIndex = 0;
+                renderAll();
+                showToast(`Loaded ${cards.length} card${cards.length !== 1 ? 's' : ''}`, 'info');
+            } catch (e) {
+                console.error('Load error:', e);
+                showToast('Failed to load cards', 'error');
+            }
+            setSyncing(false);
+        }
+
+        async function saveAllCards() {
+            if (!currentUser || isSaving) return;
+            isSaving = true;
+            setSyncing(true);
+            try {
+                // Firestore writeBatch limited to 500 ops
+                const batchSize = 450;
+                for (let i = 0; i < cards.length; i += batchSize) {
+                    const batch = writeBatch(db);
+                    const slice = cards.slice(i, i + batchSize);
+                    slice.forEach((c, j) => {
+                        const ref = doc(db, 'users', currentUser.uid, 'flashcards', c.id);
+                        batch.set(ref, {
+                            front: c.front || '',
+                            back: c.back || '',
+                            drawFront: c.drawFront || '',
+                            drawBack: c.drawBack || '',
+                            order: i + j
+                        });
+                    });
+                    await batch.commit();
+                }
+            } catch (e) {
+                console.error('Save error:', e);
+                showToast('Sync failed — will retry', 'error');
+            }
+            isSaving = false;
+            setSyncing(false);
+        }
+
+        function debouncedSave() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(saveAllCards, 1500);
+        }
+
+        async function deleteCardFromDB(id) {
+            if (!currentUser) return;
+            try {
+                await deleteDoc(doc(db, 'users', currentUser.uid, 'flashcards', id));
+            } catch (e) { console.error('Delete error:', e); }
+        }
+
+        // ── Cards Logic ──
+        function addCard() {
+            const id = 'card_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+            cards.push({ id, front: '', back: '', drawFront: '', drawBack: '', order: cards.length });
+            currentIndex = cards.length - 1;
+            cardContainer.classList.remove('flipped');
+            renderAll();
+            showToast('New card created', 'success');
+            debouncedSave();
+            setTimeout(() => frontText.focus(), 250);
+        }
+
+        function deleteCard(idx) {
+            if (cards.length === 0 || idx < 0 || idx >= cards.length) return;
+            const card = cards[idx];
+            const preview = card.front ? card.front.substring(0, 40) : 'Empty card';
+
+            showConfirm(
+                'Delete Card',
+                `Delete "${preview}${card.front && card.front.length > 40 ? '…' : ''}"? This cannot be undone.`,
+                () => {
+                    const removed = cards.splice(idx, 1)[0];
+                    deleteCardFromDB(removed.id);
+                    if (currentIndex >= cards.length) currentIndex = Math.max(0, cards.length - 1);
+                    renderAll();
+                    showToast('Card deleted', 'error');
+                    debouncedSave();
+                }
+            );
+        }
+
+        function prevCard() {
+            if (currentIndex > 0) {
+                saveDrawingData();
+                currentIndex--;
+                cardContainer.classList.remove('flipped');
+                renderCard();
+            }
+        }
+
+        function nextCard() {
+            if (currentIndex < cards.length - 1) {
+                saveDrawingData();
+                currentIndex++;
+                cardContainer.classList.remove('flipped');
+                renderCard();
+            }
+        }
+
+        function goToCard(idx) {
+            if (idx === currentIndex) return;
+            saveDrawingData();
+            currentIndex = idx;
+            cardContainer.classList.remove('flipped');
+            renderCard();
+            cardStage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function shuffleCards() {
+            if (cards.length < 2) return;
+            saveDrawingData();
+            for (let i = cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cards[i], cards[j]] = [cards[j], cards[i]];
+            }
+            currentIndex = 0;
+            cardContainer.classList.remove('flipped');
+            renderAll();
+            showToast('Cards shuffled!', 'info');
+            debouncedSave();
+        }
+
+        function flipCard() {
+            if (drawMode || cards.length === 0) return;
+            cardContainer.classList.toggle('flipped');
+        }
+
+        function saveCurrentCardText() {
+            if (cards.length === 0) return;
+            const card = cards[currentIndex];
+            card.front = frontText.innerText.trim();
+            card.back = backText.innerText.trim();
+            renderGrid();
+            debouncedSave();
+        }
+
+        // ── Event Bindings ──
+        $('btn-add').addEventListener('click', addCard);
+        $('btn-create-first').addEventListener('click', addCard);
+        $('btn-shuffle').addEventListener('click', shuffleCards);
+        $('btn-prev').addEventListener('click', prevCard);
+        $('btn-next').addEventListener('click', nextCard);
+        $('flip-front').addEventListener('click', flipCard);
+        $('flip-back').addEventListener('click', flipCard);
+        frontText.addEventListener('input', saveCurrentCardText);
+        backText.addEventListener('input', saveCurrentCardText);
+
+        // Prevent flip-zone from interfering with text editing
+        frontText.addEventListener('pointerdown', e => e.stopPropagation());
+        backText.addEventListener('pointerdown', e => e.stopPropagation());
+        frontText.addEventListener('click', e => e.stopPropagation());
+        backText.addEventListener('click', e => e.stopPropagation());
+
+        // Make flip-zone sit behind text area but capture clicks on the rest of the card
+        document.querySelectorAll('.flip-zone').forEach(zone => {
+            zone.style.zIndex = '1';
+        });
+        document.querySelectorAll('.card-text').forEach(txt => {
+            txt.style.zIndex = '3';
+        });
+        document.querySelectorAll('.card-face-label').forEach(lbl => {
+            lbl.style.zIndex = '3';
+            lbl.style.position = 'relative';
+        });
+        document.querySelectorAll('.card-flip-hint').forEach(h => {
+            h.style.zIndex = '3';
+            h.style.position = 'relative';
+            h.style.pointerEvents = 'none';
+        });
+
+        // ── Render ──
+        function renderAll() {
+            renderCard();
+            renderGrid();
+            updateVisibility();
+        }
+
+        function updateVisibility() {
+            if (cards.length === 0) {
+                cardStage.style.display = 'none';
+                emptyState.style.display = 'flex';
+                gridSection.style.display = 'none';
+            } else {
+                cardStage.style.display = 'flex';
+                emptyState.style.display = 'none';
+                gridSection.style.display = 'block';
+            }
+        }
+
+        function renderCard() {
+            if (cards.length === 0) { counterEl.textContent = '0 / 0'; return; }
+            const card = cards[currentIndex];
+            frontText.innerText = card.front || '';
+            backText.innerText = card.back || '';
+            counterEl.textContent = `${currentIndex + 1} / ${cards.length}`;
+
+            $('btn-prev').disabled = currentIndex === 0;
+            $('btn-next').disabled = currentIndex === cards.length - 1;
+
+            // Restore drawings
+            requestAnimationFrame(() => {
+                resizeCanvases();
+                loadDrawingToCanvas(ctxFront, canvasFront, card.drawFront);
+                loadDrawingToCanvas(ctxBack, canvasBack, card.drawBack);
+            });
+        }
+
+        function renderGrid() {
+            cardGrid.innerHTML = '';
+            cards.forEach((card, idx) => {
+                const el = document.createElement('div');
+                el.className = 'grid-card' + (idx === currentIndex ? ' active' : '');
+                el.innerHTML = `
+          <span class="gc-num">#${idx + 1}</span>
+          <div class="gc-front">${escHtml(card.front) || '<em style="color:var(--text-muted)">Empty</em>'}</div>
+          <div class="gc-back">${escHtml(card.back) || ''}</div>
+          <button class="gc-delete" data-idx="${idx}" title="Delete card">✕</button>
+        `;
+                el.addEventListener('click', (e) => {
+                    if (e.target.closest('.gc-delete')) {
+                        deleteCard(parseInt(e.target.closest('.gc-delete').dataset.idx));
+                    } else {
+                        goToCard(idx);
+                    }
+                });
+                cardGrid.appendChild(el);
+            });
+            // Add card tile
+            const addEl = document.createElement('div');
+            addEl.className = 'grid-card add-card';
+            addEl.innerHTML = '<span class="plus">＋</span>Add Card';
+            addEl.addEventListener('click', addCard);
+            cardGrid.appendChild(addEl);
+        }
+
+        function escHtml(s) {
+            if (!s) return '';
+            const d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+
+        // ── Drawing ──
+        function resizeCanvases() {
+            [canvasFront, canvasBack].forEach(c => {
+                const rect = c.parentElement.getBoundingClientRect();
+                if (c.width !== Math.floor(rect.width) || c.height !== Math.floor(rect.height)) {
+                    // Save current content before resize
+                    const tempData = c.toDataURL();
+                    c.width = Math.floor(rect.width);
+                    c.height = Math.floor(rect.height);
+                    // Don't restore temp — we restore from card data after
+                }
+            });
+        }
+
+        $('btn-draw-toggle').addEventListener('click', () => {
+            drawMode = !drawMode;
+
+            $('btn-draw-toggle').classList.toggle('btn-active', drawMode);
+            $('btn-clear-canvas').style.display = drawMode ? 'inline-flex' : 'none';
+
+            canvasFront.classList.toggle('active', drawMode);
+            canvasBack.classList.toggle('active', drawMode);
+
+            // Hide flip zones when drawing
+            document.querySelectorAll('.flip-zone').forEach(z => z.style.display = drawMode ? 'none' : '');
+
+            if (drawMode) {
+                buildDrawToolbar('draw-toolbar-front');
+                buildDrawToolbar('draw-toolbar-back');
+                resizeCanvases();
+                if (cards.length) {
+                    loadDrawingToCanvas(ctxFront, canvasFront, cards[currentIndex].drawFront);
+                    loadDrawingToCanvas(ctxBack, canvasBack, cards[currentIndex].drawBack);
+                }
+            }
+            document.querySelectorAll('.draw-toolbar').forEach(t => t.classList.toggle('active', drawMode));
+
+            $('btn-draw-toggle').textContent = drawMode ? '✏️ Drawing ON' : '🖊️ Draw';
+        });
+
+        const swatchColors = ['#7c5cfc', '#38bdf8', '#22c55e', '#f59e0b', '#f43f5e', '#e879f9', '#ffffff'];
+
+        function buildDrawToolbar(id) {
+            const toolbar = $(id);
+            if (toolbar.children.length) return;
+
+            swatchColors.forEach(color => {
+                const sw = document.createElement('div');
+                sw.className = 'color-swatch' + (color === drawColor && !eraserMode ? ' active' : '');
+                sw.style.background = color;
+                sw.dataset.color = color;
+                sw.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    drawColor = color;
+                    eraserMode = false;
+                    updateSwatchStates();
+                });
+                toolbar.appendChild(sw);
+            });
+
+            // Eraser
+            const eraser = document.createElement('div');
+            eraser.className = 'color-swatch eraser' + (eraserMode ? ' active' : '');
+            eraser.title = 'Eraser';
+            eraser.addEventListener('click', (e) => {
+                e.stopPropagation();
+                eraserMode = !eraserMode;
+                updateSwatchStates();
+            });
+            toolbar.appendChild(eraser);
+
+            const sep = document.createElement('div');
+            sep.className = 'sep';
+            toolbar.appendChild(sep);
+
+            const range = document.createElement('input');
+            range.type = 'range'; range.min = 1; range.max = 16; range.value = drawSize;
+            range.className = 'draw-size';
+            range.addEventListener('input', (e) => { e.stopPropagation(); drawSize = parseInt(e.target.value); });
+            range.addEventListener('click', (e) => e.stopPropagation());
+            toolbar.appendChild(range);
+        }
+
+        function updateSwatchStates() {
+            document.querySelectorAll('.color-swatch').forEach(sw => {
+                if (sw.classList.contains('eraser')) {
+                    sw.classList.toggle('active', eraserMode);
+                } else {
+                    sw.classList.toggle('active', !eraserMode && sw.dataset.color === drawColor);
+                }
+            });
+        }
+
+        // Canvas drawing handlers
+        function setupCanvas(canvas, ctx) {
+            canvas.addEventListener('pointerdown', e => {
+                if (!drawMode) return;
+                e.stopPropagation(); e.preventDefault();
+                canvas.setPointerCapture(e.pointerId);
+                isDrawing = true;
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+
+                if (eraserMode) {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineWidth = drawSize * 3;
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = drawColor;
+                    ctx.lineWidth = drawSize;
+                }
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                // Draw a dot for single clicks
+                ctx.lineTo(x + 0.1, y + 0.1);
+                ctx.stroke();
+            });
+
+            canvas.addEventListener('pointermove', e => {
+                if (!isDrawing || !drawMode) return;
+                e.stopPropagation(); e.preventDefault();
+                const rect = canvas.getBoundingClientRect();
+                ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+                ctx.stroke();
+            });
+
+            const endDraw = (e) => {
+                if (!isDrawing) return;
+                if (e) { e.stopPropagation(); e.preventDefault(); }
+                isDrawing = false;
+                ctx.closePath();
+                ctx.globalCompositeOperation = 'source-over';
+                saveDrawingData();
+                debouncedSave();
+            };
+
+            canvas.addEventListener('pointerup', endDraw);
+            canvas.addEventListener('pointercancel', endDraw);
+            canvas.addEventListener('click', e => { if (drawMode) { e.stopPropagation(); e.preventDefault(); } });
+        }
+        setupCanvas(canvasFront, ctxFront);
+        setupCanvas(canvasBack, ctxBack);
+
+        function isCanvasBlank(canvas) {
+            const ctx = canvas.getContext('2d');
+            const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            for (let i = 3; i < data.length; i += 4) {
+                if (data[i] !== 0) return false;
+            }
+            return true;
+        }
+
+        function saveDrawingData() {
+            if (cards.length === 0) return;
+            const card = cards[currentIndex];
+            card.drawFront = isCanvasBlank(canvasFront) ? '' : canvasFront.toDataURL('image/png');
+            card.drawBack = isCanvasBlank(canvasBack) ? '' : canvasBack.toDataURL('image/png');
+        }
+
+        function loadDrawingToCanvas(ctx, canvas, dataUrl) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (!dataUrl) return;
+            const img = new Image();
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            };
+            img.src = dataUrl;
+        }
+
+        $('btn-clear-canvas').addEventListener('click', () => {
+            if (cards.length === 0) return;
+            const isFlipped = cardContainer.classList.contains('flipped');
+            if (isFlipped) {
+                ctxBack.clearRect(0, 0, canvasBack.width, canvasBack.height);
+                cards[currentIndex].drawBack = '';
+            } else {
+                ctxFront.clearRect(0, 0, canvasFront.width, canvasFront.height);
+                cards[currentIndex].drawFront = '';
+            }
+            debouncedSave();
+            showToast('Drawing cleared', 'info');
+        });
+
+        // ── Confirm Modal ──
+        function showConfirm(title, message, onConfirm) {
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.innerHTML = `
+        <div class="modal-box">
+          <h3>${title}</h3>
+          <p>${message}</p>
+          <div class="modal-actions">
+            <button class="btn btn-sm" id="modal-cancel">Cancel</button>
+            <button class="btn btn-sm btn-danger" id="modal-confirm">Delete</button>
+          </div>
+        </div>
+      `;
+            document.body.appendChild(overlay);
+
+            overlay.querySelector('#modal-cancel').addEventListener('click', () => overlay.remove());
+            overlay.querySelector('#modal-confirm').addEventListener('click', () => {
+                overlay.remove();
+                onConfirm();
+            });
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) overlay.remove();
+            });
+        }
+
+        // ── Sync Indicator ──
+        function setSyncing(syncing) {
+            $('sync-dot').classList.toggle('syncing', syncing);
+            $('sync-text').textContent = syncing ? 'Syncing…' : 'Synced';
+        }
+
+        // ── Toasts ──
+        function showToast(msg, type = 'info') {
+            const container = $('toast-container');
+            const t = document.createElement('div');
+            t.className = `toast ${type}`;
+            const icons = { success: '✅', error: '⚠️', info: 'ℹ️' };
+            t.innerHTML = `<span>${icons[type] || ''}</span> ${escHtml(msg)}`;
+            container.appendChild(t);
+            setTimeout(() => {
+                t.style.opacity = '0';
+                t.style.transform = 'translateX(40px)';
+                t.style.transition = '0.3s ease';
+                setTimeout(() => t.remove(), 300);
+            }, 2800);
+        }
+
+        // ── Keyboard Shortcuts ──
+        document.addEventListener('keydown', e => {
+            // Don't intercept when typing in text fields
+            if (document.activeElement?.getAttribute('contenteditable') === 'true') return;
+            // Don't intercept when modal is open
+            if (document.querySelector('.modal-overlay')) return;
+
+            if (e.key === 'ArrowLeft') { e.preventDefault(); prevCard(); }
+            if (e.key === 'ArrowRight') { e.preventDefault(); nextCard(); }
+            if (e.key === ' ') { e.preventDefault(); flipCard(); }
+            if (e.key === 'n' || e.key === 'N') { if (!e.ctrlKey && !e.metaKey) addCard(); }
+            if (e.key === 'd' || e.key === 'D') { if (!e.ctrlKey && !e.metaKey) $('btn-draw-toggle').click(); }
+        });
+
+        // ── Resize Handler ──
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (cards.length) {
+                    resizeCanvases();
+                    loadDrawingToCanvas(ctxFront, canvasFront, cards[currentIndex].drawFront);
+                    loadDrawingToCanvas(ctxBack, canvasBack, cards[currentIndex].drawBack);
+                }
+            }, 150);
+        });
+
+        // ── Before Unload — save pending changes ──
+        window.addEventListener('beforeunload', (e) => {
+            if (saveTimeout) {
+                clearTimeout(saveTimeout);
+                saveAllCards();
+            }
+        });
+    </script>
+</body>
+
+</html>
