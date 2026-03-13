@@ -101,21 +101,10 @@
         }
 
         @keyframes orbFloat {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            33% {
-                transform: translate(40px, -30px) scale(1.05);
-            }
-
-            66% {
-                transform: translate(-20px, 40px) scale(0.95);
-            }
-
-            100% {
-                transform: translate(30px, 20px) scale(1.02);
-            }
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -30px) scale(1.05); }
+            66% { transform: translate(-20px, 40px) scale(0.95); }
+            100% { transform: translate(30px, 20px) scale(1.02); }
         }
 
         /* ── Login Screen ── */
@@ -149,10 +138,7 @@
             animation: fadeInUp 0.6s ease-out;
         }
 
-        .login-card .logo {
-            font-size: 42px;
-            margin-bottom: 8px;
-        }
+        .login-card .logo { font-size: 42px; margin-bottom: 8px; }
 
         .login-card h1 {
             font-size: 28px;
@@ -188,32 +174,13 @@
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-google:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-        }
-
-        .btn-google:active {
-            transform: translateY(0);
-        }
-
-        .btn-google svg {
-            width: 20px;
-            height: 20px;
-            flex-shrink: 0;
-        }
-
-        .btn-google:disabled {
-            opacity: 0.6;
-            cursor: wait;
-        }
+        .btn-google:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); }
+        .btn-google:active { transform: translateY(0); }
+        .btn-google svg { width: 20px; height: 20px; flex-shrink: 0; }
+        .btn-google:disabled { opacity: 0.6; cursor: wait; }
 
         /* ── App Shell ── */
-        #app {
-            display: none;
-            position: relative;
-            z-index: 1;
-        }
+        #app { display: none; position: relative; z-index: 1; }
 
         #app.visible {
             display: block;
@@ -221,15 +188,8 @@
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ── Header ── */
@@ -246,11 +206,7 @@
             z-index: 50;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .header-left { display: flex; align-items: center; gap: 10px; }
 
         .header-left .logo-text {
             font-size: 20px;
@@ -261,11 +217,7 @@
             background-clip: text;
         }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .header-right { display: flex; align-items: center; gap: 10px; }
 
         .user-avatar {
             width: 32px;
@@ -306,15 +258,8 @@
             flex-shrink: 0;
         }
 
-        .btn:hover {
-            background: var(--bg-card-hover);
-            border-color: rgba(255, 255, 255, 0.18);
-            transform: translateY(-1px);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
+        .btn:hover { background: var(--bg-card-hover); border-color: rgba(255, 255, 255, 0.18); transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
 
         .btn-accent {
             background: linear-gradient(135deg, var(--accent), #6941e0);
@@ -329,21 +274,10 @@
             background: linear-gradient(135deg, #8b6ffc, #7551f0);
         }
 
-        .btn-danger {
-            border-color: rgba(244, 63, 94, 0.3);
-            color: var(--danger);
-        }
+        .btn-danger { border-color: rgba(244, 63, 94, 0.3); color: var(--danger); }
+        .btn-danger:hover { background: rgba(244, 63, 94, 0.1); border-color: rgba(244, 63, 94, 0.4); }
 
-        .btn-danger:hover {
-            background: rgba(244, 63, 94, 0.1);
-            border-color: rgba(244, 63, 94, 0.4);
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 11px;
-            border-radius: var(--radius-xs);
-        }
+        .btn-sm { padding: 6px 12px; font-size: 11px; border-radius: var(--radius-xs); }
 
         .btn-active {
             border-color: var(--accent) !important;
@@ -360,17 +294,12 @@
             flex-wrap: nowrap;
             overflow-x: auto;
             scrollbar-width: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
         }
 
-        .toolbar::-webkit-scrollbar {
-            display: none;
-        }
+        .toolbar::-webkit-scrollbar { display: none; }
 
-        .toolbar .spacer {
-            flex: 1;
-            min-width: 8px;
-        }
+        .toolbar .spacer { flex: 1; min-width: 8px; }
 
         .card-counter {
             font-size: 12px;
@@ -411,16 +340,8 @@
             backdrop-filter: blur(8px);
         }
 
-        .card-nav-btn:hover {
-            background: var(--bg-card-hover);
-            transform: scale(1.08);
-        }
-
-        .card-nav-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .card-nav-btn:hover { background: var(--bg-card-hover); transform: scale(1.08); }
+        .card-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
 
         /* ── Mobile Controls ── */
         .mobile-controls {
@@ -450,20 +371,9 @@
             transition: var(--transition);
         }
 
-        .mobile-btn:hover {
-            background: var(--bg-card-hover);
-            transform: translateY(-2px);
-        }
-
-        .mobile-btn:active {
-            transform: translateY(0);
-        }
-
-        .mobile-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .mobile-btn:hover { background: var(--bg-card-hover); transform: translateY(-2px); }
+        .mobile-btn:active { transform: translateY(0); }
+        .mobile-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
 
         .mobile-btn.flip-btn {
             flex: 1;
@@ -472,9 +382,7 @@
             color: var(--text-primary);
         }
 
-        .mobile-btn.flip-btn:hover {
-            background: rgba(124, 92, 252, 0.2);
-        }
+        .mobile-btn.flip-btn:hover { background: rgba(124, 92, 252, 0.2); }
 
         /* ── Flashcard ── */
         .card-container {
@@ -497,9 +405,7 @@
             transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .card-container.flipped .card-inner {
-            transform: rotateY(180deg);
-        }
+        .card-container.flipped .card-inner { transform: rotateY(180deg); }
 
         .card-face {
             position: absolute;
@@ -515,9 +421,7 @@
             overflow: hidden;
         }
 
-        .card-face.back {
-            transform: rotateY(180deg);
-        }
+        .card-face.back { transform: rotateY(180deg); }
 
         .card-face-label {
             font-size: 10px;
@@ -544,9 +448,7 @@
             letter-spacing: 1.5px;
         }
 
-        .card-face.back .card-face-label .side-badge {
-            background: var(--accent-2);
-        }
+        .card-face.back .card-face-label .side-badge { background: var(--accent-2); }
 
         .card-text {
             flex: 1;
@@ -578,22 +480,12 @@
         }
 
         body.draw-mode .card-text:empty::before,
-        .card-text.has-drawing:empty:not(:focus)::before {
-            display: none;
-        }
+        .card-text.has-drawing:empty:not(:focus)::before { display: none; }
 
-        body.draw-mode .card-flip-hint {
-            opacity: 0.3;
-        }
+        body.draw-mode .card-flip-hint { opacity: 0.3; }
+        body.draw-mode .card-face-label { opacity: 0.3; }
 
-        body.draw-mode .card-face-label {
-            opacity: 0.3;
-        }
-
-        .card-text:focus {
-            background: rgba(124, 92, 252, 0.04);
-            border-radius: 8px;
-        }
+        .card-text:focus { background: rgba(124, 92, 252, 0.04); border-radius: 8px; }
 
         .card-flip-hint {
             font-size: 10px;
@@ -632,9 +524,7 @@
             transform-origin: 0 0;
         }
 
-        .canvas-layer.active {
-            pointer-events: auto;
-        }
+        .canvas-layer.active { pointer-events: auto; }
 
         /* ── Draw Toolbar — FIX: compact, draggable, small ── */
         .draw-toolbar {
@@ -662,17 +552,10 @@
             min-height: 34px;
         }
 
-        .draw-toolbar::-webkit-scrollbar {
-            display: none;
-        }
+        .draw-toolbar::-webkit-scrollbar { display: none; }
+        .draw-toolbar.dragging { cursor: grabbing; }
 
-        .draw-toolbar.dragging {
-            cursor: grabbing;
-        }
-
-        .draw-toolbar.active {
-            display: flex;
-        }
+        .draw-toolbar.active { display: flex; }
 
         .draw-toolbar .drag-handle {
             font-size: 11px;
@@ -693,11 +576,7 @@
             flex-shrink: 0;
         }
 
-        .color-swatch:hover,
-        .color-swatch.active {
-            border-color: #fff;
-            transform: scale(1.15);
-        }
+        .color-swatch:hover, .color-swatch.active { border-color: #fff; transform: scale(1.15); }
 
         .eraser-btn {
             display: flex;
@@ -717,35 +596,12 @@
             white-space: nowrap;
         }
 
-        .eraser-btn:hover {
-            background: rgba(255, 255, 255, 0.14);
-            color: var(--text-primary);
-        }
+        .eraser-btn:hover { background: rgba(255, 255, 255, 0.14); color: var(--text-primary); }
+        .eraser-btn.active { border-color: var(--danger); background: rgba(244, 63, 94, 0.15); color: #fff; }
+        .eraser-btn svg { width: 11px; height: 11px; fill: currentColor; }
 
-        .eraser-btn.active {
-            border-color: var(--danger);
-            background: rgba(244, 63, 94, 0.15);
-            color: #fff;
-        }
-
-        .eraser-btn svg {
-            width: 11px;
-            height: 11px;
-            fill: currentColor;
-        }
-
-        .draw-size {
-            width: 40px;
-            accent-color: var(--accent);
-        }
-
-        .draw-toolbar .sep {
-            width: 1px;
-            height: 14px;
-            background: var(--glass-border);
-            margin: 0 2px;
-            flex-shrink: 0;
-        }
+        .draw-size { width: 40px; accent-color: var(--accent); }
+        .draw-toolbar .sep { width: 1px; height: 14px; background: var(--glass-border); margin: 0 2px; flex-shrink: 0; }
 
         .undo-redo-btn {
             display: flex;
@@ -765,15 +621,8 @@
             font-family: inherit;
         }
 
-        .undo-redo-btn:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.14);
-            color: var(--text-primary);
-        }
-
-        .undo-redo-btn:disabled {
-            opacity: 0.25;
-            cursor: not-allowed;
-        }
+        .undo-redo-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.14); color: var(--text-primary); }
+        .undo-redo-btn:disabled { opacity: 0.25; cursor: not-allowed; }
 
         /* ── Highlighter button ── */
         .highlighter-btn {
@@ -794,22 +643,9 @@
             white-space: nowrap;
         }
 
-        .highlighter-btn:hover {
-            background: rgba(255, 255, 255, 0.14);
-            color: var(--text-primary);
-        }
-
-        .highlighter-btn.active {
-            border-color: var(--warning);
-            background: rgba(245, 158, 11, 0.15);
-            color: #fff;
-        }
-
-        .highlighter-btn svg {
-            width: 12px;
-            height: 12px;
-            fill: currentColor;
-        }
+        .highlighter-btn:hover { background: rgba(255, 255, 255, 0.14); color: var(--text-primary); }
+        .highlighter-btn.active { border-color: var(--warning); background: rgba(245, 158, 11, 0.15); color: #fff; }
+        .highlighter-btn svg { width: 12px; height: 12px; fill: currentColor; }
 
         /* ── Scratchpad ── */
         .scratchpad-container {
@@ -833,15 +669,8 @@
         }
 
         @keyframes fadeInRight {
-            from {
-                opacity: 0;
-                transform: translateX(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .scratchpad-header {
@@ -883,9 +712,7 @@
         }
 
         /* ── Card Grid ── */
-        .card-grid-section {
-            padding: 0 28px 40px;
-        }
+        .card-grid-section { padding: 0 28px 40px; }
 
         .section-header {
             font-size: 13px;
@@ -917,16 +744,8 @@
             justify-content: center;
         }
 
-        .grid-card:hover {
-            background: var(--bg-card-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
-        }
-
-        .grid-card.active {
-            border-color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
-        }
+        .grid-card:hover { background: var(--bg-card-hover); transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3); }
+        .grid-card.active { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
 
         .grid-card-drawing-preview {
             width: 100%;
@@ -990,14 +809,8 @@
             opacity: 0;
         }
 
-        .grid-card:hover .gc-delete {
-            opacity: 1;
-        }
-
-        .grid-card .gc-delete:hover {
-            color: var(--danger);
-            background: rgba(244, 63, 94, 0.1);
-        }
+        .grid-card:hover .gc-delete { opacity: 1; }
+        .grid-card .gc-delete:hover { color: var(--danger); background: rgba(244, 63, 94, 0.1); }
 
         .grid-card.add-card {
             border-style: dashed;
@@ -1010,15 +823,8 @@
             flex-direction: column;
         }
 
-        .grid-card.add-card:hover {
-            border-color: var(--accent);
-            color: var(--accent-light);
-        }
-
-        .grid-card.add-card .plus {
-            font-size: 28px;
-            line-height: 1;
-        }
+        .grid-card.add-card:hover { border-color: var(--accent); color: var(--accent-light); }
+        .grid-card.add-card .plus { font-size: 28px; line-height: 1; }
 
         /* ── Empty State ── */
         .empty-state {
@@ -1031,25 +837,9 @@
             animation: fadeInUp 0.6s ease-out;
         }
 
-        .empty-state .icon {
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: 0.7;
-        }
-
-        .empty-state h2 {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .empty-state p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 24px;
-            max-width: 360px;
-            line-height: 1.5;
-        }
+        .empty-state .icon { font-size: 64px; margin-bottom: 16px; opacity: 0.7; }
+        .empty-state h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+        .empty-state p { color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; max-width: 360px; line-height: 1.5; }
 
         /* ── Confirm Modal ── */
         .modal-overlay {
@@ -1075,34 +865,11 @@
             animation: fadeInUp 0.25s ease-out;
         }
 
-        .modal-box h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
+        .modal-box h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+        .modal-box p { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.5; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
 
-        .modal-box p {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
+        @keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* ── Toast ── */
         .toast-container {
@@ -1131,63 +898,21 @@
             gap: 8px;
         }
 
-        .toast.success {
-            border-left: 3px solid var(--success);
-        }
-
-        .toast.error {
-            border-left: 3px solid var(--danger);
-        }
-
-        .toast.info {
-            border-left: 3px solid var(--accent-2);
-        }
+        .toast.success { border-left: 3px solid var(--success); }
+        .toast.error { border-left: 3px solid var(--danger); }
+        .toast.info { border-left: 3px solid var(--accent-2); }
 
         @keyframes toastIn {
-            from {
-                opacity: 0;
-                transform: translateX(40px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         /* ── Sync indicator ── */
-        .sync-indicator {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            color: var(--text-muted);
-        }
+        .sync-indicator { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+        .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
+        .sync-dot.syncing { background: var(--warning); animation: pulse 1s ease infinite; }
 
-        .sync-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--success);
-            flex-shrink: 0;
-        }
-
-        .sync-dot.syncing {
-            background: var(--warning);
-            animation: pulse 1s ease infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.4;
-            }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         /* ── Loading spinner ── */
         .spinner {
@@ -1200,11 +925,7 @@
             display: inline-block;
         }
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* ── Deck Bar ── */
         .deck-bar {
@@ -1218,9 +939,7 @@
             background: rgba(10, 10, 15, 0.5);
         }
 
-        .deck-bar::-webkit-scrollbar {
-            display: none;
-        }
+        .deck-bar::-webkit-scrollbar { display: none; }
 
         .deck-bar-label {
             font-size: 10px;
@@ -1251,29 +970,10 @@
             position: relative;
         }
 
-        .deck-chip:hover {
-            background: var(--bg-card-hover);
-            color: var(--text-primary);
-        }
-
-        .deck-chip.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #fff;
-            box-shadow: 0 0 12px var(--accent-glow);
-        }
-
-        .deck-chip .deck-count {
-            font-size: 10px;
-            opacity: 0.7;
-            font-weight: 400;
-        }
-
-        .deck-chip .deck-actions {
-            display: flex;
-            gap: 2px;
-            margin-left: 2px;
-        }
+        .deck-chip:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+        .deck-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 12px var(--accent-glow); }
+        .deck-chip .deck-count { font-size: 10px; opacity: 0.7; font-weight: 400; }
+        .deck-chip .deck-actions { display: flex; gap: 2px; margin-left: 2px; }
 
         .deck-chip .deck-action-btn {
             background: none;
@@ -1287,26 +987,11 @@
             font-family: inherit;
         }
 
-        .deck-chip:hover .deck-action-btn,
-        .deck-chip.active .deck-action-btn {
-            opacity: 0.6;
-        }
+        .deck-chip:hover .deck-action-btn, .deck-chip.active .deck-action-btn { opacity: 0.6; }
+        .deck-chip .deck-action-btn:hover { opacity: 1; }
 
-        .deck-chip .deck-action-btn:hover {
-            opacity: 1;
-        }
-
-        .deck-chip.add-deck {
-            border-style: dashed;
-            border-color: rgba(255, 255, 255, 0.15);
-            color: var(--text-muted);
-            gap: 4px;
-        }
-
-        .deck-chip.add-deck:hover {
-            border-color: var(--accent);
-            color: var(--accent-light);
-        }
+        .deck-chip.add-deck { border-style: dashed; border-color: rgba(255, 255, 255, 0.15); color: var(--text-muted); gap: 4px; }
+        .deck-chip.add-deck:hover { border-color: var(--accent); color: var(--accent-light); }
 
         /* ── Deck Modal ── */
         .deck-modal-overlay {
@@ -1332,11 +1017,7 @@
             animation: fadeInUp 0.25s ease-out;
         }
 
-        .deck-modal h3 {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
+        .deck-modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
 
         .deck-modal input {
             width: 100%;
@@ -1351,15 +1032,8 @@
             margin-bottom: 16px;
         }
 
-        .deck-modal input:focus {
-            border-color: var(--accent);
-        }
-
-        .deck-modal .modal-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
+        .deck-modal input:focus { border-color: var(--accent); }
+        .deck-modal .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
 
         /* ── Secret Love Page ── */
         .secret-chip {
@@ -1380,12 +1054,7 @@
             flex-shrink: 0;
         }
 
-        .secret-chip:hover {
-            background: rgba(255, 100, 150, 0.18);
-            border-color: rgba(255, 100, 150, 0.5);
-            color: #ffc0d6;
-            transform: scale(1.03);
-        }
+        .secret-chip:hover { background: rgba(255, 100, 150, 0.18); border-color: rgba(255, 100, 150, 0.5); color: #ffc0d6; transform: scale(1.03); }
 
         .secret-code-overlay {
             position: fixed;
@@ -1411,23 +1080,9 @@
             animation: fadeInUp 0.3s ease-out;
         }
 
-        .secret-code-box .lock-icon {
-            font-size: 40px;
-            margin-bottom: 12px;
-        }
-
-        .secret-code-box h3 {
-            font-size: 16px;
-            font-weight: 700;
-            color: #f9a8c9;
-            margin-bottom: 6px;
-        }
-
-        .secret-code-box p {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.4);
-            margin-bottom: 18px;
-        }
+        .secret-code-box .lock-icon { font-size: 40px; margin-bottom: 12px; }
+        .secret-code-box h3 { font-size: 16px; font-weight: 700; color: #f9a8c9; margin-bottom: 6px; }
+        .secret-code-box p { font-size: 12px; color: rgba(255, 255, 255, 0.4); margin-bottom: 18px; }
 
         .secret-code-box input {
             width: 100%;
@@ -1444,18 +1099,8 @@
             margin-bottom: 14px;
         }
 
-        .secret-code-box input:focus {
-            border-color: #f9a8c9;
-            box-shadow: 0 0 16px rgba(255, 100, 150, 0.2);
-        }
-
-        .secret-code-box .wrong-code {
-            color: #f43f5e;
-            font-size: 12px;
-            margin-top: -8px;
-            margin-bottom: 10px;
-            display: none;
-        }
+        .secret-code-box input:focus { border-color: #f9a8c9; box-shadow: 0 0 16px rgba(255, 100, 150, 0.2); }
+        .secret-code-box .wrong-code { color: #f43f5e; font-size: 12px; margin-top: -8px; margin-bottom: 10px; display: none; }
 
         .love-page {
             position: fixed;
@@ -1468,9 +1113,7 @@
             overflow: hidden;
         }
 
-        .love-page.visible {
-            display: flex;
-        }
+        .love-page.visible { display: flex; }
 
         .love-bg {
             position: absolute;
@@ -1487,11 +1130,7 @@
             animation: fadeInUp 0.8s ease-out;
         }
 
-        .love-content .heart-big {
-            font-size: 72px;
-            animation: heartbeat 1.2s ease-in-out infinite;
-            margin-bottom: 20px;
-        }
+        .love-content .heart-big { font-size: 72px; animation: heartbeat 1.2s ease-in-out infinite; margin-bottom: 20px; }
 
         .love-content h1 {
             font-size: 42px;
@@ -1505,22 +1144,8 @@
             margin-bottom: 12px;
         }
 
-        .love-content .love-subtitle {
-            font-size: 16px;
-            color: rgba(255, 180, 210, 0.6);
-            font-weight: 400;
-            margin-bottom: 8px;
-            font-style: italic;
-        }
-
-        .love-content .love-encouragement {
-            font-size: 14px;
-            color: rgba(255, 180, 210, 0.9);
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            margin-bottom: 28px;
-            text-transform: uppercase;
-        }
+        .love-content .love-subtitle { font-size: 16px; color: rgba(255, 180, 210, 0.6); font-weight: 400; margin-bottom: 8px; font-style: italic; }
+        .love-content .love-encouragement { font-size: 14px; color: rgba(255, 180, 210, 0.9); font-weight: 700; letter-spacing: 1.5px; margin-bottom: 28px; text-transform: uppercase; }
 
         .love-content .love-photo {
             width: 220px;
@@ -1560,18 +1185,9 @@
             margin-top: 10px;
         }
 
-        .love-back-btn:hover {
-            background: rgba(255, 100, 150, 0.2);
-            border-color: rgba(255, 100, 150, 0.5);
-        }
+        .love-back-btn:hover { background: rgba(255, 100, 150, 0.2); border-color: rgba(255, 100, 150, 0.5); }
 
-        .floating-hearts {
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-            overflow: hidden;
-            pointer-events: none;
-        }
+        .floating-hearts { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
 
         .floating-heart {
             position: absolute;
@@ -1582,342 +1198,93 @@
         }
 
         @keyframes floatHeart {
-            0% {
-                transform: translateY(0) rotate(0deg) scale(0.5);
-                opacity: 0;
-            }
-
-            10% {
-                opacity: 0.8;
-            }
-
-            90% {
-                opacity: 0.3;
-            }
-
-            100% {
-                transform: translateY(-100vh) rotate(45deg) scale(1.2);
-                opacity: 0;
-            }
+            0% { transform: translateY(0) rotate(0deg) scale(0.5); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) rotate(45deg) scale(1.2); opacity: 0; }
         }
 
         @keyframes heartbeat {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            15% {
-                transform: scale(1.15);
-            }
-
-            30% {
-                transform: scale(1);
-            }
-
-            45% {
-                transform: scale(1.1);
-            }
+            0%, 100% { transform: scale(1); }
+            15% { transform: scale(1.15); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.1); }
         }
 
         @keyframes gradientShift {
-
-            0%,
-            100% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         /* ── Responsive ── */
         @media (max-width: 768px) {
-            header {
-                padding: 12px 16px;
-            }
-
-            .toolbar {
-                padding: 8px 12px;
-                gap: 5px;
-            }
-
-            .card-stage {
-                padding: 16px 8px 28px;
-                min-height: 340px;
-                flex-wrap: wrap;
-                gap: 16px;
-            }
-
-            .card-container {
-                width: 100%;
-                max-width: calc(100vw - 32px);
-                height: 320px;
-                margin: 0;
-            }
-
-            .card-nav-btn {
-                display: none;
-            }
-
-            .mobile-controls {
-                display: flex;
-            }
-
-            .scratchpad-container {
-                margin-left: 0;
-                width: 100%;
-                max-width: calc(100vw - 100px);
-            }
-
-            .card-text {
-                font-size: 16px;
-                padding: 10px 18px 14px;
-            }
-
-            .card-grid-section {
-                padding: 0 16px 32px;
-            }
-
-            .card-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 8px;
-            }
-
-            .user-name {
-                display: none;
-            }
-
-            .deck-bar {
-                padding: 8px 16px;
-                gap: 6px;
-            }
-
-            .deck-chip {
-                padding: 5px 12px;
-                font-size: 11px;
-            }
-
-            .login-card {
-                padding: 36px 28px;
-            }
+            header { padding: 12px 16px; }
+            .toolbar { padding: 8px 12px; gap: 5px; }
+            .card-stage { padding: 16px 8px 28px; min-height: 340px; flex-wrap: wrap; gap: 16px; }
+            .card-container { width: 100%; max-width: calc(100vw - 32px); height: 320px; margin: 0; }
+            .card-nav-btn { display: none; }
+            .mobile-controls { display: flex; }
+            .scratchpad-container { margin-left: 0; width: 100%; max-width: calc(100vw - 100px); }
+            .card-text { font-size: 16px; padding: 10px 18px 14px; }
+            .card-grid-section { padding: 0 16px 32px; }
+            .card-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+            .user-name { display: none; }
+            .deck-bar { padding: 8px 16px; gap: 6px; }
+            .deck-chip { padding: 5px 12px; font-size: 11px; }
+            .login-card { padding: 36px 28px; }
         }
 
         @media (max-width: 480px) {
-            header {
-                padding: 10px 12px;
-                gap: 8px;
-            }
-
-            .header-left .logo-text {
-                font-size: 17px;
-            }
-
-            .header-right {
-                gap: 6px;
-            }
-
-            .sync-indicator {
-                display: none;
-            }
-
-            .user-avatar {
-                width: 28px;
-                height: 28px;
-            }
-
-            .toolbar {
-                padding: 6px 10px;
-                gap: 4px;
-            }
-
-            .btn {
-                padding: 7px 10px;
-                font-size: 11px;
-                gap: 4px;
-                border-radius: 8px;
-            }
-
-            .card-counter {
-                font-size: 11px;
-                padding: 4px 10px;
-            }
-
-            .card-stage {
-                padding: 10px 4px 20px;
-                min-height: 280px;
-            }
-
-            .card-container {
-                height: 260px;
-                margin: 0;
-                max-width: calc(100vw - 24px);
-            }
-
-            .card-face-label {
-                padding: 10px 14px 0;
-                font-size: 9px;
-            }
-
-            .card-face-label .side-badge {
-                font-size: 8px;
-                padding: 2px 8px;
-            }
-
-            .card-text {
-                font-size: 14px;
-                padding: 8px 14px 10px;
-                line-height: 1.5;
-            }
-
-            .card-flip-hint {
-                font-size: 9px;
-                padding: 0 14px 6px;
-            }
-
-            .card-face {
-                border-radius: 14px;
-            }
-
-            .canvas-layer {
-                border-radius: 14px;
-            }
-
-            .card-grid-section {
-                padding: 0 12px 28px;
-            }
-
-            .section-header {
-                font-size: 11px;
-                margin-bottom: 10px;
-            }
-
-            .card-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 6px;
-            }
-
-            .grid-card {
-                padding: 10px;
-                min-height: 65px;
-                border-radius: 8px;
-            }
-
-            .grid-card .gc-front {
-                font-size: 12px;
-            }
-
-            .grid-card .gc-back {
-                font-size: 10px;
-            }
-
-            .login-card {
-                padding: 32px 24px;
-                border-radius: 18px;
-            }
-
-            .login-card .logo {
-                font-size: 36px;
-            }
-
-            .login-card h1 {
-                font-size: 24px;
-            }
-
-            .login-card p {
-                font-size: 13px;
-                margin-bottom: 24px;
-            }
-
-            .btn-google {
-                padding: 12px 24px;
-                font-size: 14px;
-            }
-
-            .toast-container {
-                bottom: 12px;
-                right: 12px;
-                left: 12px;
-            }
-
-            .toast {
-                font-size: 12px;
-                padding: 10px 14px;
-            }
-
-            .empty-state {
-                padding: 40px 16px;
-            }
-
-            .empty-state .icon {
-                font-size: 48px;
-            }
-
-            .empty-state h2 {
-                font-size: 18px;
-            }
-
-            .empty-state p {
-                font-size: 13px;
-            }
-
-            .modal-box {
-                padding: 22px 24px;
-            }
-
-            .bg-glow .orb {
-                opacity: 0.15;
-            }
+            header { padding: 10px 12px; gap: 8px; }
+            .header-left .logo-text { font-size: 17px; }
+            .header-right { gap: 6px; }
+            .sync-indicator { display: none; }
+            .user-avatar { width: 28px; height: 28px; }
+            .toolbar { padding: 6px 10px; gap: 4px; }
+            .btn { padding: 7px 10px; font-size: 11px; gap: 4px; border-radius: 8px; }
+            .card-counter { font-size: 11px; padding: 4px 10px; }
+            .card-stage { padding: 10px 4px 20px; min-height: 280px; }
+            .card-container { height: 260px; margin: 0; max-width: calc(100vw - 24px); }
+            .card-face-label { padding: 10px 14px 0; font-size: 9px; }
+            .card-face-label .side-badge { font-size: 8px; padding: 2px 8px; }
+            .card-text { font-size: 14px; padding: 8px 14px 10px; line-height: 1.5; }
+            .card-flip-hint { font-size: 9px; padding: 0 14px 6px; }
+            .card-face { border-radius: 14px; }
+            .canvas-layer { border-radius: 14px; }
+            .card-grid-section { padding: 0 12px 28px; }
+            .section-header { font-size: 11px; margin-bottom: 10px; }
+            .card-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 6px; }
+            .grid-card { padding: 10px; min-height: 65px; border-radius: 8px; }
+            .grid-card .gc-front { font-size: 12px; }
+            .grid-card .gc-back { font-size: 10px; }
+            .login-card { padding: 32px 24px; border-radius: 18px; }
+            .login-card .logo { font-size: 36px; }
+            .login-card h1 { font-size: 24px; }
+            .login-card p { font-size: 13px; margin-bottom: 24px; }
+            .btn-google { padding: 12px 24px; font-size: 14px; }
+            .toast-container { bottom: 12px; right: 12px; left: 12px; }
+            .toast { font-size: 12px; padding: 10px 14px; }
+            .empty-state { padding: 40px 16px; }
+            .empty-state .icon { font-size: 48px; }
+            .empty-state h2 { font-size: 18px; }
+            .empty-state p { font-size: 13px; }
+            .modal-box { padding: 22px 24px; }
+            .bg-glow .orb { opacity: 0.15; }
         }
 
         @media (pointer: coarse) {
-            .card-nav-btn {
-                width: 44px;
-                height: 44px;
-            }
-
-            .btn {
-                min-height: 38px;
-            }
-
-            .gc-delete {
-                width: 32px;
-                height: 32px;
-                opacity: 1 !important;
-            }
-
-            .color-swatch {
-                width: 24px;
-                height: 24px;
-            }
-
-            .eraser-btn {
-                min-height: 26px;
-            }
+            .card-nav-btn { width: 44px; height: 44px; }
+            .btn { min-height: 38px; }
+            .gc-delete { width: 32px; height: 32px; opacity: 1 !important; }
+            .color-swatch { width: 24px; height: 24px; }
+            .eraser-btn { min-height: 26px; }
         }
 
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        ::selection {
-            background: rgba(124, 92, 252, 0.3);
-        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+        ::selection { background: rgba(124, 92, 252, 0.3); }
     </style>
 </head>
 
@@ -1936,14 +1303,10 @@
             <p>Smart flashcards with drawing mode &amp; cloud sync.<br>Study anywhere, remember everything.</p>
             <button class="btn-google" id="btn-login">
                 <svg viewBox="0 0 24 24">
-                    <path fill="#4285F4"
-                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z" />
-                    <path fill="#34A853"
-                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                    <path fill="#FBBC05"
-                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                    <path fill="#EA4335"
-                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
                 Sign in with Google
             </button>
@@ -1989,8 +1352,7 @@
                             <span>Question</span>
                             <span class="side-badge">FRONT</span>
                         </div>
-                        <div class="card-text" id="front-text" contenteditable="true"
-                            data-placeholder="Click to type your question…"></div>
+                        <div class="card-text" id="front-text" contenteditable="true" data-placeholder="Click to type your question…"></div>
                         <div class="card-flip-hint">Click outside text to flip</div>
                         <canvas class="canvas-layer" id="canvas-front"></canvas>
                         <div class="draw-toolbar" id="draw-toolbar-front"></div>
@@ -2001,8 +1363,7 @@
                             <span>Answer</span>
                             <span class="side-badge">BACK</span>
                         </div>
-                        <div class="card-text" id="back-text" contenteditable="true"
-                            data-placeholder="Click to type the answer…"></div>
+                        <div class="card-text" id="back-text" contenteditable="true" data-placeholder="Click to type the answer…"></div>
                         <div class="card-flip-hint">Click outside text to flip</div>
                         <canvas class="canvas-layer" id="canvas-back"></canvas>
                         <div class="draw-toolbar" id="draw-toolbar-back"></div>
@@ -2022,13 +1383,9 @@
             <div class="scratchpad-container" id="scratchpad-container">
                 <div class="scratchpad-header">
                     <span>📝 Scratchpad</span>
-                    <button class="btn btn-sm" id="btn-clear-scratchpad"
-                        style="background:transparent; border:1px solid rgba(255,255,255,0.2); padding:4px 8px; color:var(--text-secondary);">🗑️
-                        Clear</button>
+                    <button class="btn btn-sm" id="btn-clear-scratchpad" style="background:transparent; border:1px solid rgba(255,255,255,0.2); padding:4px 8px; color:var(--text-secondary);">🗑️ Clear</button>
                 </div>
-                <div class="draw-toolbar active" id="draw-toolbar-scratchpad"
-                    style="position:static; transform:none; display:flex; padding:6px 12px; background:rgba(0,0,0,0.2); border-radius:0; border:none; border-bottom:1px solid var(--glass-border); flex-wrap:wrap; box-shadow:none; cursor:default;">
-                </div>
+                <div class="draw-toolbar active" id="draw-toolbar-scratchpad" style="position:static; transform:none; display:flex; padding:6px 12px; background:rgba(0,0,0,0.2); border-radius:0; border:none; border-bottom:1px solid var(--glass-border); flex-wrap:wrap; box-shadow:none; cursor:default;"></div>
                 <div class="scratchpad-body">
                     <canvas class="scratchpad-canvas" id="canvas-scratchpad"></canvas>
                 </div>
@@ -2424,7 +1781,7 @@
         function shuffleCards() {
             if (cards.length < 2) return;
             saveDrawingData();
-            for (let i = cards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[cards[i], cards[j]] = [cards[j], cards[i]]; }
+            for (let i = cards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cards[i], cards[j]] = [cards[j], cards[i]]; }
             currentIndex = 0; cardContainer.classList.remove('flipped'); renderAll();
             showToast('Cards shuffled!', 'info'); debouncedSave();
         }
@@ -2771,15 +2128,23 @@
 
         // Reset zoom for a canvas and reload its drawing
         function resetZoom(canvas, ctx) {
+            // 1. Save current drawing pixels before we clear anything
+            saveDrawingData();
+            // 2. Get the saved dataUrl for this canvas
+            const card = cards[currentIndex];
+            const dataUrl = canvas === canvasFront ? card.drawFront
+                : canvas === canvasBack ? card.drawBack
+                : card.scratchpad;
+            // 3. Reset zoom state to identity
             canvasZoom[canvas.id] = { scale: 1, offsetX: 0, offsetY: 0 };
+            // 4. Clear canvas and reset transform
             ctx.setTransform(1, 0, 0, 1, 0, 0);
-            // Reload drawing at normal scale
-            if (cards.length) {
-                const card = cards[currentIndex];
-                const dataUrl = canvas === canvasFront ? card.drawFront
-                    : canvas === canvasBack ? card.drawBack
-                        : card.scratchpad;
-                loadDrawingToCanvas(ctx, canvas, dataUrl);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // 5. Redraw at normal scale
+            if (dataUrl) {
+                const img = new Image();
+                img.onload = () => { ctx.drawImage(img, 0, 0, canvas.width, canvas.height); };
+                img.src = dataUrl;
             }
         }
 
@@ -2909,7 +2274,7 @@
                     const card = cards[currentIndex];
                     const dataUrl = canvas === canvasFront ? card.drawFront
                         : canvas === canvasBack ? card.drawBack
-                            : card.scratchpad;
+                        : card.scratchpad;
                     ctx.setTransform(1, 0, 0, 1, 0, 0);
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     applyZoom(canvas, ctx);
@@ -2941,14 +2306,14 @@
         function saveDrawingData() {
             if (cards.length === 0) return;
             const card = cards[currentIndex];
-            // Reset transform to identity before reading pixel data / toDataURL
-            [canvasFront, canvasBack, canvasScratchpad].forEach(c => {
-                c.getContext('2d').setTransform(1, 0, 0, 1, 0, 0);
-            });
+            // Must reset transform to identity so toDataURL captures full unscaled drawing
+            ctxFront.setTransform(1, 0, 0, 1, 0, 0);
+            ctxBack.setTransform(1, 0, 0, 1, 0, 0);
+            ctxScratchpad.setTransform(1, 0, 0, 1, 0, 0);
             card.drawFront = isCanvasBlank(canvasFront) ? '' : canvasFront.toDataURL('image/png');
             card.drawBack = isCanvasBlank(canvasBack) ? '' : canvasBack.toDataURL('image/png');
             card.scratchpad = isCanvasBlank(canvasScratchpad) ? '' : canvasScratchpad.toDataURL('image/png');
-            // Re-apply zoom transforms after reading
+            // Re-apply zoom so canvas visually stays at current zoom level
             applyZoom(canvasFront, ctxFront);
             applyZoom(canvasBack, ctxBack);
             applyZoom(canvasScratchpad, ctxScratchpad);
