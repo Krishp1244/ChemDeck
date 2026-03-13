@@ -692,6 +692,34 @@
             flex-shrink: 0;
         }
 
+        .undo-redo-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            flex-shrink: 0;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .undo-redo-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.14);
+            color: var(--text-primary);
+        }
+
+        .undo-redo-btn:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+
         /* ── Scratchpad ── */
         .scratchpad-container {
             display: none;
@@ -2808,6 +2836,40 @@
             range.addEventListener('input', (e) => { e.stopPropagation(); drawSize = parseInt(e.target.value); });
             range.addEventListener('click', (e) => e.stopPropagation());
             toolbar.appendChild(range);
+
+            // Separator before undo/redo
+            const sep2 = document.createElement('div');
+            sep2.className = 'sep';
+            toolbar.appendChild(sep2);
+
+            // Undo button
+            const canvasInfo = getCanvasForToolbar(id);
+            const undoBtn = document.createElement('button');
+            undoBtn.className = 'undo-redo-btn';
+            undoBtn.title = 'Undo last stroke';
+            undoBtn.dataset.action = 'undo';
+            undoBtn.dataset.canvas = canvasInfo ? canvasInfo.canvas.id : '';
+            undoBtn.innerHTML = '↩';
+            undoBtn.disabled = true;
+            undoBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (canvasInfo) undoCanvas(canvasInfo.canvas, canvasInfo.ctx);
+            });
+            toolbar.appendChild(undoBtn);
+
+            // Redo button
+            const redoBtn = document.createElement('button');
+            redoBtn.className = 'undo-redo-btn';
+            redoBtn.title = 'Redo stroke';
+            redoBtn.dataset.action = 'redo';
+            redoBtn.dataset.canvas = canvasInfo ? canvasInfo.canvas.id : '';
+            redoBtn.innerHTML = '↪';
+            redoBtn.disabled = true;
+            redoBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (canvasInfo) redoCanvas(canvasInfo.canvas, canvasInfo.ctx);
+            });
+            toolbar.appendChild(redoBtn);
         }
 
         function updateSwatchStates() {
@@ -2825,6 +2887,80 @@
         // Canvas drawing handlers — with Apple Pencil pressure sensitivity & smooth curves
         let lastPoint = null;       // for quadratic curve smoothing
         let penDetected = false;    // once we see a pen, ignore finger
+
+        // Undo/Redo history per canvas (keyed by canvas id)
+        const canvasHistory = {};
+        function getHistory(canvasId) {
+            if (!canvasHistory[canvasId]) canvasHistory[canvasId] = { undo: [], redo: [] };
+            return canvasHistory[canvasId];
+        }
+        function clearHistory(canvasId) {
+            canvasHistory[canvasId] = { undo: [], redo: [] };
+            updateUndoRedoButtons();
+        }
+        function clearAllHistory() {
+            for (const key in canvasHistory) delete canvasHistory[key];
+            updateUndoRedoButtons();
+        }
+        function pushUndoSnapshot(canvas) {
+            const hist = getHistory(canvas.id);
+            hist.undo.push(canvas.toDataURL());
+            hist.redo = []; // new stroke clears redo
+            // Limit history to 30 strokes to save memory
+            if (hist.undo.length > 30) hist.undo.shift();
+            updateUndoRedoButtons();
+        }
+        function undoCanvas(canvas, ctx) {
+            const hist = getHistory(canvas.id);
+            if (hist.undo.length === 0) return;
+            // Save current state to redo before restoring
+            hist.redo.push(canvas.toDataURL());
+            const prev = hist.undo.pop();
+            const img = new Image();
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                saveDrawingData();
+                renderGrid();
+                debouncedSave();
+                updateUndoRedoButtons();
+            };
+            img.src = prev;
+        }
+        function redoCanvas(canvas, ctx) {
+            const hist = getHistory(canvas.id);
+            if (hist.redo.length === 0) return;
+            // Save current state to undo before restoring
+            hist.undo.push(canvas.toDataURL());
+            const next = hist.redo.pop();
+            const img = new Image();
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                saveDrawingData();
+                renderGrid();
+                debouncedSave();
+                updateUndoRedoButtons();
+            };
+            img.src = next;
+        }
+        function updateUndoRedoButtons() {
+            document.querySelectorAll('.undo-redo-btn[data-action="undo"]').forEach(btn => {
+                const canvasId = btn.dataset.canvas;
+                btn.disabled = !canvasHistory[canvasId] || canvasHistory[canvasId].undo.length === 0;
+            });
+            document.querySelectorAll('.undo-redo-btn[data-action="redo"]').forEach(btn => {
+                const canvasId = btn.dataset.canvas;
+                btn.disabled = !canvasHistory[canvasId] || canvasHistory[canvasId].redo.length === 0;
+            });
+        }
+        // Map toolbar IDs to their canvas + ctx
+        function getCanvasForToolbar(toolbarId) {
+            if (toolbarId === 'draw-toolbar-front') return { canvas: canvasFront, ctx: ctxFront };
+            if (toolbarId === 'draw-toolbar-back') return { canvas: canvasBack, ctx: ctxBack };
+            if (toolbarId === 'draw-toolbar-scratchpad') return { canvas: canvasScratchpad, ctx: ctxScratchpad };
+            return null;
+        }
 
         function getPressureWidth(e, baseSize) {
             // Apple Pencil (pointerType === 'pen') provides real pressure 0-1
@@ -2854,6 +2990,9 @@
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
                 lastPoint = { x, y };
+
+                // Save snapshot BEFORE drawing the new stroke (for undo)
+                pushUndoSnapshot(canvas);
 
                 const baseSize = eraserMode ? drawSize * 3
                     : highlighterMode ? drawSize * 3
@@ -2928,6 +3067,7 @@
                 saveDrawingData();
                 renderGrid();
                 debouncedSave();
+                updateUndoRedoButtons();
             };
 
             canvas.addEventListener('pointerup', endDraw);
