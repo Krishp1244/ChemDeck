@@ -2250,8 +2250,10 @@
                     // Initial drag to set width/height
                     const moveInit = (ev) => {
                         if (!isDraggingSize) return;
-                        const w = Math.max(100, ev.clientX - startX);
-                        const h = Math.max(40, ev.clientY - startY);
+                        const clientX = ev.touches ? ev.touches[0].clientX : ev.clientX;
+                        const clientY = ev.touches ? ev.touches[0].clientY : ev.clientY;
+                        const w = Math.max(100, clientX - startX);
+                        const h = Math.max(40, clientY - startY);
                         wrapper.style.width = w + 'px';
                         wrapper.style.height = h + 'px';
                     };
@@ -2259,30 +2261,49 @@
                         isDraggingSize = false;
                         document.removeEventListener('pointermove', moveInit);
                         document.removeEventListener('pointerup', upInit);
+                        document.removeEventListener('touchmove', moveInit);
+                        document.removeEventListener('touchend', upInit);
                         input.focus();
                     };
                     document.addEventListener('pointermove', moveInit);
                     document.addEventListener('pointerup', upInit);
+                    document.addEventListener('touchmove', moveInit, { passive: false });
+                    document.addEventListener('touchend', upInit);
 
                     // Handle dragging the box
                     let isMovingBox = false;
                     let boxDragStartX = 0;
                     let boxDragStartY = 0;
-                    handle.addEventListener('pointerdown', ev => {
+                    
+                    const startBoxDrag = (ev) => {
                         ev.stopPropagation(); ev.preventDefault();
                         isMovingBox = true;
                         handle.style.cursor = 'grabbing';
-                        boxDragStartX = ev.clientX - wrapper.offsetLeft;
-                        boxDragStartY = ev.clientY - wrapper.offsetTop;
-                    });
-                    document.addEventListener('pointermove', ev => {
+                        const clientX = ev.touches ? ev.touches[0].clientX : ev.clientX;
+                        const clientY = ev.touches ? ev.touches[0].clientY : ev.clientY;
+                        boxDragStartX = clientX - wrapper.offsetLeft;
+                        boxDragStartY = clientY - wrapper.offsetTop;
+                    };
+                    
+                    const moveBox = (ev) => {
                         if (!isMovingBox) return;
-                        wrapper.style.left = (ev.clientX - boxDragStartX) + 'px';
-                        wrapper.style.top = (ev.clientY - boxDragStartY) + 'px';
-                    });
-                    document.addEventListener('pointerup', () => {
+                        ev.preventDefault();
+                        const clientX = ev.touches ? ev.touches[0].clientX : ev.clientX;
+                        const clientY = ev.touches ? ev.touches[0].clientY : ev.clientY;
+                        wrapper.style.left = (clientX - boxDragStartX) + 'px';
+                        wrapper.style.top = (clientY - boxDragStartY) + 'px';
+                    };
+                    
+                    const endBoxDrag = () => {
                         if (isMovingBox) { isMovingBox = false; handle.style.cursor = 'grab'; input.focus(); }
-                    });
+                    };
+
+                    handle.addEventListener('pointerdown', startBoxDrag);
+                    handle.addEventListener('touchstart', startBoxDrag, { passive: false });
+                    document.addEventListener('pointermove', moveBox);
+                    document.addEventListener('touchmove', moveBox, { passive: false });
+                    document.addEventListener('pointerup', endBoxDrag);
+                    document.addEventListener('touchend', endBoxDrag);
 
                     const finishText = () => {
                         if (wrapper.dataset.processed) return;
