@@ -1451,6 +1451,7 @@
         let drawColor = "#7c5cfc";
         let eraserMode = false;
         let highlighterMode = false;
+        let textMode = false;
         let drawSize = 3;
         let saveTimeout = null;
         let isSaving = false;
@@ -1846,11 +1847,38 @@
             });
         }
 
+        let draggedCardIdx = null;
+
         function renderGrid() {
             cardGrid.innerHTML = '';
             cards.forEach((card, idx) => {
                 const el = document.createElement('div');
                 el.className = 'grid-card' + (idx === currentIndex ? ' active' : '');
+                
+                el.draggable = true;
+                el.addEventListener('dragstart', (e) => {
+                    draggedCardIdx = idx;
+                    el.style.opacity = '0.5';
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+                el.addEventListener('dragend', () => { el.style.opacity = '1'; document.querySelectorAll('.grid-card').forEach(c => c.style.borderColor = ''); });
+                el.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
+                el.addEventListener('dragenter', (e) => { e.preventDefault(); if (idx !== draggedCardIdx) el.style.borderColor = 'var(--warning)'; });
+                el.addEventListener('dragleave', (e) => { el.style.borderColor = ''; });
+                el.addEventListener('drop', (e) => {
+                    e.stopPropagation();
+                    el.style.borderColor = '';
+                    if (draggedCardIdx !== null && draggedCardIdx !== idx && draggedCardIdx < cards.length) {
+                        const dragged = cards.splice(draggedCardIdx, 1)[0];
+                        cards.splice(idx, 0, dragged);
+                        cards.forEach((c, i) => c.order = i);
+                        if (currentIndex === draggedCardIdx) currentIndex = idx;
+                        else if (currentIndex > draggedCardIdx && currentIndex <= idx) currentIndex--;
+                        else if (currentIndex < draggedCardIdx && currentIndex >= idx) currentIndex++;
+                        renderGrid(); debouncedSave(); showToast('Card reordered', 'success');
+                    }
+                });
+
                 let frontDesc = escHtml(card.front);
                 let frontDrawingHtml = card.drawFront ? `<img src="${card.drawFront}" class="grid-card-drawing-preview" alt="Drawing" />` : '';
                 if (!frontDesc && !card.drawFront) frontDesc = '<em style="color:var(--text-muted)">Empty</em>';
@@ -2011,8 +2039,16 @@
             highlighter.className = 'highlighter-btn' + (highlighterMode ? ' active' : '');
             highlighter.title = 'Highlighter';
             highlighter.innerHTML = `<svg viewBox="0 0 24 24"><path d="M18.5 1.15L23 5.65l-2.8 2.8L15.7 4l2.8-2.85M7 14.15l8.5-8.5 4.5 4.5-8.5 8.5H7v-4.5M3.5 19.15h5l-5 5v-5z"/></svg> Hi`;
-            highlighter.addEventListener('click', (e) => { e.stopPropagation(); highlighterMode = !highlighterMode; eraserMode = false; updateSwatchStates(); });
+            highlighter.addEventListener('click', (e) => { e.stopPropagation(); highlighterMode = !highlighterMode; eraserMode = false; textMode = false; updateSwatchStates(); });
             toolbar.appendChild(highlighter);
+
+            const textBtn = document.createElement('button');
+            textBtn.className = 'eraser-btn text-btn' + (textMode ? ' active' : '');
+            textBtn.title = 'Text';
+            textBtn.innerHTML = `T`;
+            textBtn.style.padding = '3px 10px';
+            textBtn.addEventListener('click', (e) => { e.stopPropagation(); textMode = !textMode; eraserMode = false; highlighterMode = false; updateSwatchStates(); });
+            toolbar.appendChild(textBtn);
 
             const sep = document.createElement('div');
             sep.className = 'sep';
@@ -2063,8 +2099,9 @@
 
         function updateSwatchStates() {
             document.querySelectorAll('.color-swatch').forEach(sw => { sw.classList.toggle('active', !eraserMode && !highlighterMode && sw.dataset.color === drawColor); });
-            document.querySelectorAll('.eraser-btn').forEach(eb => { eb.classList.toggle('active', eraserMode); });
+            document.querySelectorAll('.eraser-btn:not(.text-btn)').forEach(eb => { eb.classList.toggle('active', eraserMode); });
             document.querySelectorAll('.highlighter-btn').forEach(hb => { hb.classList.toggle('active', highlighterMode); });
+            document.querySelectorAll('.text-btn').forEach(tb => { tb.classList.toggle('active', textMode); });
         }
 
         let lastPoint = null;
@@ -2149,6 +2186,144 @@
             canvas.addEventListener('pointerdown', e => {
                 if (!isScratchpad && !drawMode) return;
                 if (isScratchpad && !scratchpadOpen) return;
+
+                if (textMode) {
+                    e.stopPropagation(); e.preventDefault();
+                    if (document.activeElement && document.activeElement.classList.contains('canvas-text-area')) return;
+                    if (document.querySelector('.canvas-text-wrapper')) return; // Only one text box at a time
+
+                    const parent = canvas.parentElement;
+                    const parentRect = parent.getBoundingClientRect();
+                    const fontSize = Math.max(14, drawSize * 4);
+                    
+                    let startX = e.clientX;
+                    let startY = e.clientY;
+                    let isDraggingSize = true;
+
+                    // Create wrapper
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'canvas-text-wrapper';
+                    wrapper.style.position = 'absolute';
+                    wrapper.style.left = (startX - parentRect.left) + 'px';
+                    wrapper.style.top = (startY - parentRect.top) + 'px';
+                    wrapper.style.border = '1px solid var(--accent)';
+                    wrapper.style.background = 'rgba(0,0,0,0.5)';
+                    wrapper.style.zIndex = '100';
+                    wrapper.style.minWidth = '100px';
+                    wrapper.style.minHeight = '40px';
+                    wrapper.style.display = 'flex';
+                    wrapper.style.flexDirection = 'column';
+
+                    // Drag handle to move the box
+                    const handle = document.createElement('div');
+                    handle.style.height = '20px';
+                    handle.style.background = 'var(--accent)';
+                    handle.style.cursor = 'grab';
+                    handle.style.display = 'flex';
+                    handle.style.alignItems = 'center';
+                    handle.style.justifyContent = 'center';
+                    handle.style.color = '#fff';
+                    handle.style.fontSize = '12px';
+                    handle.style.userSelect = 'none';
+                    handle.innerHTML = '⠿ Drag to move';
+                    wrapper.appendChild(handle);
+
+                    // Textarea
+                    const input = document.createElement('textarea');
+                    input.className = 'canvas-text-area';
+                    input.style.flex = '1';
+                    input.style.width = '100%';
+                    input.style.color = drawColor;
+                    input.style.fontSize = fontSize + 'px';
+                    input.style.fontFamily = 'Inter, sans-serif';
+                    input.style.fontWeight = '600';
+                    input.style.background = 'transparent';
+                    input.style.border = 'none';
+                    input.style.outline = 'none';
+                    input.style.resize = 'none';
+                    input.style.padding = '4px 8px';
+                    input.style.lineHeight = '1.4';
+                    wrapper.appendChild(input);
+
+                    parent.appendChild(wrapper);
+
+                    // Initial drag to set width/height
+                    const moveInit = (ev) => {
+                        if (!isDraggingSize) return;
+                        const w = Math.max(100, ev.clientX - startX);
+                        const h = Math.max(40, ev.clientY - startY);
+                        wrapper.style.width = w + 'px';
+                        wrapper.style.height = h + 'px';
+                    };
+                    const upInit = () => {
+                        isDraggingSize = false;
+                        document.removeEventListener('pointermove', moveInit);
+                        document.removeEventListener('pointerup', upInit);
+                        input.focus();
+                    };
+                    document.addEventListener('pointermove', moveInit);
+                    document.addEventListener('pointerup', upInit);
+
+                    // Handle dragging the box
+                    let isMovingBox = false;
+                    let boxDragStartX = 0;
+                    let boxDragStartY = 0;
+                    handle.addEventListener('pointerdown', ev => {
+                        ev.stopPropagation(); ev.preventDefault();
+                        isMovingBox = true;
+                        handle.style.cursor = 'grabbing';
+                        boxDragStartX = ev.clientX - wrapper.offsetLeft;
+                        boxDragStartY = ev.clientY - wrapper.offsetTop;
+                    });
+                    document.addEventListener('pointermove', ev => {
+                        if (!isMovingBox) return;
+                        wrapper.style.left = (ev.clientX - boxDragStartX) + 'px';
+                        wrapper.style.top = (ev.clientY - boxDragStartY) + 'px';
+                    });
+                    document.addEventListener('pointerup', () => {
+                        if (isMovingBox) { isMovingBox = false; handle.style.cursor = 'grab'; input.focus(); }
+                    });
+
+                    const finishText = () => {
+                        if (wrapper.dataset.processed) return;
+                        wrapper.dataset.processed = 'true';
+                        const val = input.value.trim();
+                        if (val) {
+                            pushUndoSnapshot(canvas);
+                            
+                            // Calculate exact placement on canvas
+                            const rect = wrapper.getBoundingClientRect();
+                            const wrapperRectTopLeft = { x: rect.left, y: rect.top + 20 }; // +20 to account for handle height
+                            const { x, y } = screenToCanvas(canvas, wrapperRectTopLeft.x, wrapperRectTopLeft.y);
+                            
+                            const z = canvasZoom[canvas.id];
+                            const scaleAdjustedFontSize = fontSize / z.scale;
+                            ctx.font = `600 ${scaleAdjustedFontSize}px Inter, sans-serif`;
+                            ctx.fillStyle = drawColor;
+                            ctx.textBaseline = 'top';
+                            
+                            const lineHeight = scaleAdjustedFontSize * 1.4;
+                            const lines = val.split('\\n');
+                            lines.forEach((line, i) => {
+                                ctx.fillText(line, x + (8 / z.scale), y + (4 / z.scale) + (i * lineHeight));
+                            });
+
+                            saveDrawingData(); renderGrid(); debouncedSave(); updateUndoRedoButtons();
+                        }
+                        wrapper.remove();
+                    };
+
+                    input.addEventListener('blur', () => {
+                        // Small timeout so dragging handle doesn't immediately blur and finish
+                        setTimeout(() => { if (!isMovingBox && document.activeElement !== input) finishText(); }, 150);
+                    });
+                    input.addEventListener('keydown', ev => {
+                        if (ev.key === 'Escape') { input.value = ''; finishText(); }
+                        ev.stopPropagation(); // Allow newlines, block card shortcuts
+                    });
+                    return;
+                }
+
                 if (e.pointerType === 'pen') penDetected = true;
                 if (penDetected && e.pointerType === 'touch') return;
 
