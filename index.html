@@ -778,6 +778,7 @@
             text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 1;
+            line-clamp: 1;
             -webkit-box-orient: vertical;
         }
 
@@ -1907,11 +1908,13 @@
 
         function resizeCanvases() {
             [canvasFront, canvasBack, canvasScratchpad].forEach(c => {
-                const rect = c.parentElement.getBoundingClientRect();
-                if (rect.width === 0 || rect.height === 0) return;
-                if (c.width !== Math.floor(rect.width) || c.height !== Math.floor(rect.height)) {
-                    c.width = Math.floor(rect.width);
-                    c.height = Math.floor(rect.height);
+                const parent = c.parentElement;
+                const width = Math.floor(parent.clientWidth);
+                const height = Math.floor(parent.clientHeight);
+                if (width === 0 || height === 0) return;
+                if (c.width !== width || c.height !== height) {
+                    c.width = width;
+                    c.height = height;
                 }
             });
         }
