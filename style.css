@@ -16,11 +16,11 @@
             --text-primary: #16161a;
             --text-secondary: #6b6b76;
             --text-muted: #9b9ba5;
-            --accent: #6d4fe0;
-            --accent-glow: rgba(109, 79, 224, 0.12);
-            --accent-light: #7d5fee;
-            --accent-2: #0d9488;
-            --accent-2-glow: rgba(13, 148, 136, 0.12);
+            --accent: #001e3f;
+            --accent-glow: rgba(0, 30, 63, 0.08);
+            --accent-light: #143c64;
+            --accent-2: #fe6909;
+            --accent-2-glow: rgba(254, 105, 9, 0.12);
             --danger: #dc2626;
             --success: #16a34a;
             --warning: #d97706;
