@@ -446,13 +446,13 @@
 
         .mobile-btn.flip-btn {
             flex: 1;
-            background: rgba(124, 92, 252, 0.1);
-            border-color: rgba(124, 92, 252, 0.4);
+            background: var(--accent-glow);
+            border-color: var(--accent);
             color: var(--text-primary);
         }
 
         .mobile-btn.flip-btn:hover {
-            background: rgba(124, 92, 252, 0.2);
+            background: rgba(0, 30, 63, 0.16);
         }
 
         /* ── Flashcard ── */
@@ -569,7 +569,7 @@
         }
 
         .card-text:focus {
-            background: rgba(124, 92, 252, 0.04);
+            background: var(--accent-glow);
             border-radius: 8px;
         }
 
