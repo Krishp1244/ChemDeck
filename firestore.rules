@@ -1,0 +1,46 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function isString(v) {
+      return v is string;
+    }
+
+    // Legacy pre-migration collection: users/{uid}/flashcards/{cardId}
+    // Only needs read (to migrate) and delete (after migration) — no new writes.
+    match /users/{uid}/flashcards/{cardId} {
+      allow read, delete: if isOwner(uid);
+    }
+
+    match /users/{uid}/decks/{deckId} {
+      allow read, delete: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['name', 'order', 'createdAt'])
+        && isString(request.resource.data.name)
+        && request.resource.data.name.size() <= 40
+        && request.resource.data.order is number;
+
+      match /cards/{cardId} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid)
+          && request.resource.data.keys().hasOnly(['front', 'back', 'drawFront', 'drawBack', 'scratchpad', 'order'])
+          && isString(request.resource.data.front) && request.resource.data.front.size() <= 5000
+          && isString(request.resource.data.back) && request.resource.data.back.size() <= 5000
+          && isString(request.resource.data.drawFront)
+          && isString(request.resource.data.drawBack)
+          && isString(request.resource.data.scratchpad)
+          && request.resource.data.order is number;
+      }
+    }
+
+    // Deny everything else by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

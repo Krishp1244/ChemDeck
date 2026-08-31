@@ -168,7 +168,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         async function deleteDeckConfirm(deckId) {
             const deck = decks.find(d => d.id === deckId);
             if (!deck || decks.length <= 1) { showToast('Cannot delete the only deck', 'error'); return; }
-            showConfirm('Delete Deck', `Delete "${deck.name}" and all its cards? This cannot be undone.`, async () => {
+            showConfirm('Delete Deck', `Delete "${escHtml(deck.name)}" and all its cards? This cannot be undone.`, async () => {
                 try {
                     const cardsSnap = await getDocs(deckCardsCol(deckId));
                     if (!cardsSnap.empty) {
@@ -333,7 +333,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         function deleteCard(idx) {
             if (cards.length === 0 || idx < 0 || idx >= cards.length) return;
             const card = cards[idx];
-            const preview = card.front ? card.front.substring(0, 40) : 'Empty card';
+            const preview = card.front ? escHtml(card.front.substring(0, 40)) : 'Empty card';
             showConfirm('Delete Card', `Delete "${preview}${card.front && card.front.length > 40 ? '…' : ''}"? This cannot be undone.`, () => {
                 const removed = cards.splice(idx, 1)[0];
                 deleteCardFromDB(removed.id);
@@ -369,8 +369,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         function saveCurrentCardText() {
             if (cards.length === 0) return;
             const card = cards[currentIndex];
-            card.front = frontText.innerText.trim();
-            card.back = backText.innerText.trim();
+            card.front = frontText.innerText.trim().slice(0, 5000);
+            card.back = backText.innerText.trim().slice(0, 5000);
             renderGrid(); debouncedSave();
         }
 
@@ -477,9 +477,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
 
         function escHtml(s) {
             if (!s) return '';
-            const d = document.createElement('div');
-            d.textContent = s;
-            return d.innerHTML;
+            return String(s).replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
         }
 
         function resizeCanvases() {
