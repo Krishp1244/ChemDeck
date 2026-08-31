@@ -7,28 +7,28 @@
         }
 
         :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #12121a;
-            --bg-card: rgba(255, 255, 255, 0.04);
-            --bg-card-hover: rgba(255, 255, 255, 0.07);
-            --glass: rgba(255, 255, 255, 0.06);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-primary: #f0f0f5;
-            --text-secondary: #8a8a9a;
-            --text-muted: #55556a;
-            --accent: #7c5cfc;
-            --accent-glow: rgba(124, 92, 252, 0.35);
-            --accent-light: #a78bfa;
-            --accent-2: #38bdf8;
-            --accent-2-glow: rgba(56, 189, 248, 0.25);
-            --danger: #f43f5e;
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --radius: 16px;
-            --radius-sm: 10px;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f7f7f8;
+            --bg-card: #ffffff;
+            --bg-card-hover: #fafafa;
+            --glass: #ffffff;
+            --glass-border: #e4e4e9;
+            --text-primary: #16161a;
+            --text-secondary: #6b6b76;
+            --text-muted: #9b9ba5;
+            --accent: #6d4fe0;
+            --accent-glow: rgba(109, 79, 224, 0.12);
+            --accent-light: #7d5fee;
+            --accent-2: #0d9488;
+            --accent-2-glow: rgba(13, 148, 136, 0.12);
+            --danger: #dc2626;
+            --success: #16a34a;
+            --warning: #d97706;
+            --radius: 12px;
+            --radius-sm: 8px;
             --radius-xs: 6px;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow: 0 1px 2px rgba(16,16,20,0.04), 0 6px 20px rgba(16,16,20,0.06);
+            --transition: 0.15s ease;
         }
 
         body {
@@ -41,11 +41,7 @@
 
         /* ── Animated Background ── */
         .bg-glow {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
+            display: none;
         }
 
         .bg-glow .orb {
@@ -125,29 +121,21 @@
         .login-card {
             background: var(--glass);
             border: 1px solid var(--glass-border);
-            backdrop-filter: blur(24px);
-            border-radius: 24px;
+            border-radius: 16px;
             padding: 48px 40px;
             text-align: center;
             max-width: 420px;
             width: 90%;
-            box-shadow: var(--shadow), 0 0 80px var(--accent-glow);
+            box-shadow: var(--shadow);
             animation: fadeInUp 0.6s ease-out;
         }
 
-        .login-card .logo {
-            font-size: 42px;
-            margin-bottom: 8px;
-        }
-
-        .login-card h1 {
-            font-size: 28px;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-light), var(--accent-2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
+        .login-logo {
+            width: 220px;
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
         }
 
         .login-card p {
@@ -223,9 +211,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 28px;
-            background: rgba(10, 10, 15, 0.75);
-            backdrop-filter: blur(16px);
+            padding: 20px 32px;
+            background: var(--bg-primary);
             border-bottom: 1px solid var(--glass-border);
             position: sticky;
             top: 0;
@@ -238,13 +225,16 @@
             gap: 10px;
         }
 
+        .header-logo {
+            height: 30px;
+            width: auto;
+            display: block;
+        }
+
         .header-left .logo-text {
             font-size: 20px;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-light), var(--accent-2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--accent);
         }
 
         .header-right {
@@ -276,7 +266,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 14px;
+            padding: 10px 16px;
             border-radius: var(--radius-sm);
             font-size: 12px;
             font-weight: 600;
@@ -286,7 +276,6 @@
             color: var(--text-primary);
             cursor: pointer;
             transition: var(--transition);
-            backdrop-filter: blur(8px);
             white-space: nowrap;
             user-select: none;
             flex-shrink: 0;
@@ -303,16 +292,14 @@
         }
 
         .btn-accent {
-            background: linear-gradient(135deg, var(--accent), #6941e0);
+            background: var(--accent);
             border-color: transparent;
             color: #fff;
-            box-shadow: 0 4px 20px var(--accent-glow);
         }
 
         .btn-accent:hover {
-            box-shadow: 0 6px 28px var(--accent-glow);
+            background: var(--accent-light);
             border-color: transparent;
-            background: linear-gradient(135deg, #8b6ffc, #7551f0);
         }
 
         .btn-danger {
@@ -333,20 +320,21 @@
 
         .btn-active {
             border-color: var(--accent) !important;
-            box-shadow: 0 0 16px var(--accent-glow) !important;
-            background: rgba(124, 92, 252, 0.15) !important;
+            background: var(--accent-glow) !important;
+            color: var(--accent) !important;
         }
 
         /* ── Toolbar — FIX: wrap nicely, all buttons same row, scroll on overflow ── */
         .toolbar {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 10px 16px;
+            gap: 8px;
+            padding: 14px 32px;
             flex-wrap: nowrap;
             overflow-x: auto;
             scrollbar-width: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid var(--glass-border);
+            background: var(--bg-primary);
         }
 
         .toolbar::-webkit-scrollbar {
@@ -375,14 +363,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px 28px 36px;
-            min-height: 400px;
+            padding: 32px 40px 52px;
+            min-height: 480px;
             perspective: 1200px;
+            background: var(--bg-primary);
         }
 
         .card-nav-btn {
-            width: 46px;
-            height: 46px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             border: 1px solid var(--glass-border);
             background: var(--glass);
@@ -394,7 +383,6 @@
             transition: var(--transition);
             flex-shrink: 0;
             font-size: 20px;
-            backdrop-filter: blur(8px);
         }
 
         .card-nav-btn:hover {
@@ -423,8 +411,8 @@
             background: var(--glass);
             border: 1px solid var(--glass-border);
             color: var(--text-primary);
-            border-radius: 12px;
-            padding: 10px 16px;
+            border-radius: 8px;
+            padding: 12px 18px;
             font-size: 14px;
             font-weight: 600;
             display: flex;
@@ -432,7 +420,6 @@
             justify-content: center;
             gap: 6px;
             cursor: pointer;
-            backdrop-filter: blur(8px);
             transition: var(--transition);
         }
 
@@ -491,11 +478,10 @@
             position: absolute;
             inset: 0;
             backface-visibility: hidden;
-            border-radius: 20px;
+            border-radius: 16px;
             border: 1px solid var(--glass-border);
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-            backdrop-filter: blur(20px);
-            box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            background: var(--bg-card);
+            box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -627,25 +613,25 @@
             position: absolute;
             z-index: 20;
             display: none;
-            background: rgba(10, 10, 15, 0.95);
-            backdrop-filter: blur(12px);
+            background: var(--bg-card);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
-            padding: 5px 8px;
-            gap: 4px;
+            padding: 6px 10px;
+            gap: 6px;
             align-items: center;
             flex-wrap: nowrap;
             overflow-x: auto;
             scrollbar-width: none;
             max-width: calc(100% - 16px);
+            box-shadow: var(--shadow);
             /* Start at top-right so it doesn't block the card center */
             bottom: auto;
-            top: 8px;
+            top: 12px;
             left: 50%;
             transform: translateX(-50%);
             cursor: grab;
             /* Compact height */
-            min-height: 34px;
+            min-height: 36px;
         }
 
         .draw-toolbar::-webkit-scrollbar {
@@ -801,16 +787,15 @@
         .scratchpad-container {
             display: none;
             flex-direction: column;
-            width: 320px;
-            height: 360px;
-            background: rgba(18, 18, 26, 0.6);
+            width: 340px;
+            height: 380px;
+            background: var(--bg-card);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
+            border-radius: 16px;
             box-shadow: var(--shadow);
             position: relative;
             flex-shrink: 0;
-            backdrop-filter: blur(12px);
-            margin-left: 20px;
+            margin-left: 24px;
         }
 
         body.scratchpad-open .scratchpad-container {
@@ -834,10 +819,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 16px;
+            padding: 14px 18px;
             border-bottom: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 20px 20px 0 0;
+            background: var(--bg-secondary);
+            border-radius: 16px 16px 0 0;
         }
 
         .scratchpad-header span {
@@ -854,8 +839,9 @@
         .scratchpad-body {
             flex: 1;
             position: relative;
-            border-radius: 0 0 20px 20px;
+            border-radius: 0 0 16px 16px;
             overflow: hidden;
+            background: var(--bg-primary);
         }
 
         .scratchpad-canvas {
@@ -870,7 +856,8 @@
 
         /* ── Card Grid ── */
         .card-grid-section {
-            padding: 0 28px 40px;
+            padding: 0 32px 60px;
+            background: var(--bg-primary);
         }
 
         .section-header {
@@ -885,19 +872,19 @@
 
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
         }
 
         .grid-card {
-            background: var(--glass);
+            background: var(--bg-card);
             border: 1px solid var(--glass-border);
             border-radius: var(--radius-sm);
-            padding: 14px;
+            padding: 20px;
             cursor: pointer;
             transition: var(--transition);
             position: relative;
-            min-height: 80px;
+            min-height: 110px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -905,24 +892,24 @@
 
         .grid-card:hover {
             background: var(--bg-card-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow);
+            border-color: var(--accent);
         }
 
         .grid-card.active {
             border-color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
+            background: var(--accent-glow);
         }
 
         .grid-card-drawing-preview {
             width: 100%;
             height: auto;
-            max-height: 50px;
+            max-height: 60px;
             object-fit: contain;
-            margin-bottom: 4px;
-            border-radius: 4px;
+            margin-bottom: 8px;
+            border-radius: 6px;
             pointer-events: none;
-            background: rgba(255, 255, 255, 0.02);
+            background: var(--bg-secondary);
         }
 
         .grid-card .gc-front {
@@ -988,18 +975,20 @@
 
         .grid-card.add-card {
             border-style: dashed;
-            border-color: rgba(255, 255, 255, 0.15);
+            border-color: var(--glass-border);
             align-items: center;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             font-size: 13px;
             font-weight: 600;
             gap: 4px;
             flex-direction: column;
+            background: var(--bg-primary);
         }
 
         .grid-card.add-card:hover {
             border-color: var(--accent);
-            color: var(--accent-light);
+            color: var(--accent);
+            background: var(--accent-glow);
         }
 
         .grid-card.add-card .plus {
@@ -1043,8 +1032,7 @@
             position: fixed;
             inset: 0;
             z-index: 200;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(6px);
+            background: rgba(0, 0, 0, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1052,11 +1040,11 @@
         }
 
         .modal-box {
-            background: var(--bg-secondary);
+            background: var(--bg-card);
             border: 1px solid var(--glass-border);
             border-radius: var(--radius);
-            padding: 28px 32px;
-            max-width: 360px;
+            padding: 32px 36px;
+            max-width: 400px;
             width: 90%;
             box-shadow: var(--shadow);
             animation: fadeInUp 0.25s ease-out;
@@ -1094,20 +1082,19 @@
         /* ── Toast ── */
         .toast-container {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
+            bottom: 28px;
+            right: 28px;
             z-index: 9999;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
 
         .toast {
-            background: rgba(18, 18, 26, 0.92);
-            backdrop-filter: blur(12px);
+            background: var(--bg-secondary);
             border: 1px solid var(--glass-border);
             border-radius: var(--radius-sm);
-            padding: 12px 20px;
+            padding: 14px 22px;
             font-size: 13px;
             font-weight: 500;
             color: var(--text-primary);
@@ -1115,7 +1102,7 @@
             animation: toastIn 0.3s ease-out;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .toast.success {
@@ -1197,12 +1184,12 @@
         .deck-bar {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 28px;
+            gap: 10px;
+            padding: 12px 32px;
             overflow-x: auto;
             scrollbar-width: none;
             border-bottom: 1px solid var(--glass-border);
-            background: rgba(10, 10, 15, 0.5);
+            background: var(--bg-primary);
         }
 
         .deck-bar::-webkit-scrollbar {
@@ -1222,13 +1209,13 @@
         .deck-chip {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
+            gap: 8px;
+            padding: 8px 16px;
             border-radius: 20px;
             border: 1px solid var(--glass-border);
-            background: var(--glass);
+            background: var(--bg-card);
             color: var(--text-secondary);
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             font-family: inherit;
             cursor: pointer;
@@ -1240,14 +1227,14 @@
 
         .deck-chip:hover {
             background: var(--bg-card-hover);
+            border-color: var(--glass-border);
             color: var(--text-primary);
         }
 
         .deck-chip.active {
-            background: var(--accent);
+            background: var(--accent-glow);
             border-color: var(--accent);
-            color: #fff;
-            box-shadow: 0 0 12px var(--accent-glow);
+            color: var(--accent);
         }
 
         .deck-chip .deck-count {
@@ -1285,14 +1272,16 @@
 
         .deck-chip.add-deck {
             border-style: dashed;
-            border-color: rgba(255, 255, 255, 0.15);
-            color: var(--text-muted);
+            border-color: var(--glass-border);
+            color: var(--text-secondary);
             gap: 4px;
+            background: var(--bg-primary);
         }
 
         .deck-chip.add-deck:hover {
             border-color: var(--accent);
-            color: var(--accent-light);
+            color: var(--accent);
+            background: var(--accent-glow);
         }
 
         /* ── Deck Modal ── */
@@ -1300,8 +1289,7 @@
             position: fixed;
             inset: 0;
             z-index: 200;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(6px);
+            background: rgba(0, 0, 0, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1309,11 +1297,11 @@
         }
 
         .deck-modal {
-            background: var(--bg-secondary);
+            background: var(--bg-card);
             border: 1px solid var(--glass-border);
             border-radius: var(--radius);
-            padding: 28px 32px;
-            max-width: 380px;
+            padding: 32px 36px;
+            max-width: 420px;
             width: 90%;
             box-shadow: var(--shadow);
             animation: fadeInUp 0.25s ease-out;
@@ -1378,8 +1366,7 @@
             position: fixed;
             inset: 0;
             z-index: 300;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.5);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1623,17 +1610,17 @@
         /* ── Responsive ── */
         @media (max-width: 768px) {
             header {
-                padding: 12px 16px;
+                padding: 14px 20px;
             }
 
             .toolbar {
-                padding: 8px 12px;
-                gap: 5px;
+                padding: 10px 16px;
+                gap: 6px;
             }
 
             .card-stage {
-                padding: 16px 8px 28px;
-                min-height: 340px;
+                padding: 24px 12px 40px;
+                min-height: 400px;
                 flex-wrap: wrap;
                 gap: 16px;
             }
@@ -1665,12 +1652,12 @@
             }
 
             .card-grid-section {
-                padding: 0 16px 32px;
+                padding: 0 20px 44px;
             }
 
             .card-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 8px;
+                grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+                gap: 12px;
             }
 
             .user-name {
@@ -1678,8 +1665,8 @@
             }
 
             .deck-bar {
-                padding: 8px 16px;
-                gap: 6px;
+                padding: 10px 20px;
+                gap: 8px;
             }
 
             .deck-chip {
@@ -1694,12 +1681,16 @@
 
         @media (max-width: 480px) {
             header {
-                padding: 10px 12px;
+                padding: 12px 14px;
                 gap: 8px;
             }
 
             .header-left .logo-text {
-                font-size: 17px;
+                font-size: 18px;
+            }
+
+            .header-logo {
+                height: 24px;
             }
 
             .header-right {
@@ -1711,30 +1702,30 @@
             }
 
             .user-avatar {
-                width: 28px;
-                height: 28px;
+                width: 32px;
+                height: 32px;
             }
 
             .toolbar {
-                padding: 6px 10px;
-                gap: 4px;
+                padding: 8px 12px;
+                gap: 5px;
             }
 
             .btn {
-                padding: 7px 10px;
-                font-size: 11px;
+                padding: 8px 12px;
+                font-size: 12px;
                 gap: 4px;
                 border-radius: 8px;
             }
 
             .card-counter {
-                font-size: 11px;
-                padding: 4px 10px;
+                font-size: 12px;
+                padding: 6px 12px;
             }
 
             .card-stage {
-                padding: 10px 4px 20px;
-                min-height: 280px;
+                padding: 16px 8px 32px;
+                min-height: 340px;
             }
 
             .card-container {
@@ -1773,22 +1764,22 @@
             }
 
             .card-grid-section {
-                padding: 0 12px 28px;
+                padding: 0 14px 40px;
             }
 
             .section-header {
-                font-size: 11px;
-                margin-bottom: 10px;
+                font-size: 12px;
+                margin-bottom: 12px;
             }
 
             .card-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 6px;
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 10px;
             }
 
             .grid-card {
-                padding: 10px;
-                min-height: 65px;
+                padding: 14px;
+                min-height: 90px;
                 border-radius: 8px;
             }
 
@@ -1801,57 +1792,53 @@
             }
 
             .login-card {
-                padding: 32px 24px;
-                border-radius: 18px;
+                padding: 36px 28px;
+                border-radius: 14px;
             }
 
-            .login-card .logo {
-                font-size: 36px;
-            }
-
-            .login-card h1 {
-                font-size: 24px;
+            .login-logo {
+                width: 180px;
             }
 
             .login-card p {
-                font-size: 13px;
-                margin-bottom: 24px;
+                font-size: 14px;
+                margin-bottom: 28px;
             }
 
             .btn-google {
-                padding: 12px 24px;
+                padding: 12px 28px;
                 font-size: 14px;
             }
 
             .toast-container {
-                bottom: 12px;
-                right: 12px;
-                left: 12px;
+                bottom: 14px;
+                right: 14px;
+                left: 14px;
             }
 
             .toast {
-                font-size: 12px;
-                padding: 10px 14px;
+                font-size: 13px;
+                padding: 12px 16px;
             }
 
             .empty-state {
-                padding: 40px 16px;
+                padding: 48px 18px;
             }
 
             .empty-state .icon {
-                font-size: 48px;
+                font-size: 56px;
             }
 
             .empty-state h2 {
-                font-size: 18px;
+                font-size: 20px;
             }
 
             .empty-state p {
-                font-size: 13px;
+                font-size: 14px;
             }
 
             .modal-box {
-                padding: 22px 24px;
+                padding: 26px 28px;
             }
 
             .bg-glow .orb {
@@ -1886,7 +1873,7 @@
         }
 
         ::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
         }
 
         ::-webkit-scrollbar-track {
@@ -1894,14 +1881,15 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
+            background: rgba(107, 107, 118, 0.2);
+            border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(107, 107, 118, 0.35);
         }
 
         ::selection {
-            background: rgba(124, 92, 252, 0.3);
+            background: var(--accent-glow);
+            color: var(--text-primary);
         }
