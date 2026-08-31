@@ -226,9 +226,15 @@
         }
 
         .header-logo {
-            height: 30px;
-            width: auto;
+            height: 26px;
+            width: 26px;
             display: block;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .header-logo polygon {
+            fill: currentColor;
         }
 
         .header-left .logo-text {
@@ -1690,7 +1696,8 @@
             }
 
             .header-logo {
-                height: 24px;
+                height: 22px;
+                width: 22px;
             }
 
             .header-right {
