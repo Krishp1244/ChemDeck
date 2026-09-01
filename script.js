@@ -57,6 +57,26 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         const canvasScratchpad = $('canvas-scratchpad');
         const ctxScratchpad = canvasScratchpad.getContext('2d', { willReadFrequently: true });
 
+        // ── Theme ──
+        function getCurrentTheme() {
+            const explicit = document.documentElement.getAttribute('data-theme');
+            if (explicit === 'dark' || explicit === 'light') return explicit;
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        function syncThemeToggleIcons() {
+            const icon = getCurrentTheme() === 'dark' ? '☀️' : '🌙';
+            [$('theme-toggle'), $('theme-toggle-login')].forEach(btn => { if (btn) btn.textContent = icon; });
+        }
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            try { localStorage.setItem('chemdeck-theme', theme); } catch (e) { }
+            syncThemeToggleIcons();
+        }
+        function toggleTheme() { setTheme(getCurrentTheme() === 'dark' ? 'light' : 'dark'); }
+        $('theme-toggle').addEventListener('click', toggleTheme);
+        $('theme-toggle-login').addEventListener('click', toggleTheme);
+        syncThemeToggleIcons();
+
         // ── Auth ──
         $('btn-login').addEventListener('click', async () => {
             const btn = $('btn-login');
