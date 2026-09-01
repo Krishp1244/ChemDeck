@@ -17,6 +17,17 @@
 
 <body>
 
+    <div id="maintenance-screen" class="maintenance-screen">
+        <div class="maintenance-card">
+            <div class="maintenance-icon">🛠️</div>
+            <h1>ChemDeck is getting an update</h1>
+            <p>We're making some changes behind the scenes — check back in a bit. Your data is safe and nothing is lost.</p>
+            <a class="btn btn-accent" href="https://docs.google.com/forms/d/e/1FAIpQLScUP8M6NQgWFrLJnILMcgqaDOjJzO_IBMbGm-C5LzXB8sd2Ug/viewform?usp=dialog"
+                target="_blank" rel="noopener noreferrer">Send Feedback</a>
+        </div>
+    </div>
+    <script src="status-check.js"></script>
+
     <div class="bg-glow">
         <div class="orb"></div>
         <div class="orb"></div>
@@ -40,6 +51,9 @@
                 </svg>
                 Sign in with Google
             </button>
+            <a class="feedback-link"
+                href="https://docs.google.com/forms/d/e/1FAIpQLScUP8M6NQgWFrLJnILMcgqaDOjJzO_IBMbGm-C5LzXB8sd2Ug/viewform?usp=dialog"
+                target="_blank" rel="noopener noreferrer">Have feedback or a feature idea?</a>
         </div>
     </div>
 
@@ -58,6 +72,9 @@
                 </div>
                 <img class="user-avatar" id="user-avatar" src="" alt="avatar" />
                 <span class="user-name" id="user-name"></span>
+                <a class="btn btn-sm" id="btn-feedback"
+                    href="https://docs.google.com/forms/d/e/1FAIpQLScUP8M6NQgWFrLJnILMcgqaDOjJzO_IBMbGm-C5LzXB8sd2Ug/viewform?usp=dialog"
+                    target="_blank" rel="noopener noreferrer">💬 Feedback</a>
                 <button class="btn btn-sm" id="btn-logout">Sign Out</button>
             </div>
         </header>

@@ -182,6 +182,63 @@
             cursor: wait;
         }
 
+        .feedback-link {
+            display: inline-block;
+            margin-top: 18px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-decoration: underline;
+        }
+
+        .feedback-link:hover {
+            color: var(--accent);
+        }
+
+        /* ── Maintenance Screen ── */
+        .maintenance-screen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-primary);
+        }
+
+        .maintenance-screen.visible {
+            display: flex;
+        }
+
+        .maintenance-card {
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            padding: 48px 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .maintenance-icon {
+            font-size: 42px;
+            margin-bottom: 16px;
+        }
+
+        .maintenance-card h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .maintenance-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
         /* ── App Shell ── */
         #app {
             display: none;
@@ -285,6 +342,7 @@
             white-space: nowrap;
             user-select: none;
             flex-shrink: 0;
+            text-decoration: none;
         }
 
         .btn:hover {
