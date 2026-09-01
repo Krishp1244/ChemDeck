@@ -229,54 +229,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
             addChip.innerHTML = '<span>＋</span> New Set';
             addChip.addEventListener('click', () => { showDeckModal('Create New Set', '', (name) => createDeck(name)); });
             bar.appendChild(addChip);
-            const secretChip = document.createElement('div');
-            secretChip.className = 'secret-chip';
-            secretChip.innerHTML = '🔒 Secret';
-            secretChip.addEventListener('click', () => showSecretCodeModal());
-            bar.appendChild(secretChip);
         }
-
-        function showSecretCodeModal() {
-            const overlay = document.createElement('div');
-            overlay.className = 'secret-code-overlay';
-            overlay.innerHTML = `<div class="secret-code-box"><div class="lock-icon">🔐</div><h3>Enter the secret code</h3><p>Only someone special knows this...</p><input type="password" id="secret-code-input" maxlength="8" placeholder="••••••••" /><div class="wrong-code" id="wrong-code-msg">Wrong code, try again 💔</div><div class="modal-actions" style="justify-content:center; gap:12px;"><button class="btn btn-sm" id="secret-cancel" style="border-color:rgba(255,100,150,0.2); color:#f9a8c9;">Cancel</button><button class="btn btn-sm" id="secret-submit" style="background:rgba(255,100,150,0.15); border-color:rgba(255,100,150,0.4); color:#ffc0d6;">Unlock 💕</button></div></div>`;
-            document.body.appendChild(overlay);
-            const input = overlay.querySelector('#secret-code-input');
-            input.focus();
-            function tryUnlock() {
-                if (input.value === '08312024') { overlay.remove(); openLovePage(); }
-                else {
-                    const msg = overlay.querySelector('#wrong-code-msg');
-                    msg.style.display = 'block'; input.value = '';
-                    input.style.borderColor = '#f43f5e';
-                    setTimeout(() => { input.style.borderColor = ''; msg.style.display = 'none'; }, 1500);
-                }
-            }
-            overlay.querySelector('#secret-cancel').addEventListener('click', () => overlay.remove());
-            overlay.querySelector('#secret-submit').addEventListener('click', tryUnlock);
-            input.addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); if (e.key === 'Escape') overlay.remove(); });
-            overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
-        }
-
-        function openLovePage() {
-            const page = $('love-page');
-            page.classList.add('visible');
-            const heartsContainer = $('floating-hearts');
-            heartsContainer.innerHTML = '';
-            const heartEmojis = ['❤️', '💕', '💖', '💗', '💘', '💝', '🩷', '🤍'];
-            for (let i = 0; i < 25; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'floating-heart';
-                heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
-                heart.style.left = Math.random() * 100 + '%';
-                heart.style.fontSize = (14 + Math.random() * 22) + 'px';
-                heart.style.animationDuration = (4 + Math.random() * 6) + 's';
-                heart.style.animationDelay = (Math.random() * 5) + 's';
-                heartsContainer.appendChild(heart);
-            }
-        }
-
-        $('love-back-btn').addEventListener('click', () => { $('love-page').classList.remove('visible'); });
 
         async function loadCards() {
             setSyncing(true);
