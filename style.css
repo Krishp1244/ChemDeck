@@ -622,6 +622,15 @@
 
         .card-face.back {
             transform: rotateY(180deg);
+            pointer-events: none;
+        }
+
+        .card-container.flipped .card-face.front {
+            pointer-events: none;
+        }
+
+        .card-container.flipped .card-face.back {
+            pointer-events: auto;
         }
 
         .card-face-label {
