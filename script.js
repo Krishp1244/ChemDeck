@@ -506,9 +506,16 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
                 let newLeft = origLeft + dx;
                 let newTop = origTop + dy;
 
-                // Clamp inside card
-                newLeft = Math.max(0, Math.min(newLeft, parentRect.width - toolbarRect.width));
-                newTop = Math.max(0, Math.min(newTop, parentRect.height - toolbarRect.height));
+                // Clamp to the viewport (not the card) so the toolbar can be
+                // dragged off the card itself and out of the way of the drawing.
+                const margin = 8;
+                const minLeft = -parentRect.left + margin;
+                const maxLeft = window.innerWidth - parentRect.left - toolbarRect.width - margin;
+                const minTop = -parentRect.top + margin;
+                const maxTop = window.innerHeight - parentRect.top - toolbarRect.height - margin;
+
+                newLeft = Math.max(minLeft, Math.min(newLeft, maxLeft));
+                newTop = Math.max(minTop, Math.min(newTop, maxTop));
 
                 toolbar.style.left = newLeft + 'px';
                 toolbar.style.top = newTop + 'px';
