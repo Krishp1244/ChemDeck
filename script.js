@@ -64,8 +64,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
             return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
         function syncThemeToggleIcons() {
-            const icon = getCurrentTheme() === 'dark' ? '☀️' : '🌙';
-            [$('theme-toggle'), $('theme-toggle-login')].forEach(btn => { if (btn) btn.textContent = icon; });
+            const label = getCurrentTheme() === 'dark' ? 'Light' : 'Dark';
+            [$('theme-toggle'), $('theme-toggle-login')].forEach(btn => { if (btn) btn.textContent = label; });
         }
         function setTheme(theme) {
             document.documentElement.setAttribute('data-theme', theme);
@@ -96,7 +96,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
             cards = []; currentIndex = 0; drawMode = false;
             decks = []; currentDeckId = null;
             document.body.classList.remove('draw-mode');
-            $('btn-draw-toggle').textContent = '🖊️ Draw';
+            $('btn-draw-toggle').textContent = 'Draw';
             $('btn-draw-toggle').classList.remove('btn-active');
             $('btn-clear-canvas').style.display = 'none';
             canvasFront.classList.remove('active');
@@ -539,7 +539,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
                 }
             }
             document.querySelectorAll('#draw-toolbar-front, #draw-toolbar-back').forEach(t => t.classList.toggle('active', drawMode));
-            $('btn-draw-toggle').textContent = drawMode ? '✏️ ON' : '🖊️ Draw';
+            $('btn-draw-toggle').textContent = drawMode ? 'Draw: ON' : 'Draw';
         });
 
         $('btn-scratchpad-toggle').addEventListener('click', () => {
@@ -1075,8 +1075,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
             const container = $('toast-container');
             const t = document.createElement('div');
             t.className = `toast ${type}`;
-            const icons = { success: '✅', error: '⚠️', info: 'ℹ️' };
-            t.innerHTML = `<span>${icons[type] || ''}</span> ${escHtml(msg)}`;
+            t.textContent = msg;
             container.appendChild(t);
             setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(40px)'; t.style.transition = '0.3s ease'; setTimeout(() => t.remove(), 300); }, 2800);
         }

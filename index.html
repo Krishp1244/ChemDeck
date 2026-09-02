@@ -20,7 +20,6 @@
 
     <div id="maintenance-screen" class="maintenance-screen">
         <div class="maintenance-card">
-            <div class="maintenance-icon">🛠️</div>
             <h1>ChemDeck is getting an update</h1>
             <p>We're making some changes behind the scenes — check back in a bit. Your data is safe and nothing is lost.</p>
             <a class="btn btn-accent" href="https://docs.google.com/forms/d/e/1FAIpQLScUP8M6NQgWFrLJnILMcgqaDOjJzO_IBMbGm-C5LzXB8sd2Ug/viewform?usp=dialog"
@@ -36,7 +35,7 @@
     </div>
 
     <div id="login-screen">
-        <button class="theme-toggle-login" id="theme-toggle-login" title="Toggle dark mode">🌙</button>
+        <button class="theme-toggle-login" id="theme-toggle-login" title="Toggle dark mode">Dark</button>
         <div class="login-card">
             <img src="logo-full.png" alt="ChemDeck — Draw. Study. Master organic chemistry." class="login-logo" />
             <p>Smart flashcards with drawing mode &amp; cloud sync.<br>Study anywhere, remember everything.</p>
@@ -74,10 +73,10 @@
                 </div>
                 <img class="user-avatar" id="user-avatar" src="" alt="avatar" />
                 <span class="user-name" id="user-name"></span>
-                <button class="btn btn-sm" id="theme-toggle" title="Toggle dark mode">🌙</button>
+                <button class="btn btn-sm" id="theme-toggle" title="Toggle dark mode">Dark</button>
                 <a class="btn btn-sm" id="btn-feedback"
                     href="https://docs.google.com/forms/d/e/1FAIpQLScUP8M6NQgWFrLJnILMcgqaDOjJzO_IBMbGm-C5LzXB8sd2Ug/viewform?usp=dialog"
-                    target="_blank" rel="noopener noreferrer">💬 Feedback</a>
+                    target="_blank" rel="noopener noreferrer">Feedback</a>
                 <button class="btn btn-sm" id="btn-logout">Sign Out</button>
             </div>
         </header>
@@ -86,10 +85,10 @@
 
         <div class="toolbar" id="toolbar">
             <button class="btn btn-accent" id="btn-add"><span>＋</span> New Card</button>
-            <button class="btn" id="btn-shuffle">🔀 Shuffle</button>
-            <button class="btn" id="btn-draw-toggle">🖊️ Draw</button>
-            <button class="btn" id="btn-scratchpad-toggle">📝 Pad</button>
-            <button class="btn" id="btn-clear-canvas" style="display:none">🗑️ Clear</button>
+            <button class="btn" id="btn-shuffle">Shuffle</button>
+            <button class="btn" id="btn-draw-toggle">Draw</button>
+            <button class="btn" id="btn-scratchpad-toggle">Pad</button>
+            <button class="btn" id="btn-clear-canvas" style="display:none">Clear</button>
             <div class="spacer"></div>
             <span class="card-counter" id="card-counter">0 / 0</span>
         </div>
@@ -136,9 +135,9 @@
 
             <div class="scratchpad-container" id="scratchpad-container">
                 <div class="scratchpad-header">
-                    <span>📝 Scratchpad</span>
+                    <span>Scratchpad</span>
                     <button class="btn btn-sm" id="btn-clear-scratchpad"
-                        style="background:transparent; border:1px solid rgba(255,255,255,0.2); padding:4px 8px; color:var(--text-secondary);">🗑️
+                        style="background:transparent; border:1px solid rgba(255,255,255,0.2); padding:4px 8px; color:var(--text-secondary);">
                         Clear</button>
                 </div>
                 <div class="draw-toolbar active" id="draw-toolbar-scratchpad"
@@ -151,7 +150,6 @@
         </div>
 
         <div class="empty-state" id="empty-state">
-            <div class="icon">📚</div>
             <h2>No flashcards yet</h2>
             <p>Create your first flashcard to start studying. Your cards sync across all your devices!</p>
             <button class="btn btn-accent" id="btn-create-first">＋ Create First Card</button>
