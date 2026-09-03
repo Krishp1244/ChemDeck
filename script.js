@@ -470,7 +470,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
 
         // ── Draggable draw toolbar ──
         function makeDraggable(toolbar) {
-            let dragStartX, dragStartY, origLeft, origTop;
+            let dragStartX, dragStartY, origLeft, origTop, naturalWidth;
             let isDragging = false;
 
             toolbar.addEventListener('pointerdown', (e) => {
@@ -481,6 +481,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
                 toolbar.setPointerCapture(e.pointerId);
                 dragStartX = e.clientX;
                 dragStartY = e.clientY;
+
+                // Measure the toolbar's full horizontal width once (ignoring
+                // any current vertical layout / scroll clipping) so we know
+                // how much room it needs to lay out as a row.
+                const wasVertical = toolbar.classList.contains('vertical');
+                if (wasVertical) toolbar.classList.remove('vertical');
+                naturalWidth = toolbar.scrollWidth;
+                if (wasVertical) toolbar.classList.add('vertical');
 
                 // Convert current position to absolute left/top
                 const rect = toolbar.getBoundingClientRect();
@@ -501,14 +509,23 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
                 const dx = e.clientX - dragStartX;
                 const dy = e.clientY - dragStartY;
                 const parentRect = toolbar.parentElement.getBoundingClientRect();
-                const toolbarRect = toolbar.getBoundingClientRect();
 
                 let newLeft = origLeft + dx;
                 let newTop = origTop + dy;
 
+                // Auto-switch to a vertical layout when there isn't enough
+                // room to the right of the toolbar's new position to fit it
+                // as a horizontal row (e.g. dragged toward a screen edge).
+                const margin = 8;
+                if (!toolbar.classList.contains('locked-orientation')) {
+                    const availableRight = window.innerWidth - (parentRect.left + newLeft) - margin;
+                    toolbar.classList.toggle('vertical', availableRight < naturalWidth);
+                }
+
+                const toolbarRect = toolbar.getBoundingClientRect();
+
                 // Clamp to the viewport (not the card) so the toolbar can be
                 // dragged off the card itself and out of the way of the drawing.
-                const margin = 8;
                 const minLeft = -parentRect.left + margin;
                 const maxLeft = window.innerWidth - parentRect.left - toolbarRect.width - margin;
                 const minTop = -parentRect.top + margin;
@@ -553,6 +570,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
             scratchpadOpen = !scratchpadOpen;
             document.body.classList.toggle('scratchpad-open', scratchpadOpen);
             $('btn-scratchpad-toggle').classList.toggle('btn-active', scratchpadOpen);
+            $('draw-toolbar-scratchpad').classList.toggle('active', scratchpadOpen);
             if (scratchpadOpen) {
                 buildDrawToolbar('draw-toolbar-scratchpad');
                 setTimeout(() => {
@@ -568,15 +586,24 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
             const toolbar = $(id);
             if (toolbar.children.length) return;
 
-            // Add drag handle for card toolbars
-            if (id !== 'draw-toolbar-scratchpad') {
-                const handle = document.createElement('span');
-                handle.className = 'drag-handle';
-                handle.textContent = '⠿';
-                handle.title = 'Drag toolbar';
-                toolbar.appendChild(handle);
-                makeDraggable(toolbar);
-            }
+            const handle = document.createElement('span');
+            handle.className = 'drag-handle';
+            handle.textContent = '⠿';
+            handle.title = 'Drag toolbar';
+            toolbar.appendChild(handle);
+            makeDraggable(toolbar);
+
+            const orientBtn = document.createElement('button');
+            orientBtn.className = 'eraser-btn orient-lock-btn';
+            orientBtn.title = 'Auto orientation (click to lock as-is)';
+            orientBtn.textContent = '⇄';
+            orientBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const locked = toolbar.classList.toggle('locked-orientation');
+                orientBtn.classList.toggle('active', locked);
+                orientBtn.title = locked ? 'Orientation locked (click to unlock)' : 'Auto orientation (click to lock as-is)';
+            });
+            toolbar.appendChild(orientBtn);
 
             swatchColors.forEach(color => {
                 const sw = document.createElement('div');
