@@ -3,7 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
             getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut as fbSignOut
         } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
         import {
-            getFirestore, collection, doc, setDoc, getDocs, deleteDoc, writeBatch, addDoc
+            getFirestore, collection, doc, setDoc, getDocs, deleteDoc, writeBatch, addDoc, deleteField
         } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -34,6 +34,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         let isSaving = false;
         let decks = [];
         let currentDeckId = null;
+        let folders = [];
+        let draggedDeckId = null;
+        const collapsedFolders = new Set();
         let scratchpadOpen = false;
 
         // ── Pinch zoom state per canvas ──
@@ -77,6 +80,22 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         $('theme-toggle-login').addEventListener('click', toggleTheme);
         syncThemeToggleIcons();
 
+        // ── Sidebar ──
+        let sidebarOpen = (() => {
+            try {
+                const saved = localStorage.getItem('chemdeck-sidebar');
+                if (saved !== null) return saved === 'open';
+            } catch (e) { }
+            return window.innerWidth > 900;
+        })();
+        function applySidebarState() { document.body.classList.toggle('sidebar-open', sidebarOpen); }
+        applySidebarState();
+        $('btn-sidebar-toggle').addEventListener('click', () => {
+            sidebarOpen = !sidebarOpen;
+            try { localStorage.setItem('chemdeck-sidebar', sidebarOpen ? 'open' : 'closed'); } catch (e) { }
+            applySidebarState();
+        });
+
         // ── Auth ──
         $('btn-login').addEventListener('click', async () => {
             const btn = $('btn-login');
@@ -102,7 +121,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
             canvasFront.classList.remove('active');
             canvasBack.classList.remove('active');
             document.querySelectorAll('.draw-toolbar').forEach(t => t.classList.remove('active'));
-            $('deck-bar').innerHTML = '';
+            folders = [];
+            $('sidebar-list').innerHTML = '';
         });
 
         onAuthStateChanged(auth, async user => {
@@ -120,7 +140,15 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         });
 
         function userDecksCol() { return collection(db, 'users', currentUser.uid, 'decks'); }
+        function userFoldersCol() { return collection(db, 'users', currentUser.uid, 'folders'); }
         function deckCardsCol(deckId) { return collection(db, 'users', currentUser.uid, 'decks', deckId, 'cards'); }
+
+        async function loadFolders() {
+            const snap = await getDocs(userFoldersCol());
+            folders = [];
+            snap.forEach(d => { folders.push({ id: d.id, ...d.data() }); });
+            folders.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+        }
 
         async function loadDecks() {
             setSyncing(true);
@@ -141,6 +169,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
                     showToast('Migrated existing cards to General deck', 'info');
                 }
 
+                await loadFolders();
+
                 const snap = await getDocs(userDecksCol());
                 decks = [];
                 snap.forEach(d => { decks.push({ id: d.id, ...d.data() }); });
@@ -152,7 +182,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
                 }
 
                 currentDeckId = decks[0].id;
-                renderDeckBar();
+                renderSidebar();
                 await loadCards();
             } catch (e) {
                 console.error('Load decks error:', e);
@@ -168,7 +198,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
                 decks.push({ id: ref.id, name, order: decks.length });
                 currentDeckId = ref.id;
                 cards = []; currentIndex = 0;
-                renderDeckBar();
+                renderSidebar();
                 renderAll();
                 showToast(`Created "${name}"`, 'success');
             } catch (e) { showToast('Failed to create deck', 'error'); }
@@ -180,7 +210,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
                 await setDoc(doc(db, 'users', currentUser.uid, 'decks', deckId), { name: newName }, { merge: true });
                 const d = decks.find(d => d.id === deckId);
                 if (d) d.name = newName;
-                renderDeckBar();
+                renderSidebar();
                 showToast('Deck renamed', 'success');
             } catch (e) { console.error('Rename error:', e); }
         }
@@ -199,7 +229,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
                     await deleteDoc(doc(db, 'users', currentUser.uid, 'decks', deckId));
                     decks = decks.filter(d => d.id !== deckId);
                     if (currentDeckId === deckId) { currentDeckId = decks[0].id; await loadCards(); }
-                    renderDeckBar();
+                    renderSidebar();
                     showToast('Deck deleted', 'error');
                 } catch (e) { console.error('Delete deck error:', e); }
             });
@@ -210,8 +240,65 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
             saveDrawingData();
             if (saveTimeout) { clearTimeout(saveTimeout); await saveAllCards(); }
             currentDeckId = deckId;
-            renderDeckBar();
+            renderSidebar();
             await loadCards();
+        }
+
+        async function createFolder(name) {
+            if (!currentUser) return;
+            try {
+                const ref = await addDoc(userFoldersCol(), { name, order: folders.length, createdAt: Date.now() });
+                folders.push({ id: ref.id, name, order: folders.length });
+                renderSidebar();
+                showToast(`Created folder "${name}"`, 'success');
+            } catch (e) { showToast('Failed to create folder', 'error'); }
+        }
+
+        async function renameFolder(folderId, newName) {
+            if (!currentUser) return;
+            try {
+                await setDoc(doc(db, 'users', currentUser.uid, 'folders', folderId), { name: newName }, { merge: true });
+                const f = folders.find(f => f.id === folderId);
+                if (f) f.name = newName;
+                renderSidebar();
+                showToast('Folder renamed', 'success');
+            } catch (e) { console.error('Rename folder error:', e); }
+        }
+
+        async function deleteFolderConfirm(folderId) {
+            const folder = folders.find(f => f.id === folderId);
+            if (!folder) return;
+            const inside = decks.filter(d => d.folderId === folderId);
+            const count = inside.length;
+            showConfirm('Delete Folder', `Delete "${escHtml(folder.name)}"? ${count} set${count === 1 ? '' : 's'} inside will move back to the top level, not be deleted.`, async () => {
+                try {
+                    const batch = writeBatch(db);
+                    inside.forEach(d => { batch.update(doc(db, 'users', currentUser.uid, 'decks', d.id), { folderId: deleteField() }); });
+                    batch.delete(doc(db, 'users', currentUser.uid, 'folders', folderId));
+                    await batch.commit();
+                    inside.forEach(d => { delete d.folderId; });
+                    folders = folders.filter(f => f.id !== folderId);
+                    renderSidebar();
+                    showToast('Folder deleted', 'error');
+                } catch (e) { console.error('Delete folder error:', e); }
+            });
+        }
+
+        async function moveDeckToFolder(deckId, folderId) {
+            const deck = decks.find(d => d.id === deckId);
+            if (!deck) return;
+            if ((deck.folderId || null) === (folderId || null)) return;
+            try {
+                const ref = doc(db, 'users', currentUser.uid, 'decks', deckId);
+                if (folderId) {
+                    await setDoc(ref, { folderId }, { merge: true });
+                    deck.folderId = folderId;
+                } else {
+                    await setDoc(ref, { folderId: deleteField() }, { merge: true });
+                    delete deck.folderId;
+                }
+                renderSidebar();
+            } catch (e) { console.error('Move deck error:', e); showToast('Failed to move set', 'error'); }
         }
 
         function showDeckModal(title, defaultVal, onSave) {
@@ -227,29 +314,92 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
             overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
         }
 
-        function renderDeckBar() {
-            const bar = $('deck-bar');
-            bar.innerHTML = '<span class="deck-bar-label">Sets</span>';
-            decks.forEach(deck => {
-                const chip = document.createElement('div');
-                chip.className = 'deck-chip' + (deck.id === currentDeckId ? ' active' : '');
-                chip.innerHTML = `<span>${escHtml(deck.name)}</span><span class="deck-actions"><button class="deck-action-btn" data-action="rename" title="Rename">✏</button><button class="deck-action-btn" data-action="delete" title="Delete">✕</button></span>`;
-                chip.addEventListener('click', (e) => {
-                    const action = e.target.closest('[data-action]');
+        const FOLDER_ICON_SVG = '<svg class="node-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6.5a1.5 1.5 0 0 1 1.5-1.5h3.5l1.5 1.8h8.5a1.5 1.5 0 0 1 1.5 1.5v7.7a1.5 1.5 0 0 1-1.5 1.5H5a1.5 1.5 0 0 1-1.5-1.5v-9.5z" /></svg>';
+        const SET_ICON_SVG = '<svg class="node-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="13" height="9" rx="1.6" /><rect x="5" y="4.5" width="13" height="9" rx="1.6" /></svg>';
+
+        function buildDeckRow(deck, nested) {
+            const row = document.createElement('div');
+            row.className = 'sidebar-row deck-row' + (deck.id === currentDeckId ? ' active' : '') + (nested ? ' nested' : '');
+            row.draggable = true;
+            row.innerHTML = `${SET_ICON_SVG}<span class="node-name">${escHtml(deck.name)}</span><span class="node-actions"><button class="node-action-btn" data-deck-action="rename" title="Rename">✏</button><button class="node-action-btn" data-deck-action="delete" title="Delete">✕</button></span>`;
+            row.addEventListener('click', (e) => {
+                const action = e.target.closest('[data-deck-action]');
+                if (action) {
+                    e.stopPropagation();
+                    if (action.dataset.deckAction === 'rename') showDeckModal('Rename Set', deck.name, (name) => renameDeck(deck.id, name));
+                    else if (action.dataset.deckAction === 'delete') deleteDeckConfirm(deck.id);
+                } else {
+                    switchDeck(deck.id);
+                }
+            });
+            row.addEventListener('dragstart', (e) => {
+                draggedDeckId = deck.id;
+                row.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+            });
+            row.addEventListener('dragend', () => {
+                draggedDeckId = null;
+                row.classList.remove('dragging');
+                document.querySelectorAll('.drop-target').forEach(el => el.classList.remove('drop-target'));
+            });
+            return row;
+        }
+
+        function renderSidebar() {
+            const list = $('sidebar-list');
+            list.innerHTML = '';
+
+            [...folders].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).forEach(folder => {
+                const folderDecks = decks.filter(d => d.folderId === folder.id).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+                const wrap = document.createElement('div');
+                wrap.className = 'sidebar-folder' + (collapsedFolders.has(folder.id) ? '' : ' expanded');
+
+                const folderRow = document.createElement('div');
+                folderRow.className = 'sidebar-row folder-row';
+                folderRow.innerHTML = `<span class="folder-caret">›</span>${FOLDER_ICON_SVG}<span class="node-name">${escHtml(folder.name)}</span><span class="node-actions"><button class="node-action-btn" data-folder-action="rename" title="Rename">✏</button><button class="node-action-btn" data-folder-action="delete" title="Delete">✕</button></span>`;
+                folderRow.addEventListener('click', (e) => {
+                    const action = e.target.closest('[data-folder-action]');
                     if (action) {
                         e.stopPropagation();
-                        if (action.dataset.action === 'rename') showDeckModal('Rename Deck', deck.name, (name) => renameDeck(deck.id, name));
-                        else if (action.dataset.action === 'delete') deleteDeckConfirm(deck.id);
-                    } else { switchDeck(deck.id); }
+                        if (action.dataset.folderAction === 'rename') showDeckModal('Rename Folder', folder.name, (name) => renameFolder(folder.id, name));
+                        else if (action.dataset.folderAction === 'delete') deleteFolderConfirm(folder.id);
+                    } else {
+                        if (collapsedFolders.has(folder.id)) collapsedFolders.delete(folder.id); else collapsedFolders.add(folder.id);
+                        renderSidebar();
+                    }
                 });
-                bar.appendChild(chip);
+                folderRow.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
+                folderRow.addEventListener('dragenter', (e) => { e.preventDefault(); folderRow.classList.add('drop-target'); });
+                folderRow.addEventListener('dragleave', () => folderRow.classList.remove('drop-target'));
+                folderRow.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    folderRow.classList.remove('drop-target');
+                    if (draggedDeckId) moveDeckToFolder(draggedDeckId, folder.id);
+                });
+                wrap.appendChild(folderRow);
+
+                const decksContainer = document.createElement('div');
+                decksContainer.className = 'sidebar-folder-decks';
+                folderDecks.forEach(deck => decksContainer.appendChild(buildDeckRow(deck, true)));
+                wrap.appendChild(decksContainer);
+
+                list.appendChild(wrap);
             });
-            const addChip = document.createElement('div');
-            addChip.className = 'deck-chip add-deck';
-            addChip.innerHTML = '<span>＋</span> New Set';
-            addChip.addEventListener('click', () => { showDeckModal('Create New Set', '', (name) => createDeck(name)); });
-            bar.appendChild(addChip);
+
+            const topSection = document.createElement('div');
+            topSection.className = 'sidebar-top-decks';
+            topSection.addEventListener('dragover', (e) => e.preventDefault());
+            topSection.addEventListener('drop', (e) => {
+                e.preventDefault();
+                if (draggedDeckId) moveDeckToFolder(draggedDeckId, null);
+            });
+            decks.filter(d => !d.folderId).sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+                .forEach(deck => topSection.appendChild(buildDeckRow(deck, false)));
+            list.appendChild(topSection);
         }
+
+        $('btn-new-folder').addEventListener('click', () => { showDeckModal('Create New Folder', '', (name) => createFolder(name)); });
+        $('btn-new-set').addEventListener('click', () => { showDeckModal('Create New Set', '', (name) => createDeck(name)); });
 
         async function loadCards() {
             setSyncing(true);

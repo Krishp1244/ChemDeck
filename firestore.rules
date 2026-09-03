@@ -17,13 +17,24 @@ service cloud.firestore {
       allow read, delete: if isOwner(uid);
     }
 
-    match /users/{uid}/decks/{deckId} {
+    match /users/{uid}/folders/{folderId} {
       allow read, delete: if isOwner(uid);
       allow create, update: if isOwner(uid)
         && request.resource.data.keys().hasOnly(['name', 'order', 'createdAt'])
         && isString(request.resource.data.name)
         && request.resource.data.name.size() <= 40
         && request.resource.data.order is number;
+    }
+
+    match /users/{uid}/decks/{deckId} {
+      allow read, delete: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['name', 'order', 'createdAt', 'folderId'])
+        && isString(request.resource.data.name)
+        && request.resource.data.name.size() <= 40
+        && request.resource.data.order is number
+        && (!('folderId' in request.resource.data)
+            || (isString(request.resource.data.folderId) && request.resource.data.folderId.size() <= 200));
 
       match /cards/{cardId} {
         allow read, delete: if isOwner(uid);

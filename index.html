@@ -70,6 +70,11 @@
     <div id="app">
         <header>
             <div class="header-left">
+                <button class="btn btn-sm sidebar-toggle-btn" id="btn-sidebar-toggle" title="Toggle sidebar">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 6h18M3 12h18M3 18h18" />
+                    </svg>
+                </button>
                 <svg class="header-logo" viewBox="0 0 100 100" aria-hidden="true">
                     <polygon points="100,50 75,93.3 25,93.3 0,50 25,6.7 75,6.7" />
                 </svg>
@@ -90,19 +95,28 @@
             </div>
         </header>
 
-        <div class="deck-bar" id="deck-bar"></div>
+        <div class="app-body">
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">Folders &amp; Sets</div>
+                <div class="sidebar-actions">
+                    <button class="sidebar-action-btn" id="btn-new-folder"><span>＋</span> New Folder</button>
+                    <button class="sidebar-action-btn" id="btn-new-set"><span>＋</span> New Set</button>
+                </div>
+                <div class="sidebar-list" id="sidebar-list"></div>
+            </aside>
 
-        <div class="toolbar" id="toolbar">
-            <button class="btn btn-accent" id="btn-add"><span>＋</span> New Card</button>
-            <button class="btn" id="btn-shuffle">Shuffle</button>
-            <button class="btn" id="btn-draw-toggle">Draw</button>
-            <button class="btn" id="btn-scratchpad-toggle">Pad</button>
-            <button class="btn" id="btn-clear-canvas" style="display:none">Clear</button>
-            <div class="spacer"></div>
-            <span class="card-counter" id="card-counter">0 / 0</span>
-        </div>
+            <div class="main-content">
+                <div class="toolbar" id="toolbar">
+                    <button class="btn btn-accent" id="btn-add"><span>＋</span> New Card</button>
+                    <button class="btn" id="btn-shuffle">Shuffle</button>
+                    <button class="btn" id="btn-draw-toggle">Draw</button>
+                    <button class="btn" id="btn-scratchpad-toggle">Pad</button>
+                    <button class="btn" id="btn-clear-canvas" style="display:none">Clear</button>
+                    <div class="spacer"></div>
+                    <span class="card-counter" id="card-counter">0 / 0</span>
+                </div>
 
-        <div class="card-stage" id="card-stage" style="display:none">
+                <div class="card-stage" id="card-stage" style="display:none">
             <button class="card-nav-btn" id="btn-prev">‹</button>
 
             <div class="card-container" id="card-container">
@@ -156,15 +170,17 @@
             </div>
         </div>
 
-        <div class="empty-state" id="empty-state">
-            <h2>No flashcards yet</h2>
-            <p>Create your first flashcard to start studying. Your cards sync across all your devices!</p>
-            <button class="btn btn-accent" id="btn-create-first">＋ Create First Card</button>
-        </div>
+                <div class="empty-state" id="empty-state">
+                    <h2>No flashcards yet</h2>
+                    <p>Create your first flashcard to start studying. Your cards sync across all your devices!</p>
+                    <button class="btn btn-accent" id="btn-create-first">＋ Create First Card</button>
+                </div>
 
-        <div class="card-grid-section" id="grid-section" style="display:none">
-            <div class="section-header">All Cards</div>
-            <div class="card-grid" id="card-grid"></div>
+                <div class="card-grid-section" id="grid-section" style="display:none">
+                    <div class="section-header">All Cards</div>
+                    <div class="card-grid" id="card-grid"></div>
+                </div>
+            </div>
         </div>
     </div>
 
