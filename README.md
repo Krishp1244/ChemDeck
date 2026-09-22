@@ -10,7 +10,7 @@ A flashcard study app built for organic chemistry — draw structures directly o
 - Freehand drawing on any card (pen, highlighter, eraser, pressure-sensitive with a stylus)
 - A separate scratchpad for working out problems
 - Organize cards into named sets (decks)
-- Google sign-in with cross-device cloud sync
+- Google sign-in with email confirmation and cross-device cloud sync
 - Responsive layout for desktop, tablet, and mobile
 
 ## Tech stack
@@ -32,6 +32,15 @@ python -m http.server 8080
 ```
 
 Then open `http://localhost:8080`. Sign-in and sync require your own Firebase project — update the `firebaseConfig` object in `script.js` and deploy `firestore.rules` to it.
+
+## Security and terms
+
+Security posture, the September 2026 review, and how to report a vulnerability are documented in
+[SECURITY.md](SECURITY.md). The user-facing terms, privacy notice, and cookie policy live in
+`terms.html`, served at `/terms.html`.
+
+Changing `terms.html` materially means bumping `TERMS_VERSION` in `script.js` and the version
+string in `terms.html` together, which re-prompts every existing user once.
 
 ## Feedback
 

@@ -11,10 +11,34 @@ service cloud.firestore {
       return v is string;
     }
 
+    // A drawing field must be empty or a base64 PNG data URL, nothing else.
+    // Without this an attacker with write access to the account could store
+    // arbitrary markup here and have it land in an <img src> on render.
+    function isPngDataUrl(v) {
+      return v is string
+        && v.size() <= 700000
+        && (v == '' || v.matches('data:image/png;base64,[A-Za-z0-9+/]+={0,2}'));
+    }
+
+    function isOptionalTimestampNumber(data, field) {
+      return !(field in data) || data[field] is number;
+    }
+
     // Legacy pre-migration collection: users/{uid}/flashcards/{cardId}
     // Only needs read (to migrate) and delete (after migration) — no new writes.
     match /users/{uid}/flashcards/{cardId} {
       allow read, delete: if isOwner(uid);
+    }
+
+    // Terms / cookie consent record. One fixed document id, two fixed fields.
+    match /users/{uid}/meta/{docId} {
+      allow read, delete: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && docId == 'consent'
+        && request.resource.data.keys().hasOnly(['termsVersion', 'acceptedAt'])
+        && isString(request.resource.data.termsVersion)
+        && request.resource.data.termsVersion.size() <= 20
+        && request.resource.data.acceptedAt is number;
     }
 
     match /users/{uid}/folders/{folderId} {
@@ -23,7 +47,8 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(['name', 'order', 'createdAt'])
         && isString(request.resource.data.name)
         && request.resource.data.name.size() <= 40
-        && request.resource.data.order is number;
+        && request.resource.data.order is number
+        && isOptionalTimestampNumber(request.resource.data, 'createdAt');
     }
 
     match /users/{uid}/decks/{deckId} {
@@ -33,6 +58,7 @@ service cloud.firestore {
         && isString(request.resource.data.name)
         && request.resource.data.name.size() <= 40
         && request.resource.data.order is number
+        && isOptionalTimestampNumber(request.resource.data, 'createdAt')
         && (!('folderId' in request.resource.data)
             || (isString(request.resource.data.folderId) && request.resource.data.folderId.size() <= 200));
 
@@ -42,9 +68,9 @@ service cloud.firestore {
           && request.resource.data.keys().hasOnly(['front', 'back', 'drawFront', 'drawBack', 'scratchpad', 'order'])
           && isString(request.resource.data.front) && request.resource.data.front.size() <= 5000
           && isString(request.resource.data.back) && request.resource.data.back.size() <= 5000
-          && isString(request.resource.data.drawFront)
-          && isString(request.resource.data.drawBack)
-          && isString(request.resource.data.scratchpad)
+          && isPngDataUrl(request.resource.data.drawFront)
+          && isPngDataUrl(request.resource.data.drawBack)
+          && isPngDataUrl(request.resource.data.scratchpad)
           && request.resource.data.order is number;
       }
     }

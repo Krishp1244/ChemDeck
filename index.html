@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <title>CHEMDECK — Smart Flashcards</title>
     <meta name="description" content="A beautiful flashcard app with drawing mode, Google sign-in, and cloud sync." />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.googleusercontent.com; connect-src 'self' https://*.googleapis.com https://securetoken.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com; frame-src https://accounts.google.com https://*.firebaseapp.com; object-src 'none'; base-uri 'self';" />
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.googleusercontent.com; connect-src 'self' https://*.googleapis.com https://securetoken.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com; frame-src https://accounts.google.com https://*.firebaseapp.com; object-src 'none'; base-uri 'none'; form-action 'self'; worker-src 'none'; manifest-src 'none'; media-src 'none'; upgrade-insecure-requests" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <script src="theme-init.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -37,6 +39,55 @@
     </div>
     <script src="status-check.js"></script>
 
+    <div class="consent-overlay" id="cookie-consent" role="dialog" aria-modal="true"
+        aria-labelledby="cookie-consent-title">
+        <div class="consent-card">
+            <span class="consent-eyebrow">Before you start</span>
+            <h2 id="cookie-consent-title">We keep a few things in your browser</h2>
+            <p>ChemDeck stores data on this device so the app works at all. Nothing is sold, nothing is shared with
+                advertisers, and there is no third party analytics or tracking here.</p>
+            <ul class="consent-list">
+                <li><strong>Sign-in session.</strong> Set by Google and Firebase Authentication so you stay signed in
+                    between visits.</li>
+                <li><strong>Preferences.</strong> Your light or dark theme choice and whether the sidebar is open.</li>
+                <li><strong>This choice.</strong> A record that you accepted, so we stop asking.</li>
+            </ul>
+            <p class="consent-fineprint">All of it is strictly necessary. If you would rather not have it, close this
+                tab instead. Details are in the <a href="terms.html" target="_blank"
+                    rel="noopener noreferrer">Terms and Privacy Notice</a>.</p>
+            <div class="consent-actions">
+                <button class="btn btn-accent" id="cookie-accept">Accept and continue</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="consent-overlay" id="consent-gate" role="dialog" aria-modal="true" aria-labelledby="consent-gate-title">
+        <div class="consent-card">
+            <span class="consent-eyebrow">Confirm it is you</span>
+            <h2 id="consent-gate-title">Is this the right account?</h2>
+            <p>Your flashcards are tied to this email address. Check it carefully, because cards saved under the wrong
+                account are easy to lose track of.</p>
+            <div class="gate-identity">
+                <img class="gate-avatar" id="gate-avatar" alt="" hidden />
+                <div class="gate-identity-text">
+                    <span class="gate-name" id="gate-name"></span>
+                    <span class="gate-email" id="gate-email"></span>
+                </div>
+            </div>
+            <div class="gate-terms">
+                <label class="gate-terms-label">
+                    <input type="checkbox" id="gate-terms-check" />
+                    <span>I have read and agree to the <a href="terms.html" target="_blank"
+                            rel="noopener noreferrer">Terms and Conditions</a> and the Privacy Notice.</span>
+                </label>
+            </div>
+            <div class="consent-actions">
+                <button class="btn btn-accent" id="gate-confirm">Yes, this is me</button>
+                <button class="btn" id="gate-switch">Use a different account</button>
+            </div>
+        </div>
+    </div>
+
     <div class="bg-glow">
         <div class="orb"></div>
         <div class="orb"></div>
@@ -64,6 +115,8 @@
             <a class="feedback-link"
                 href="https://docs.google.com/forms/d/e/1FAIpQLScUP8M6NQgWFrLJnILMcgqaDOjJzO_IBMbGm-C5LzXB8sd2Ug/viewform?usp=dialog"
                 target="_blank" rel="noopener noreferrer">Have feedback or a feature idea?</a>
+            <p class="login-legal">Signing in means you accept the <a href="terms.html">Terms and Conditions</a> and the
+                <a href="terms.html#privacy">Privacy Notice</a>.</p>
         </div>
     </div>
 
@@ -91,6 +144,7 @@
                 <a class="btn btn-sm" id="btn-feedback"
                     href="https://docs.google.com/forms/d/e/1FAIpQLScUP8M6NQgWFrLJnILMcgqaDOjJzO_IBMbGm-C5LzXB8sd2Ug/viewform?usp=dialog"
                     target="_blank" rel="noopener noreferrer">Feedback</a>
+                <a class="btn btn-sm" id="btn-terms" href="terms.html">Terms</a>
                 <button class="btn btn-sm" id="btn-logout">Sign Out</button>
             </div>
         </header>

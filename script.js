@@ -3,7 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
             getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut as fbSignOut
         } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
         import {
-            getFirestore, collection, doc, setDoc, getDocs, deleteDoc, writeBatch, addDoc, deleteField
+            getFirestore, collection, doc, setDoc, getDoc, getDocs, deleteDoc, writeBatch, addDoc, deleteField
         } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -19,6 +19,17 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         const auth = getAuth(fbApp);
         const db = getFirestore(fbApp);
         const provider = new GoogleAuthProvider();
+        // Always show the account chooser. Without this, a shared browser silently
+        // reuses whichever Google account signed in last.
+        provider.setCustomParameters({ prompt: 'select_account' });
+
+        // Clickjacking guard. GitHub Pages cannot send a frame-ancestors header,
+        // so refuse to render inside someone else's frame.
+        if (window.top !== window.self) {
+            try { window.top.location = window.self.location; } catch (e) { }
+            document.documentElement.replaceChildren();
+            throw new Error('ChemDeck refuses to run inside a frame.');
+        }
 
         let currentUser = null;
         let cards = [];
@@ -98,13 +109,19 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
 
         // ── Auth ──
         $('btn-login').addEventListener('click', async () => {
+            if (!hasCookieConsent()) { showCookieBanner(); return; }
             const btn = $('btn-login');
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner"></span> Signing in…';
             try {
                 await signInWithPopup(auth, provider);
             } catch (e) {
-                if (e.code !== 'auth/popup-closed-by-user') showToast('Sign-in failed: ' + e.message, 'error');
+                // Log the detail, show the user something that leaks nothing about
+                // the project, the account, or which step failed.
+                console.error('Sign-in error:', e);
+                if (e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
+                    showToast('Sign-in did not complete. Please try again.', 'error');
+                }
             }
             btn.disabled = false;
             btn.innerHTML = '<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Sign in with Google';
@@ -123,20 +140,114 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
             document.querySelectorAll('.draw-toolbar').forEach(t => t.classList.remove('active'));
             folders = [];
             $('sidebar-list').innerHTML = '';
+            $('consent-gate').classList.remove('visible');
         });
+
+        // -- Consent, terms, and account confirmation --
+        // Bump TERMS_VERSION whenever terms.html changes in a way people should
+        // re-read. Everyone is asked to agree again on their next sign-in.
+        const TERMS_VERSION = '2026-09-22';
+        const COOKIE_CONSENT_KEY = 'chemdeck-cookie-consent';
+        const TERMS_CACHE_PREFIX = 'chemdeck-terms-accepted:';
+
+        function hasCookieConsent() {
+            try { return localStorage.getItem(COOKIE_CONSENT_KEY) === TERMS_VERSION; } catch (e) { return false; }
+        }
+        function showCookieBanner() { $('cookie-consent').classList.add('visible'); }
+        $('cookie-accept').addEventListener('click', () => {
+            try { localStorage.setItem(COOKIE_CONSENT_KEY, TERMS_VERSION); } catch (e) { }
+            $('cookie-consent').classList.remove('visible');
+        });
+        if (!hasCookieConsent()) showCookieBanner();
+
+        async function hasAcceptedTerms(uid) {
+            try {
+                if (localStorage.getItem(TERMS_CACHE_PREFIX + uid) === TERMS_VERSION) return true;
+            } catch (e) { }
+            try {
+                const snap = await getDoc(doc(db, 'users', uid, 'meta', 'consent'));
+                if (snap.exists() && snap.data().termsVersion === TERMS_VERSION) {
+                    try { localStorage.setItem(TERMS_CACHE_PREFIX + uid, TERMS_VERSION); } catch (e) { }
+                    return true;
+                }
+            } catch (e) { console.error('Consent read failed:', e); }
+            return false;
+        }
+
+        async function recordTermsAcceptance(uid) {
+            try {
+                await setDoc(doc(db, 'users', uid, 'meta', 'consent'),
+                    { termsVersion: TERMS_VERSION, acceptedAt: Date.now() });
+            } catch (e) { console.error('Consent write failed:', e); }
+            try { localStorage.setItem(TERMS_CACHE_PREFIX + uid, TERMS_VERSION); } catch (e) { }
+        }
+
+        // Resolves true if the person confirms this is their account and agrees to
+        // the terms, false if they want a different account.
+        function showConsentGate(user) {
+            return new Promise(resolve => {
+                const gate = $('consent-gate');
+                const checkbox = $('gate-terms-check');
+                const confirmBtn = $('gate-confirm');
+
+                $('gate-email').textContent = user.email;
+                $('gate-name').textContent = user.displayName || 'ChemDeck user';
+
+                const avatar = $('gate-avatar');
+                const photo = safeHttpsUrl(user.photoURL);
+                if (photo) { avatar.src = photo; avatar.hidden = false; }
+                else { avatar.removeAttribute('src'); avatar.hidden = true; }
+
+                checkbox.checked = false;
+                const syncBtn = () => { confirmBtn.disabled = !checkbox.checked; };
+                syncBtn();
+
+                const ctrl = new AbortController();
+                const finish = (ok) => { ctrl.abort(); gate.classList.remove('visible'); resolve(ok); };
+                const opts = { signal: ctrl.signal };
+                checkbox.addEventListener('change', syncBtn, opts);
+                confirmBtn.addEventListener('click', () => finish(true), opts);
+                $('gate-switch').addEventListener('click', () => finish(false), opts);
+
+                gate.classList.add('visible');
+                confirmBtn.focus();
+            });
+        }
 
         onAuthStateChanged(auth, async user => {
             currentUser = user;
-            if (user) {
-                loginScreen.classList.add('hidden');
-                appEl.classList.add('visible');
-                $('user-avatar').src = user.photoURL || '';
-                $('user-name').textContent = user.displayName || 'User';
-                await loadDecks();
-            } else {
+            if (!user) {
                 loginScreen.classList.remove('hidden');
                 appEl.classList.remove('visible');
+                $('consent-gate').classList.remove('visible');
+                return;
             }
+
+            // Google hands back a verified address for ordinary accounts. Anything
+            // else (an unverified federated identity, a provider with no email) is
+            // refused rather than trusted.
+            if (!user.email || !user.emailVerified) {
+                await fbSignOut(auth);
+                showToast('That account has no verified email address, so it cannot be used here.', 'error');
+                return;
+            }
+
+            // First login only. Once the consent record exists, neither the terms
+            // nor the account confirmation are shown again, unless TERMS_VERSION is
+            // bumped because the terms themselves changed.
+            if (!await hasAcceptedTerms(user.uid)) {
+                const confirmed = await showConsentGate(user);
+                if (!confirmed) { await fbSignOut(auth); return; }
+                await recordTermsAcceptance(user.uid);
+            }
+
+            loginScreen.classList.add('hidden');
+            appEl.classList.add('visible');
+            const photo = safeHttpsUrl(user.photoURL);
+            if (photo) $('user-avatar').src = photo;
+            else $('user-avatar').removeAttribute('src');
+            $('user-name').textContent = user.displayName || 'User';
+            await loadDecks();
         });
 
         function userDecksCol() { return collection(db, 'users', currentUser.uid, 'decks'); }
@@ -218,7 +329,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         async function deleteDeckConfirm(deckId) {
             const deck = decks.find(d => d.id === deckId);
             if (!deck || decks.length <= 1) { showToast('Cannot delete the only deck', 'error'); return; }
-            showConfirm('Delete Deck', `Delete "${escHtml(deck.name)}" and all its cards? This cannot be undone.`, async () => {
+            showConfirm('Delete Deck', `Delete "${deck.name}" and all its cards? This cannot be undone.`, async () => {
                 try {
                     const cardsSnap = await getDocs(deckCardsCol(deckId));
                     if (!cardsSnap.empty) {
@@ -270,7 +381,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
             if (!folder) return;
             const inside = decks.filter(d => d.folderId === folderId);
             const count = inside.length;
-            showConfirm('Delete Folder', `Delete "${escHtml(folder.name)}"? ${count} set${count === 1 ? '' : 's'} inside will move back to the top level, not be deleted.`, async () => {
+            showConfirm('Delete Folder', `Delete "${folder.name}"? ${count} set${count === 1 ? '' : 's'} inside will move back to the top level, not be deleted.`, async () => {
                 try {
                     const batch = writeBatch(db);
                     inside.forEach(d => { batch.update(doc(db, 'users', currentUser.uid, 'decks', d.id), { folderId: deleteField() }); });
@@ -304,9 +415,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         function showDeckModal(title, defaultVal, onSave) {
             const overlay = document.createElement('div');
             overlay.className = 'deck-modal-overlay';
-            overlay.innerHTML = `<div class="deck-modal"><h3>${title}</h3><input type="text" id="deck-name-input" value="${escHtml(defaultVal)}" maxlength="40" placeholder="e.g. Chapter 1 - Reactions" /><div class="modal-actions"><button class="btn btn-sm" id="deck-modal-cancel">Cancel</button><button class="btn btn-sm btn-accent" id="deck-modal-save">Save</button></div></div>`;
+            // Built as nodes, not as an HTML string: a stored name can never be
+            // parsed as markup here, whatever it contains.
+            overlay.innerHTML = '<div class="deck-modal"><h3></h3><input type="text" id="deck-name-input" maxlength="40" placeholder="e.g. Chapter 1 - Reactions" /><div class="modal-actions"><button class="btn btn-sm" id="deck-modal-cancel">Cancel</button><button class="btn btn-sm btn-accent" id="deck-modal-save">Save</button></div></div>';
+            overlay.querySelector('h3').textContent = title;
             document.body.appendChild(overlay);
             const input = overlay.querySelector('#deck-name-input');
+            input.value = defaultVal || '';
             input.focus(); input.select();
             overlay.querySelector('#deck-modal-cancel').addEventListener('click', () => overlay.remove());
             overlay.querySelector('#deck-modal-save').addEventListener('click', () => { const val = input.value.trim(); if (val) { onSave(val); overlay.remove(); } });
@@ -427,7 +542,17 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
                     const batch = writeBatch(db);
                     cards.slice(i, i + batchSize).forEach((c, j) => {
                         const ref = doc(db, 'users', currentUser.uid, 'decks', currentDeckId, 'cards', c.id);
-                        batch.set(ref, { front: c.front || '', back: c.back || '', drawFront: c.drawFront || '', drawBack: c.drawBack || '', scratchpad: c.scratchpad || '', order: i + j });
+                        // Run the drawings through the same validator the Firestore
+                        // rules apply, so a malformed value is dropped here rather
+                        // than failing the whole batch server side.
+                        batch.set(ref, {
+                            front: (c.front || '').slice(0, 5000),
+                            back: (c.back || '').slice(0, 5000),
+                            drawFront: safePngDataUrl(c.drawFront),
+                            drawBack: safePngDataUrl(c.drawBack),
+                            scratchpad: safePngDataUrl(c.scratchpad),
+                            order: i + j
+                        });
                     });
                     await batch.commit();
                 }
@@ -443,7 +568,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         }
 
         function addCard() {
-            const id = 'card_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+            const id = 'card_' + (crypto.randomUUID
+                ? crypto.randomUUID()
+                : Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, '0')).join(''));
             cards.push({ id, front: '', back: '', drawFront: '', drawBack: '', scratchpad: '', order: cards.length });
             currentIndex = cards.length - 1;
             cardContainer.classList.remove('flipped');
@@ -456,7 +583,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         function deleteCard(idx) {
             if (cards.length === 0 || idx < 0 || idx >= cards.length) return;
             const card = cards[idx];
-            const preview = card.front ? escHtml(card.front.substring(0, 40)) : 'Empty card';
+            const preview = card.front ? card.front.substring(0, 40) : 'Empty card';
             showConfirm('Delete Card', `Delete "${preview}${card.front && card.front.length > 40 ? '…' : ''}"? This cannot be undone.`, () => {
                 const removed = cards.splice(idx, 1)[0];
                 deleteCardFromDB(removed.id);
@@ -509,6 +636,36 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         $('flip-back').addEventListener('click', flipCard);
         frontText.addEventListener('input', saveCurrentCardText);
         backText.addEventListener('input', saveCurrentCardText);
+
+        // contenteditable pastes rich HTML by default, which drops whatever markup
+        // is on the clipboard straight into the live DOM. Take the text only.
+        function insertPlainText(el, text) {
+            if (!text) return;
+            const sel = window.getSelection();
+            if (!sel || !sel.rangeCount || !el.contains(sel.anchorNode)) {
+                el.appendChild(document.createTextNode(text));
+            } else {
+                const range = sel.getRangeAt(0);
+                range.deleteContents();
+                const node = document.createTextNode(text);
+                range.insertNode(node);
+                range.setStartAfter(node);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+            saveCurrentCardText();
+        }
+        [frontText, backText].forEach(el => {
+            el.addEventListener('paste', e => {
+                e.preventDefault();
+                insertPlainText(el, (e.clipboardData || window.clipboardData).getData('text/plain'));
+            });
+            el.addEventListener('drop', e => {
+                e.preventDefault();
+                insertPlainText(el, e.dataTransfer ? e.dataTransfer.getData('text/plain') : '');
+            });
+        });
 
         frontText.addEventListener('pointerdown', e => e.stopPropagation());
         backText.addEventListener('pointerdown', e => e.stopPropagation());
@@ -580,7 +737,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
                 });
 
                 let frontDesc = escHtml(card.front);
-                let frontDrawingHtml = card.drawFront ? `<img src="${card.drawFront}" class="grid-card-drawing-preview" alt="Drawing" />` : '';
+                // card.drawFront is stored data and must be treated as untrusted:
+                // interpolated raw it would break out of the src attribute.
+                const frontDrawing = safePngDataUrl(card.drawFront);
+                let frontDrawingHtml = frontDrawing ? `<img src="${escHtml(frontDrawing)}" class="grid-card-drawing-preview" alt="Drawing" />` : '';
                 if (!frontDesc && !card.drawFront) frontDesc = '<em style="color:var(--text-muted)">Empty</em>';
                 let backDesc = escHtml(card.back);
                 if (!backDesc && card.drawBack) backDesc = '<em style="color:var(--text-muted)">[Drawing]</em>';
@@ -596,6 +756,23 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
             addEl.innerHTML = '<span class="plus">＋</span>Add Card';
             addEl.addEventListener('click', addCard);
             cardGrid.appendChild(addEl);
+        }
+
+        // Only a base64 PNG data URL survives this. Anything else (javascript:,
+        // an SVG carrying script, a quote that would escape an attribute) is dropped.
+        const PNG_DATA_URL = /^data:image\/png;base64,[A-Za-z0-9+/]+={0,2}$/;
+        function safePngDataUrl(s) {
+            if (typeof s !== 'string' || !s) return '';
+            return PNG_DATA_URL.test(s) ? s : '';
+        }
+
+        // Profile photo URLs come from the identity provider; still check the scheme.
+        function safeHttpsUrl(s) {
+            if (typeof s !== 'string' || !s) return '';
+            try {
+                const u = new URL(s, window.location.href);
+                return u.protocol === 'https:' ? u.href : '';
+            } catch (e) { return ''; }
         }
 
         function escHtml(s) {
@@ -1222,10 +1399,11 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         function loadDrawingToCanvas(ctx, canvas, dataUrl) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             applyZoom(canvas, ctx);
-            if (!dataUrl) return;
+            const safe = safePngDataUrl(dataUrl);
+            if (!safe) return;
             const img = new Image();
             img.onload = () => { ctx.drawImage(img, 0, 0, canvas.width, canvas.height); };
-            img.src = dataUrl;
+            img.src = safe;
         }
 
         $('btn-clear-canvas').addEventListener('click', () => {
@@ -1246,7 +1424,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         function showConfirm(title, message, onConfirm) {
             const overlay = document.createElement('div');
             overlay.className = 'modal-overlay';
-            overlay.innerHTML = `<div class="modal-box"><h3>${title}</h3><p>${message}</p><div class="modal-actions"><button class="btn btn-sm" id="modal-cancel">Cancel</button><button class="btn btn-sm btn-danger" id="modal-confirm">Delete</button></div></div>`;
+            overlay.innerHTML = '<div class="modal-box"><h3></h3><p></p><div class="modal-actions"><button class="btn btn-sm" id="modal-cancel">Cancel</button><button class="btn btn-sm btn-danger" id="modal-confirm">Delete</button></div></div>';
+            overlay.querySelector('h3').textContent = title;
+            overlay.querySelector('p').textContent = message;
             document.body.appendChild(overlay);
             overlay.querySelector('#modal-cancel').addEventListener('click', () => overlay.remove());
             overlay.querySelector('#modal-confirm').addEventListener('click', () => { overlay.remove(); onConfirm(); });
