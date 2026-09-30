@@ -24,6 +24,9 @@
             --danger: #dc2626;
             --success: #16a34a;
             --warning: #d97706;
+            --mark-ink: #001e3f;
+            --mark-back: #001e3f;
+            --mark-card: #ffffff;
             --radius: 12px;
             --radius-sm: 8px;
             --radius-xs: 6px;
@@ -51,6 +54,9 @@
                 --danger: #ef4444;
                 --success: #22c55e;
                 --warning: #f59e0b;
+                --mark-ink: #e8eef6;
+                --mark-back: #2a3f5c;
+                --mark-card: #12171e;
                 --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.5);
                 color-scheme: dark;
             }
@@ -74,6 +80,9 @@
             --danger: #ef4444;
             --success: #22c55e;
             --warning: #f59e0b;
+            --mark-ink: #e8eef6;
+            --mark-back: #2a3f5c;
+            --mark-card: #12171e;
             --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.5);
             color-scheme: dark;
         }
@@ -177,12 +186,29 @@
             animation: fadeInUp 0.6s ease-out;
         }
 
-        .login-logo {
-            width: 220px;
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 0 auto 20px;
+        .login-brand {
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .login-brand .header-logo {
+            height: 46px;
+            width: auto;
+        }
+
+        .login-brand .logo-text {
+            font-size: 36px;
+        }
+
+        .login-card .login-tagline {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.13em;
+            line-height: 1.5;
+            text-transform: uppercase;
+            color: var(--accent-2);
+            margin-bottom: 22px;
         }
 
         .login-card p {
@@ -369,20 +395,33 @@
         }
 
         .header-logo {
-            height: 26px;
-            width: 26px;
+            height: 27px;
+            width: auto;
             display: block;
             color: var(--accent);
             flex-shrink: 0;
         }
 
-        .header-logo polygon {
-            fill: currentColor;
+        .brand-sprite {
+            position: absolute;
+            width: 0;
+            height: 0;
+            overflow: hidden;
         }
 
-        .header-left .logo-text {
+        /* -- Brand lockup (hexagon mark + wordmark) -- */
+        .brand-lockup {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-text {
             font-size: 20px;
             font-weight: 800;
+            letter-spacing: -0.015em;
+            line-height: 1;
             color: var(--accent);
         }
 
@@ -1734,13 +1773,13 @@
                 gap: 8px;
             }
 
-            .header-left .logo-text {
+            header .logo-text {
                 font-size: 18px;
             }
 
             .header-logo {
-                height: 22px;
-                width: 22px;
+                height: 23px;
+                width: auto;
             }
 
             .header-right {
@@ -1846,8 +1885,13 @@
                 border-radius: 14px;
             }
 
-            .login-logo {
-                width: 180px;
+            .login-brand .header-logo {
+                height: 37px;
+                width: auto;
+            }
+
+            .login-brand .logo-text {
+                font-size: 29px;
             }
 
             .login-card p {
@@ -1967,6 +2011,19 @@
             max-width: 520px;
             margin: auto auto auto 8vw;
             animation: fadeInUp 0.45s ease-out;
+        }
+
+        .consent-brand {
+            margin-bottom: 22px;
+        }
+
+        .consent-brand .header-logo {
+            height: 24px;
+            width: auto;
+        }
+
+        .consent-brand .logo-text {
+            font-size: 17px;
         }
 
         .consent-eyebrow {
@@ -2160,6 +2217,12 @@
         }
 
         .legal-header {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            background: var(--bg-primary);
+            padding-top: 18px;
+            margin-top: -28px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -2169,11 +2232,40 @@
             border-bottom: 1px solid var(--glass-border);
         }
 
-        .legal-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
+        .legal-watermark {
+            position: fixed;
+            width: 560px;
+            height: 560px;
+            right: -240px;
+            bottom: -250px;
+            color: var(--accent);
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .legal-watermark polygon {
+            fill: currentColor;
+        }
+
+        .legal-brand .header-logo,
+        .legal-brand .logo-text {
+            transition: color var(--transition);
+        }
+
+        .legal-brand:hover .header-logo,
+        .legal-brand:hover .logo-text {
+            color: var(--accent-2);
+        }
+
+        .legal-eyebrow {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            color: var(--accent-2);
+            margin-bottom: 12px;
         }
 
         .legal-hero {
@@ -2259,7 +2351,24 @@
             scroll-margin-top: 20px;
         }
 
+        .legal-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            margin-right: 11px;
+            flex-shrink: 0;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--bg-primary);
+            background: var(--accent);
+            clip-path: polygon(100% 50%, 75% 93.3%, 25% 93.3%, 0 50%, 25% 6.7%, 75% 6.7%);
+        }
+
         .legal-section h2 {
+            display: flex;
+            align-items: center;
             font-size: 20px;
             font-weight: 700;
             color: var(--text-primary);
@@ -2317,6 +2426,18 @@
             margin-bottom: 0;
         }
 
+        .legal-footer .header-logo {
+            height: 19px;
+            width: auto;
+            color: var(--text-muted);
+            margin-right: 8px;
+        }
+
+        .legal-footer-brand {
+            display: flex;
+            align-items: center;
+        }
+
         .legal-footer {
             margin-top: 56px;
             padding-top: 22px;
@@ -2350,5 +2471,16 @@
 
             .legal-page {
                 padding: 22px 18px 70px;
+            }
+
+            .legal-header {
+                margin-top: -22px;
+            }
+
+            .legal-watermark {
+                width: 360px;
+                height: 360px;
+                right: -120px;
+                bottom: -130px;
             }
         }
