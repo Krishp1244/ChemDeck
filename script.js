@@ -1108,6 +1108,11 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
 
                     const parent = canvas.parentElement;
                     const parentRect = parent.getBoundingClientRect();
+                    // The canvas now sits in a clipping box. Text boxes go in its
+                    // parent instead, so dragging one past the edge does not cut it
+                    // off and it still receives pointer events. Same geometry, so
+                    // parentRect stays the right origin.
+                    const textHost = parent.parentElement || parent;
                     const fontSize = Math.max(14, drawSize * 4);
 
                     let startX = e.clientX;
@@ -1159,7 +1164,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
                     input.style.lineHeight = '1.4';
                     wrapper.appendChild(input);
 
-                    parent.appendChild(wrapper);
+                    textHost.appendChild(wrapper);
 
                     // Initial drag to set width/height
                     const moveInit = (ev) => {

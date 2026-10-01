@@ -198,7 +198,7 @@
                         <div class="card-text" id="front-text" contenteditable="true"
                             data-placeholder="Click to type your question…"></div>
                         <div class="card-flip-hint">Click outside text to flip</div>
-                        <canvas class="canvas-layer" id="canvas-front"></canvas>
+                        <div class="canvas-clip"><canvas class="canvas-layer" id="canvas-front"></canvas></div>
                         <div class="draw-toolbar" id="draw-toolbar-front"></div>
                         <div class="flip-zone" id="flip-front"></div>
                     </div>
@@ -210,7 +210,7 @@
                         <div class="card-text" id="back-text" contenteditable="true"
                             data-placeholder="Click to type the answer…"></div>
                         <div class="card-flip-hint">Click outside text to flip</div>
-                        <canvas class="canvas-layer" id="canvas-back"></canvas>
+                        <div class="canvas-clip"><canvas class="canvas-layer" id="canvas-back"></canvas></div>
                         <div class="draw-toolbar" id="draw-toolbar-back"></div>
                         <div class="flip-zone" id="flip-back"></div>
                     </div>
@@ -233,7 +233,7 @@
                         Clear</button>
                 </div>
                 <div class="scratchpad-body">
-                    <canvas class="scratchpad-canvas" id="canvas-scratchpad"></canvas>
+                    <div class="canvas-clip pad"><canvas class="scratchpad-canvas" id="canvas-scratchpad"></canvas></div>
                     <div class="draw-toolbar" id="draw-toolbar-scratchpad"></div>
                 </div>
             </div>
