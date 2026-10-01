@@ -193,8 +193,8 @@
         }
 
         .login-brand .header-logo {
-            height: 46px;
-            width: auto;
+            height: 51px;
+            width: 62px;
         }
 
         .login-brand .logo-text {
@@ -395,8 +395,8 @@
         }
 
         .header-logo {
-            height: 27px;
-            width: auto;
+            height: 30px;
+            width: 36px;
             display: block;
             color: var(--accent);
             flex-shrink: 0;
@@ -1778,8 +1778,8 @@
             }
 
             .header-logo {
-                height: 23px;
-                width: auto;
+                height: 25px;
+                width: 30px;
             }
 
             .header-right {
@@ -1886,8 +1886,8 @@
             }
 
             .login-brand .header-logo {
-                height: 37px;
-                width: auto;
+                height: 41px;
+                width: 50px;
             }
 
             .login-brand .logo-text {
@@ -2018,8 +2018,8 @@
         }
 
         .consent-brand .header-logo {
-            height: 24px;
-            width: auto;
+            height: 26px;
+            width: 31px;
         }
 
         .consent-brand .logo-text {
@@ -2427,8 +2427,8 @@
         }
 
         .legal-footer .header-logo {
-            height: 19px;
-            width: auto;
+            height: 21px;
+            width: 25px;
             color: var(--text-muted);
             margin-right: 8px;
         }
