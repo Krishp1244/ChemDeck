@@ -1018,6 +1018,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
         }
 
         let lastPoint = null;
+        let lastMid = null;
         let penDetected = false;
 
         const canvasHistory = {};
@@ -1268,6 +1269,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
 
                 const { x, y } = screenToCanvas(canvas, e.clientX, e.clientY);
                 lastPoint = { x, y };
+                lastMid = { x, y };
 
                 const baseSize = eraserMode ? drawSize * 3 : highlighterMode ? drawSize * 3 : drawSize;
                 const pressureWidth = getPressureWidth(e, baseSize);
@@ -1295,11 +1297,15 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
                     const baseSize = eraserMode ? drawSize * 3 : highlighterMode ? drawSize * 3 : drawSize;
                     ctx.lineWidth = getPressureWidth(pe, baseSize) / canvasZoom[canvas.id].scale;
                     if (lastPoint) {
+                        // Quadratic through the previous point, running midpoint to
+                        // midpoint. Starting at lastPoint instead would leave the
+                        // midpoint-to-point half of every segment unpainted.
                         const midX = (lastPoint.x + x) / 2;
                         const midY = (lastPoint.y + y) / 2;
-                        ctx.beginPath(); ctx.moveTo(lastPoint.x, lastPoint.y);
+                        ctx.beginPath(); ctx.moveTo(lastMid.x, lastMid.y);
                         ctx.quadraticCurveTo(lastPoint.x, lastPoint.y, midX, midY);
                         ctx.stroke();
+                        lastMid = { x: midX, y: midY };
                     }
                     lastPoint = { x, y };
                 }
@@ -1308,7 +1314,12 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
             const endDraw = (e) => {
                 if (!isDrawing) return;
                 if (e) { e.stopPropagation(); e.preventDefault(); }
-                isDrawing = false; lastPoint = null;
+                // Close the stroke: the last midpoint to the final point is not drawn by pointermove
+                if (lastMid && lastPoint) {
+                    ctx.beginPath(); ctx.moveTo(lastMid.x, lastMid.y);
+                    ctx.lineTo(lastPoint.x, lastPoint.y); ctx.stroke();
+                }
+                isDrawing = false; lastPoint = null; lastMid = null;
                 ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
                 setTimeout(() => { if (!isDrawing) penDetected = false; }, 800);
                 saveDrawingData(); renderGrid(); debouncedSave(); updateUndoRedoButtons();
