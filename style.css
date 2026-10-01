@@ -194,7 +194,7 @@
 
         .login-brand .header-logo {
             height: 51px;
-            width: 62px;
+            width: 60px;
         }
 
         .login-brand .logo-text {
@@ -396,7 +396,7 @@
 
         .header-logo {
             height: 30px;
-            width: 36px;
+            width: 35px;
             display: block;
             color: var(--accent);
             flex-shrink: 0;
@@ -1779,7 +1779,7 @@
 
             .header-logo {
                 height: 25px;
-                width: 30px;
+                width: 29px;
             }
 
             .header-right {
@@ -1887,7 +1887,7 @@
 
             .login-brand .header-logo {
                 height: 41px;
-                width: 50px;
+                width: 48px;
             }
 
             .login-brand .logo-text {
